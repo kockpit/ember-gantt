@@ -1,0 +1,115 @@
+
+
+/**
+ *
+ *   GENERAL STYLINGS - dont use this
+ *
+ */
+body {
+	background: lightblue;
+}
+body, p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+h2 {
+
+  font-family: 'Roboto Slab', serif;
+}
+
+
+
+/**
+ *
+ *   GANTT STYLING: use and adjust this
+ *
+ */
+.gantt-chart-inner {
+  position: relative;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	border: 5px solid red;
+
+  white-space: nowrap; // keep all in-line
+}
+
+// gant elements
+.gant-timeline-today {
+  position: absolute;
+  height: 100%;
+  border-left: 1px solid blue;
+}
+
+
+
+// gant line/timline
+
+.gant-line {
+	position: relative;
+	border: 1px solid yellow;
+}
+.gantt-line-title {
+	position: fixed;
+	width: 150px;
+  z-index: 1;
+
+	border: 1px solid #ccc;
+	background: #fff;
+}
+.gantt-line-bar {
+  position: absolute;
+  background: red;
+  border-radius: 3px;
+  height: 15px;
+
+  transition: left 300ms ease-out, width 300ms ease-out;
+}
+.gantt-line-timeline {
+	margin-left: 150px;
+  font-size: 0; // used to kill spaces between inline-block elements
+	//width: 2000px;
+  position: relative;
+}
+.gantt-timeline-month {
+  display: inline-block;
+}
+.gantt-timeline-month-name {
+  background: #fff;
+  font-size: initial;
+
+  span {
+    padding: 10px;
+    display: block;
+    border-left: 1px solid #ccc;
+  }
+}
+.gantt-timeline-day {
+  display: inline-block;
+  height: 20px;
+  // width is set by component (allows zooming)
+  transition: width 300ms ease-out;
+
+  font-size: initial;
+
+  background: #fff;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+.gantt-timeline-day-weekend {
+  background: #efefef;
+}
+.gant-line-childs {
+}
+
+
+
+// header
+.gantt-chart-header {
+
+  .gantt-timeline-day {
+    text-align: center;
+    border-left: 1px solid #ccc;
+    border-right: none;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,29 @@
+
+
+<div class="gantt-line-title">{{title}}</div>
+<div class="gantt-line-timeline">
+  {{! bar }}
+  <div class="gantt-line-bar" style={{barStyle}} title={{barTitle}}></div>
+
+  {{! months }}
+  {{#each chart.timelineMonths as |month|}}
+    <div class="gantt-timeline-month">
+      {{#each month.days as |day|}}
+        <div class="gantt-timeline-day {{if day.isWeekend 'gantt-timeline-day-weekend'}}"></div>
+      {{/each}}
+    </div>
+  {{/each}}
+</div>
+
+{{!yield}}
+
+
+<div class="gant-line-childs">
+	{{! child lines }}
+	{{yield
+	  (hash
+	    child-line=(component "gantt-line" chart=chart  parentLine=this)
+	  )
+	}}
+
+</div>

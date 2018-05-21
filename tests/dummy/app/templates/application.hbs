@@ -1,3 +1,21 @@
-<h2 id="title">Welcome to Ember</h2>
+<h2 id="title">ember-gantt addon</h2>
 
-{{outlet}}
+
+{{#gantt-chart as |chart|}}
+
+	{{#each model.projects as |project|}}
+		{{#chart.line title=project.title dateStart=project.minStart dateEnd=project.maxEnd as |line|}}
+			{{#each project.jobs as |job|}}
+				{{line.child-line title=job.title dateStart=job.startsAt dateEnd=job.endsAt }}
+			{{/each}}
+		{{/chart.line}}
+	{{/each}}
+
+{{/gantt-chart}}
+
+
+
+
+{{!outlet}}
+
+
