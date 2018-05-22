@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import {isNone} from '@ember/utils';
-import EmberObject, { get} from '@ember/object';
+import EmberObject, { get, computed} from '@ember/object';
 import { mapBy, max, min } from '@ember/object/computed';
 
 
@@ -15,20 +15,40 @@ export default Route.extend({
     // let intelligent project object
     let ProjectObject = EmberObject.extend({
           title: 'empty',
-          jobs: [],
+          jobs: null,
 
           jobsStart: mapBy('jobs','startsAt'),
           minStart: min('jobsStart'),
           jobsEnd: mapBy('jobs','endsAt'),
-          maxEnd: max('jobsEnd')
+          maxEnd: max('jobsEnd'),
+
+          minStartDate: computed('minStart', function() {
+            let start = get(this, 'minStart');
+            if (typeof start === 'number') {
+              let newdate = new Date(start);
+              newdate.setUTCHours(0,0,0,0);
+              return newdate;
+            }
+            return start;
+          }),
+          maxEndDate: computed('maxEnd', function() {
+            let end = get(this, 'maxEnd');
+            if (typeof end === 'number') {
+              let newdate = new Date(end);
+              newdate.setUTCHours(0,0,0,0);
+              return newdate;
+            }
+            return end;
+          }),
       });
 
     // create some dummy content
-    for(let i=1; i<50; i++) {
+    for(let i=1; i<300; i++) {
 
       let jobs = [];
       let numJobs = Math.ceil(Math.random()*8)+2;
-      let projectStart = getRandomDate(today, 30, true);
+      let projectStart = getRandomDate(today, 20, true);
+      console.log(projectStart, 'startproject');
 
       // some jobs for each project
       for(let j=1; j<numJobs; j++) {
@@ -62,6 +82,7 @@ function getRandomDate(date, maxDays, allowBefore) {
   maxDays = maxDays || 30;
 
   let newDate = new Date(date.getTime());
+  newDate.setUTCHours(0,0,0,0);
   let randomDays = Math.ceil(Math.random() * maxDays);
 
   if (allowBefore) {
@@ -69,7 +90,7 @@ function getRandomDate(date, maxDays, allowBefore) {
   }
 
   newDate.setDate( newDate.getDate() + randomDays );
-  console.log(newDate, 'random');
+
   return newDate;
 }
 

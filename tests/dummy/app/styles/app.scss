@@ -19,6 +19,11 @@ h2 {
 
 
 
+// VARS 
+$gantt-animation-duration: 300ms;
+$gantt-line-height: 45px;
+
+
 /**
  *
  *   GANTT STYLING: use and adjust this
@@ -28,41 +33,85 @@ h2 {
   position: relative;
 	overflow-x: scroll;
 	overflow-y: hidden;
-	border: 5px solid red;
+	border: 1px solid #000;
 
-  white-space: nowrap; // keep all in-line
 }
 
 // gant elements
+// -----------------
+
+// today
 .gant-timeline-today {
   position: absolute;
   height: 100%;
-  border-left: 1px solid blue;
+  border-left: 1px solid #333;
+  z-index: 2;
+  top: 61px;
+
+  > div {
+    position: relative;
+    left: -7px;
+    width: 0; 
+    height: 0; 
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    
+    border-top: 7px solid #333;
+  }
 }
 
 
 
 // gant line/timline
 
-.gant-line {
+.gantt-line {
 	position: relative;
-	border: 1px solid yellow;
+	// border: 1px solid yellow;
+  height: 45px;
+  white-space: nowrap; // keep all in-line
+
 }
 .gantt-line-title {
 	position: fixed;
 	width: 150px;
   z-index: 1;
+  height: 20px;
 
-	border: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 	background: #fff;
+
+  span {
+    display: block;
+    padding: 3px 10px;
+  }
 }
 .gantt-line-bar {
   position: absolute;
-  background: red;
-  border-radius: 3px;
-  height: 15px;
+  background: #6d94d3;
+  border-radius: 2px;
+  height: 35px;
+  margin-top: 3px;
 
-  transition: left 300ms ease-out, width 300ms ease-out;
+  transition: left 200ms ease-out, width 200ms ease-out;
+
+  // bar-controls
+  .bar-resize-l,
+  .bar-resize-r {
+    position: absolute;
+    left: 0px;
+    height: 100%;
+    width: 10px;
+    z-index: 1; // above this bar (above move)
+    cursor: w-resize;
+  }
+  .bar-resize-r {
+    left: auto;
+    right: 0;
+  }
+}
+.gantt-line-bar-editable {
+  cursor: move;
 }
 .gantt-line-timeline {
 	margin-left: 150px;
@@ -87,29 +136,90 @@ h2 {
   display: inline-block;
   height: 20px;
   // width is set by component (allows zooming)
-  transition: width 300ms ease-out;
+  transition: width 200ms ease-out;
 
   font-size: initial;
 
   background: #fff;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid transparent;
   border-top: 1px solid #ccc;
 }
 .gantt-timeline-day-weekend {
   background: #efefef;
 }
+
+
+// line-childs (can be defined recursively)
 .gant-line-childs {
+  .gantt-line-bar {
+    background: #71b5a0;
+  }
+  .gantt-line-title span {
+    // padding-left: 10px;
+    &:before {
+      content: '–  ';
+    }
+  }
 }
 
 
 
 // header
 .gantt-chart-header {
+  border-bottom: 1px solid #ccc;
 
+  .gantt-line {
+    height: 60px;
+  }
+  .gantt-line-title {
+    height: 60px;
+    border-bottom: 1px solid #ccc;
+  }
   .gantt-timeline-day {
+    // display: table-cell;
+    // vertical-align: middle;
     text-align: center;
+    
     border-left: 1px solid #ccc;
     border-right: none;
     font-size: 12px;
   }
+}
+
+// vertical grid
+.gantt-chart-header-verticalgrid {
+  position: absolute;
+  top: 0;
+  z-index: -1;
+  height: 100%;
+
+  .gantt-line,
+  .gantt-line-timeline,
+  .gantt-timeline-month,
+  .gantt-timeline-day  {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  // right: 0;
+  // bottom: 0;
+  // left: 0;
+  // border-bottom: 1px solid #ccc;
+
+  // .gantt-line {
+  //   height: 60px;
+  // }
+  // .gantt-line-title {
+  //   height: 60px;
+  //   border-bottom: 1px solid #ccc;
+  // }
+  // .gantt-timeline-day {
+  //   // display: table-cell;
+  //   // vertical-align: middle;
+  //   text-align: center;
+    
+  //   border-left: 1px solid #ccc;
+  //   border-right: none;
+  //   font-size: 12px;
+  // }
 }

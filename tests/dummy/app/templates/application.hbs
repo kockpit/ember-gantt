@@ -4,9 +4,9 @@
 {{#gantt-chart as |chart|}}
 
 	{{#each model.projects as |project|}}
-		{{#chart.line title=project.title dateStart=project.minStart dateEnd=project.maxEnd as |line|}}
+		{{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
 			{{#each project.jobs as |job|}}
-				{{line.child-line title=job.title dateStart=job.startsAt dateEnd=job.endsAt }}
+				{{line.child-line title=job.title dateStart=job.startsAt dateEnd=job.endsAt isEditable=true}}
 			{{/each}}
 		{{/chart.line}}
 	{{/each}}

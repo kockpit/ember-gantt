@@ -23,25 +23,32 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
+    // start date
     if (!get(this, 'viewStartDate')) {
-      let viewStart = (new Date());
+      let viewStart = this.getNewDate();
       viewStart.setDate(1);
       set(this, 'viewStartDate', viewStart);
     }
+
+    // end date
     if (!get(this, 'viewEndDate')) {
       let startDate = get(this, 'viewStartDate');
-      let endDate = new Date(startDate.getTime());
+      let endDate = this.getNewDate(startDate);
       endDate.setMonth(endDate.getMonth()+8);
       set(this, 'viewEndDate', endDate);
     }
   },
 
-  todayStyle: computed('viewStartDate', function() {
-    let today = new Date();
+
+  todayStyle: computed('viewStartDate', 'dayWidth', function() {
+    let today = this.getNewDate();
+
     let offsetLeft = this.dateToPixel(today);
+    console.log(today, 'today, in pixels:'+offsetLeft);
 
     return htmlSafe( `left:${offsetLeft}px`);
   }),
+
 
 
   timelineMonths: computed('viewStartDate', 'viewEndDate', function() {
@@ -57,7 +64,7 @@ export default Component.extend({
       return [];
     }
 
-    let actDate = new Date(start.getTime()),
+    let actDate = this.getNewDate(start.getTime()),
         months = [];
 
     // set to lasth day of month so totalDays can be accessed
@@ -66,7 +73,6 @@ export default Component.extend({
 
 
     while(actDate < end) {
-      console.log(actDate, 'actDate');
       let month = {
         date: (new Date(actDate.getTime())), //.setDate(1), // first of month
         totalDays: this.daysInMonth(actDate),
@@ -92,37 +98,67 @@ export default Component.extend({
     return months;
   }),
 
-  // calculate days of month (TODO move to moment?)
-  daysInMonth(date) {
-    let newDate = new Date(date);
-    newDate.setMonth(newDate.getMonth()+1);
-    newDate.setDate(0);
-    return newDate.getDate();
-  },
 
   // calculate pixel-difference between two dates (for offset or bar width)
-  dateToPixel(date, startDate) {
+  dateToPixel(date, startDate, includeDay) {
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
     startDate = startDate || get(this, 'viewStartDate');
+    includeDay = isNone(includeDay) ? false : includeDay;
 
     if (isNone(date) || isNone(startDate) || typeof date.getTime !== 'function') {
-      console.log(date, 'was no date');
-      console.log(typeof date.getMonth, 'was no date');
+      // console.log(date, 'was no date');
       return 0;
     }
 
     let oneDay = 86400000; // 24*60*60*1000;
-    let diffDays = Math.floor(Math.abs(date.getTime() - startDate.getTime()) / (oneDay));
-    let offset = (diffDays * dayWidth) + (diffDays*2); // + borders: TODO make auto-detecting borders
+    let diffDays = Math.floor(Math.abs(date.getTime() - startDate.getTime()) / (oneDay))+1;
+    
+    if (includeDay) {
+      diffDays+=1;
+    }
 
-    console.log(date, '='+diffDays+' -> '+offset+'px');
+    let offset = (diffDays * dayWidth) + (diffDays*1); // + borders: TODO make auto-detecting borders
+
+    console.log(date, '=('+diffDays+'*'+dayWidth+' -> '+offset+'');
     console.log(startDate, 'start');
-    // console.log(diffDays, '= days');
-    // console.log((diffDays * dayWidth), '= pixels');
-
 
     return offset;
+  },
+
+  pixelToDate(pixelOffset) {
+    let startDate = get(this, 'viewStartDate');
+    let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
+
+    let days = pixelOffset / (dayWidth+1); // border-left
+
+    let newDateTime = startDate.getTime() + (days * 86400000);
+    return this.getNewDate(newDateTime);
+  },
+
+  /**
+   * DATE HELPER FUNCTIONS 
+   */
+
+  // calculate days of month (TODO move to moment?)
+  daysInMonth(date) {
+    let newDate = this.getNewDate(date);
+    newDate.setMonth(newDate.getMonth()+1);
+    newDate.setDate(0);  // set to last day of previous month
+    return newDate.getDate();
+  },
+  
+  // get new date (from given date) in UTC and without time!
+  getNewDate(fromDate) {
+    let date = isNone(fromDate) ? new Date() : new Date(fromDate);
+    date = this.dateNoTime(date);
+    return date;
+  },
+
+  // remove time (set 0) and set to UTC
+  dateNoTime(date) {
+    date.setUTCHours(0,0,0,0);
+    return date;
   }
 
 
