@@ -1,22 +1,3 @@
-
-
-
-<h1>ember-gantt addon</h1>
-
-<p class="lead">
-  Simple and leightweight gantt ember-addon.
-  <br>No external libraries are used – pure ember (3KB unzipped).
-</p>
-
-
-<h2>Example</h2>
-Day width (px): {{input value=dayWidth}}
-<br><br>
-View: [ <a href="" {{action 'setView' 'day'}}>Day</a> | <a href="" {{action 'setView' 'week'}}>week</a> | <a href="" {{action 'setView' 'month'}}>Month</a>]
-
-
-<br><br>
-
 {{#gantt-chart dayWidth=dayWidth headerTitle="Project/Job" as |chart|}}
 
   {{#each model.projects as |project|}}
@@ -42,11 +23,3 @@ View: [ <a href="" {{action 'setView' 'day'}}>Day</a> | <a href="" {{action 'set
   {{/each}}
 
 {{/gantt-chart}}
-
-
-<h3>... results from following code:</h3>
-{{code-snippet name="1-standard-example.hbs"}}
-
-{{!outlet}}
-
-

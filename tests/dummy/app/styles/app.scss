@@ -12,9 +12,12 @@ body, p {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
 }
-h2 {
-
+h1, h2, h3 {
   font-family: 'Roboto Slab', serif;
+  margin-top: 30px;
+}
+p.lead {
+  font-size: 1.4em;
 }
 
 
