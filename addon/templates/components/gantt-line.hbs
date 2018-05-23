@@ -1,15 +1,36 @@
 
 
 <div class="gantt-line">
-  <div class="gantt-line-title"><span>{{title}}</span></div>
+
+  {{! title - from title attribute or }}
+  <div class="gantt-line-title">
+    {{#if title}}
+      <span>{{title}}</span>
+    {{else}}
+      {{yield
+        (hash
+          title=(component "gantt-line-title" line=this)
+        )}}
+    {{/if}}
+  </div>
+
+  {{! timeline }}
   <div class="gantt-line-timeline">
-    
+
     {{! bar }}
     <div class="gantt-line-bar {{if isEditable 'gantt-line-bar-editable'}}" style={{barStyle}} title={{barTitle}}>
+
+      {{yield
+        (hash
+          barContent=(component "gantt-line-barcontent" line=this)
+        )
+      }}
+
       {{#if isEditable}}
         <div class="bar-resize-l"></div>
         <div class="bar-resize-r"></div>
       {{/if}}
+
     </div>
 
     {{! months }}
@@ -28,11 +49,11 @@
 
 
 <div class="gant-line-childs">
-	
+
   {{! child lines }}
 	{{yield
 	  (hash
-	    child-line=(component "gantt-line" chart=chart  parentLine=this)
+	    childLine=(component "gantt-line" chart=chart  parentLine=this)
 	  )
 	}}
 

@@ -43,7 +43,7 @@ export default Route.extend({
       });
 
     // create some dummy content
-    for(let i=1; i<300; i++) {
+    for(let i=1; i<4; i++) {
 
       let jobs = [];
       let numJobs = Math.ceil(Math.random()*8)+2;

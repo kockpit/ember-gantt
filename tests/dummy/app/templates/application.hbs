@@ -1,14 +1,36 @@
 <h2 id="title">ember-gantt addon</h2>
 
 
-{{#gantt-chart as |chart|}}
+
+Day width (px): {{input value=dayWidth}}
+<br>
+View: [ <a href="" {{action 'setView' 'day'}}>Day</a> | <a href="" {{action 'setView' 'week'}}>week</a> | <a href="" {{action 'setView' 'month'}}>Month</a>]
+
+
+<br><br>
+
+{{#gantt-chart dayWidth=dayWidth headerTitle="Project/Job" as |chart|}}
 
 	{{#each model.projects as |project|}}
-		{{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
-			{{#each project.jobs as |job|}}
-				{{line.child-line title=job.title dateStart=job.startsAt dateEnd=job.endsAt isEditable=true}}
+
+    {{! line for each project }}
+		{{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      {{#line.title}}
+        <span>
+          <svg width="12px" height="12px"><rect fill="#7891d7" width="12" height="12"></rect></svg>
+          {{project.title}}
+        </span>
+      {{/line.title}}
+
+      {{! child line for each job in project }}
+      {{#each project.jobs as |job|}}
+				{{#line.childLine title=job.title dateStart=job.startsAt dateEnd=job.endsAt isEditable=true as |childLine|}}
+          {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+        {{/line.childLine}}
 			{{/each}}
+
 		{{/chart.line}}
+
 	{{/each}}
 
 {{/gantt-chart}}

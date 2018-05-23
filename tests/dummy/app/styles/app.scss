@@ -30,6 +30,7 @@ h2 {
 $gantt-animation-duration: 200ms;
 $gantt-line-height: 40px;
 $gantt-line-bar-height: 36px;
+$gantt-line-title-width: 150px;
 
 $gantt-border-color: #efefef;
 $gantt-weekend-background: #efefef;
@@ -62,7 +63,7 @@ $gantt-weekend-background: #efefef;
   .gantt-line-title {
     height: 60px;
   }
-  .gantt-timeline-day {
+  .gantt-line-timeline .day {
     // display: table-cell;
     // vertical-align: middle;
     text-align: center;
@@ -87,7 +88,8 @@ $gantt-weekend-background: #efefef;
   .gantt-line,
   .gantt-line-timeline,
   .gantt-timeline-month,
-  .gantt-timeline-day  {
+  .gantt-timeline-days,
+  .gantt-line-timeline .day  {
     height: 100%;
     min-height: 100%;
   }
@@ -96,20 +98,23 @@ $gantt-weekend-background: #efefef;
 // today
 .gant-timeline-today {
   position: absolute;
-  height: 99999999px;
-  border-left: 1px solid #333;
-  z-index: 2;
   top: 61px;
+  height: 99999999px;
+  margin-left: $gantt-line-title-width; // needs offset as absolute
+
+  z-index: 2;
+
+  border-left: 1px solid #444;
 
   > div {
     position: relative;
-    left: -7px;
+    left: -5px;
     width: 0;
     height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
 
-    border-top: 7px solid #333;
+    border-top: 7px solid #444;
   }
 }
 
@@ -125,7 +130,7 @@ $gantt-weekend-background: #efefef;
 
 .gantt-line-title {
 	position: absolute;
-	width: 150px;
+	width: $gantt-line-title-width;
   z-index: 3;
   height: $gantt-line-height;
 
@@ -158,7 +163,7 @@ $gantt-weekend-background: #efefef;
     left: 0px;
     height: 100%;
     width: 15px;
-    z-index: 1; // above this bar (above move)
+    // z-index: 1; // above this bar (above move)
     cursor: w-resize;
   }
   .bar-resize-r {
@@ -170,16 +175,43 @@ $gantt-weekend-background: #efefef;
     cursor: move;
   }
 }
+.gantt-line-bar-content {
+  position: absolute;
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px 0;
+}
 
 .gantt-line-timeline {
-	margin-left: 150px;
-  font-size: 0; // used to kill spaces between inline-block elements
-	//width: 2000px;
+	display: flex;
+  flex-wrap: nowrap;
+  margin-left: 150px;
   position: relative;
+
+  .day {
+    display: inline-block;
+    height: 20px;
+    // !!! width is set by chart-component globally (allows zooming)
+    transition: width $gantt-animation-duration ease-out;
+
+    background: #fff;
+    border-left: 1px solid transparent;
+    border-top: 1px solid $gantt-border-color;
+  }
+
+  .day-weekend {
+    background: $gantt-weekend-background;
+  }
 }
 
 .gantt-timeline-month {
   display: inline-block;
+}
+
+.gantt-timeline-days {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .gantt-timeline-month-name {
@@ -193,22 +225,7 @@ $gantt-weekend-background: #efefef;
   }
 }
 
-.gantt-timeline-day {
-  display: inline-block;
-  height: 20px;
-  // width is set by component (allows zooming)
-  transition: width $gantt-animation-duration ease-out;
 
-  font-size: initial;
-
-  background: #fff;
-  border-left: 1px solid transparent;
-  border-top: 1px solid $gantt-border-color;
-}
-
-.gantt-timeline-day-weekend {
-  background: $gantt-weekend-background;
-}
 
 
 // line-childs (can be defined recursively)

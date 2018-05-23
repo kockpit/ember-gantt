@@ -1,7 +1,8 @@
 // import { run } from '@ember/runloop';
 // import moment from 'moment'; // ? needed
 import {set,get,computed} from '@ember/object';
-import {isNone} from '@ember/utils';
+import {equal} from '@ember/object/computed';
+import {isNone,isEqual} from '@ember/utils';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-chart';
@@ -10,6 +11,7 @@ export default Component.extend({
   layout,
 
   classNames: 'gantt-chart',
+  classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
 
   /**
    * Show today-line
@@ -22,7 +24,24 @@ export default Component.extend({
   showToday: true,
 
   /**
+   * View granularity{day|week|month}
+   * Only has impact on header, change dayView accordingly
+   *
+   * @property view
+   * @type string
+   * @default 'day'
+   * @public
+   */
+  view: 'day',
+
+  // computings to set view class
+  ganttChartViewDay: equal('view','day'),
+  ganttChartViewWeek: equal('view','week'),
+  ganttChartViewMonth: equal('view','month'),
+
+  /**
    * Gantt timeline start-date
+   * default: today
    *
    * @property viewStartDate
    * @type Date
@@ -33,6 +52,7 @@ export default Component.extend({
 
   /**
    * Gantt timeline end-date
+   * default: viewStartDate + 3months
    *
    * @property viewEndDate
    * @type Date
@@ -55,6 +75,18 @@ export default Component.extend({
     return `${get(this, 'dayWidth')}px`;
   }),
 
+  /**
+   * Header title, above line titles
+   *
+   * @property headerTitle
+   * @type string
+   * @default ''
+   * @public
+   */
+  headerTitle: '',
+
+
+
 
   init() {
     this._super(...arguments);
@@ -62,7 +94,7 @@ export default Component.extend({
     // start date
     if (!get(this, 'viewStartDate')) {
       let viewStart = this.getNewDate();
-      viewStart.setDate(1); // start of month!?
+      // viewStart.setDate(1); // start of month!?
       set(this, 'viewStartDate', viewStart);
     }
 
@@ -70,7 +102,7 @@ export default Component.extend({
     if (!get(this, 'viewEndDate')) {
       let startDate = get(this, 'viewStartDate');
       let endDate = this.getNewDate(startDate);
-      endDate.setMonth(endDate.getMonth()+8);
+      endDate.setMonth(endDate.getMonth()+3);
       set(this, 'viewEndDate', endDate);
     }
 
@@ -96,18 +128,32 @@ export default Component.extend({
     let actDate = this.getNewDate(start.getTime()),
         months = [];
 
-    // set to first day of month -> TODO should be possible to render any time-range, not only months
-    // actDate.setMonth(actDate.getMonth()+1);
-    actDate.setDate(1);
-
     while(actDate < end) {
+
       let month = {
         date: (new Date(actDate.getTime())),
         totalDays: this.daysInMonth(actDate),
         days: []
       };
 
-      for(let d=1; d<=month.totalDays; d++) {
+      // from/to days
+      let startDay = 1;
+      let lastDay = month.totalDays;
+
+      // first month
+      if (isEqual(start, actDate)) {
+        startDay = actDate.getDate();
+      } else {
+        actDate.setDate(1);
+      }
+
+      // last month
+      if (actDate.getMonth()===end.getMonth() && actDate.getFullYear()===end.getFullYear()) {
+        lastDay = end.getDate();
+      }
+
+      // iterate all days to generate data-array
+      for(let d=startDay; d<=lastDay; d++) {
         let dayDate = new Date(actDate.getTime());
         month.days.push({
           nr: d,
@@ -116,9 +162,10 @@ export default Component.extend({
         });
       }
 
+      // add days to month
       months.push(month);
       actDate.setMonth(actDate.getMonth()+1);
-      // actDate.setDate(0);
+
     }
 
     return months;
@@ -163,6 +210,7 @@ export default Component.extend({
 
   /**
    * DATE HELPER FUNCTIONS
+   * TODO: move to date-util class
    */
 
   // calculate days of month (TODO move to moment?)
@@ -175,7 +223,19 @@ export default Component.extend({
 
   // get new date (from given date) in UTC and without time!
   getNewDate(fromDate) {
-    let date = isNone(fromDate) ? new Date() : new Date(fromDate);
+    let date = null;
+
+    if (fromDate && typeof fromDate.getTime === 'function') {
+      date = new Date(fromDate.getTime());
+
+    } else if (typeof fromDate === 'string' || typeof fromDate === 'number') {
+      date = new Date(fromDate);
+    }
+
+    if (isNone(fromDate)) {
+      date = new Date();
+    }
+
     date = this.dateNoTime(date);
     return date;
   },

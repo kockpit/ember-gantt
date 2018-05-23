@@ -1,0 +1,1 @@
+export { default } from 'ember-gantt/components/gantt-line-title';
