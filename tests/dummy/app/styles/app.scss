@@ -19,31 +19,84 @@ h2 {
 
 
 
-// VARS 
-$gantt-animation-duration: 300ms;
-$gantt-line-height: 45px;
-
 
 /**
  *
  *   GANTT STYLING: use and adjust this
  *
  */
-.gantt-chart-inner {
+
+// VARS
+$gantt-animation-duration: 200ms;
+$gantt-line-height: 40px;
+$gantt-line-bar-height: 36px;
+
+$gantt-border-color: #efefef;
+$gantt-weekend-background: #efefef;
+
+
+
+// gant chart elements
+// -----------------
+
+.gantt-chart {
   position: relative;
-	overflow-x: scroll;
-	overflow-y: hidden;
-	border: 1px solid #000;
+}
+.gantt-chart-inner {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  border: 1px solid #000;
+  // position: relative;
 
 }
 
-// gant elements
-// -----------------
+
+
+// header
+.gantt-chart-header {
+  border-bottom: 1px solid $gantt-border-color;
+
+  .gantt-line {
+    height: 60px;
+  }
+  .gantt-line-title {
+    height: 60px;
+  }
+  .gantt-timeline-day {
+    // display: table-cell;
+    // vertical-align: middle;
+    text-align: center;
+
+    border-left: 1px solid $gantt-border-color;
+    border-right: none;
+    font-size: 12px;
+  }
+}
+
+// vertical grid
+.gantt-chart-grid {
+  position: relative;
+  height: 100%;
+}
+.gantt-chart-grid-vertical {
+  position: absolute;
+  top: 0;
+  z-index: -1;
+  height: 99999999px;
+
+  .gantt-line,
+  .gantt-line-timeline,
+  .gantt-timeline-month,
+  .gantt-timeline-day  {
+    height: 100%;
+    min-height: 100%;
+  }
+}
 
 // today
 .gant-timeline-today {
   position: absolute;
-  height: 100%;
+  height: 99999999px;
   border-left: 1px solid #333;
   z-index: 2;
   top: 61px;
@@ -51,34 +104,31 @@ $gantt-line-height: 45px;
   > div {
     position: relative;
     left: -7px;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
-    
+
     border-top: 7px solid #333;
   }
 }
 
-
-
 // gant line/timline
+// ----------
 
 .gantt-line {
-	position: relative;
-	// border: 1px solid yellow;
-  height: 45px;
+	height: $gantt-line-height;
   white-space: nowrap; // keep all in-line
-
+  border: none;
+  border-bottom: 1px solid #eee;
 }
-.gantt-line-title {
-	position: fixed;
-	width: 150px;
-  z-index: 1;
-  height: 20px;
 
-  border-top: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
+.gantt-line-title {
+	position: absolute;
+	width: 150px;
+  z-index: 3;
+  height: $gantt-line-height;
+
 	background: #fff;
 
   span {
@@ -86,14 +136,20 @@ $gantt-line-height: 45px;
     padding: 3px 10px;
   }
 }
+
 .gantt-line-bar {
   position: absolute;
-  background: #6d94d3;
-  border-radius: 2px;
-  height: 35px;
-  margin-top: 3px;
+  height: $gantt-line-bar-height;
+  margin-top: (($gantt-line-height - $gantt-line-bar-height) / 2);
 
-  transition: left 200ms ease-out, width 200ms ease-out;
+  border-radius: 2px;
+
+  transition: left $gantt-animation-duration ease-out, width $gantt-animation-duration ease-out;
+
+  // background + printable
+  -webkit-print-color-adjust: exact;
+  background: #6d94d3;
+  color-adjust: exact;
 
   // bar-controls
   .bar-resize-l,
@@ -101,7 +157,7 @@ $gantt-line-height: 45px;
     position: absolute;
     left: 0px;
     height: 100%;
-    width: 10px;
+    width: 15px;
     z-index: 1; // above this bar (above move)
     cursor: w-resize;
   }
@@ -109,19 +165,23 @@ $gantt-line-height: 45px;
     left: auto;
     right: 0;
   }
+
+  &.gantt-line-bar-editable {
+    cursor: move;
+  }
 }
-.gantt-line-bar-editable {
-  cursor: move;
-}
+
 .gantt-line-timeline {
 	margin-left: 150px;
   font-size: 0; // used to kill spaces between inline-block elements
 	//width: 2000px;
   position: relative;
 }
+
 .gantt-timeline-month {
   display: inline-block;
 }
+
 .gantt-timeline-month-name {
   background: #fff;
   font-size: initial;
@@ -129,30 +189,36 @@ $gantt-line-height: 45px;
   span {
     padding: 10px;
     display: block;
-    border-left: 1px solid #ccc;
+    border-left: 1px solid $gantt-border-color;
   }
 }
+
 .gantt-timeline-day {
   display: inline-block;
   height: 20px;
   // width is set by component (allows zooming)
-  transition: width 200ms ease-out;
+  transition: width $gantt-animation-duration ease-out;
 
   font-size: initial;
 
   background: #fff;
   border-left: 1px solid transparent;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid $gantt-border-color;
 }
+
 .gantt-timeline-day-weekend {
-  background: #efefef;
+  background: $gantt-weekend-background;
 }
 
 
 // line-childs (can be defined recursively)
 .gant-line-childs {
+  .gantt-line {
+    height: (2*$gantt-line-height/3);
+  }
   .gantt-line-bar {
     background: #71b5a0;
+    height: (2 * $gantt-line-bar-height / 3) - 1;
   }
   .gantt-line-title span {
     // padding-left: 10px;
@@ -164,62 +230,5 @@ $gantt-line-height: 45px;
 
 
 
-// header
-.gantt-chart-header {
-  border-bottom: 1px solid #ccc;
 
-  .gantt-line {
-    height: 60px;
-  }
-  .gantt-line-title {
-    height: 60px;
-    border-bottom: 1px solid #ccc;
-  }
-  .gantt-timeline-day {
-    // display: table-cell;
-    // vertical-align: middle;
-    text-align: center;
-    
-    border-left: 1px solid #ccc;
-    border-right: none;
-    font-size: 12px;
-  }
-}
 
-// vertical grid
-.gantt-chart-header-verticalgrid {
-  position: absolute;
-  top: 0;
-  z-index: -1;
-  height: 100%;
-
-  .gantt-line,
-  .gantt-line-timeline,
-  .gantt-timeline-month,
-  .gantt-timeline-day  {
-    height: 100%;
-    min-height: 100%;
-  }
-
-  // right: 0;
-  // bottom: 0;
-  // left: 0;
-  // border-bottom: 1px solid #ccc;
-
-  // .gantt-line {
-  //   height: 60px;
-  // }
-  // .gantt-line-title {
-  //   height: 60px;
-  //   border-bottom: 1px solid #ccc;
-  // }
-  // .gantt-timeline-day {
-  //   // display: table-cell;
-  //   // vertical-align: middle;
-  //   text-align: center;
-    
-  //   border-left: 1px solid #ccc;
-  //   border-right: none;
-  //   font-size: 12px;
-  // }
-}
