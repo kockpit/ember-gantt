@@ -1,24 +1,60 @@
-import Component from '@ember/component';
+// import { run } from '@ember/runloop';
+// import moment from 'moment'; // ? needed
 import {set,get,computed} from '@ember/object';
 import {isNone} from '@ember/utils';
-import layout from '../templates/components/gantt-chart';
-import moment from 'moment';
 import { htmlSafe } from '@ember/string';
+import Component from '@ember/component';
+import layout from '../templates/components/gantt-chart';
 
 export default Component.extend({
   layout,
 
   classNames: 'gantt-chart',
 
+  /**
+   * Show today-line
+   *
+   * @property showToday
+   * @type bool
+   * @default true
+   * @public
+   */
   showToday: true,
 
+  /**
+   * Gantt timeline start-date
+   *
+   * @property viewStartDate
+   * @type Date
+   * @default null
+   * @public
+   */
   viewStartDate: null,
+
+  /**
+   * Gantt timeline end-date
+   *
+   * @property viewEndDate
+   * @type Date
+   * @default null
+   * @public
+   */
   viewEndDate: null,
 
+  /**
+   * Pixel-width of day-columns
+   *
+   * @property dayWidth
+   * @type int
+   * @default 20
+   * @public
+   */
   dayWidth: 20, //px
+
   dayWidthPx: computed('dayWidth', function() {
     return `${get(this, 'dayWidth')}px`;
   }),
+
 
   init() {
     this._super(...arguments);
@@ -26,7 +62,7 @@ export default Component.extend({
     // start date
     if (!get(this, 'viewStartDate')) {
       let viewStart = this.getNewDate();
-      viewStart.setDate(1);
+      viewStart.setDate(1); // start of month!?
       set(this, 'viewStartDate', viewStart);
     }
 
@@ -37,44 +73,36 @@ export default Component.extend({
       endDate.setMonth(endDate.getMonth()+8);
       set(this, 'viewEndDate', endDate);
     }
-  },
 
+    // bind listener functions
+    // this._handleScroll = run.bind(this, this.updateTitleScroll);
+  },
 
   todayStyle: computed('viewStartDate', 'dayWidth', function() {
     let today = this.getNewDate();
-
-    let offsetLeft = this.dateToPixel(today);
-    console.log(today, 'today, in pixels:'+offsetLeft);
+    let offsetLeft = this.dateToOffset(today);
 
     return htmlSafe( `left:${offsetLeft}px`);
   }),
-
-
 
   timelineMonths: computed('viewStartDate', 'viewEndDate', function() {
     let start = get(this, 'viewStartDate'),
         end = get(this, 'viewEndDate');
 
-    console.log(start, 'start');
-    console.log(end, 'end');
-
     if (!start || !end || !(start<end)) {
-      console.log(start, 'start');
-      console.log('start or end not set, or end date is before start');
       return [];
     }
 
     let actDate = this.getNewDate(start.getTime()),
         months = [];
 
-    // set to lasth day of month so totalDays can be accessed
+    // set to first day of month -> TODO should be possible to render any time-range, not only months
     // actDate.setMonth(actDate.getMonth()+1);
     actDate.setDate(1);
 
-
     while(actDate < end) {
       let month = {
-        date: (new Date(actDate.getTime())), //.setDate(1), // first of month
+        date: (new Date(actDate.getTime())),
         totalDays: this.daysInMonth(actDate),
         days: []
       };
@@ -93,40 +121,37 @@ export default Component.extend({
       // actDate.setDate(0);
     }
 
-    console.log(months, 'months');
-
     return months;
   }),
 
 
-  // calculate pixel-difference between two dates (for offset or bar width)
-  dateToPixel(date, startDate, includeDay) {
+  // calculate pixel-difference between two dates (for bar-offset or bar-width)
+  dateToOffset(date, startDate, includeDay) {
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
     startDate = startDate || get(this, 'viewStartDate');
     includeDay = isNone(includeDay) ? false : includeDay;
 
     if (isNone(date) || isNone(startDate) || typeof date.getTime !== 'function') {
-      // console.log(date, 'was no date');
       return 0;
     }
 
     let oneDay = 86400000; // 24*60*60*1000;
-    let diffDays = Math.floor(Math.abs(date.getTime() - startDate.getTime()) / (oneDay))+1;
-    
+    let diffDays = Math.floor(Math.abs(date.getTime() - startDate.getTime()) / (oneDay));
+
     if (includeDay) {
       diffDays+=1;
     }
 
     let offset = (diffDays * dayWidth) + (diffDays*1); // + borders: TODO make auto-detecting borders
 
-    console.log(date, '=('+diffDays+'*'+dayWidth+' -> '+offset+'');
-    console.log(startDate, 'start');
+    // console.log(date, '=('+diffDays+'*'+dayWidth+' -> '+offset+'');
+    // console.log(startDate, 'start');
 
     return offset;
   },
 
-  pixelToDate(pixelOffset) {
+  offsetToDate(pixelOffset) {
     let startDate = get(this, 'viewStartDate');
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
@@ -137,7 +162,7 @@ export default Component.extend({
   },
 
   /**
-   * DATE HELPER FUNCTIONS 
+   * DATE HELPER FUNCTIONS
    */
 
   // calculate days of month (TODO move to moment?)
@@ -147,7 +172,7 @@ export default Component.extend({
     newDate.setDate(0);  // set to last day of previous month
     return newDate.getDate();
   },
-  
+
   // get new date (from given date) in UTC and without time!
   getNewDate(fromDate) {
     let date = isNone(fromDate) ? new Date() : new Date(fromDate);

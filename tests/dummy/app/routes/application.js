@@ -48,7 +48,6 @@ export default Route.extend({
       let jobs = [];
       let numJobs = Math.ceil(Math.random()*8)+2;
       let projectStart = getRandomDate(today, 20, true);
-      console.log(projectStart, 'startproject');
 
       // some jobs for each project
       for(let j=1; j<numJobs; j++) {
@@ -68,7 +67,7 @@ export default Route.extend({
 
     }
 
-    console.log(projects, 'projects');
+    // console.log(projects, 'projects');
     return { projects };
   },
 

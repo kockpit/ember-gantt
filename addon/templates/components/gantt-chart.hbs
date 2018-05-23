@@ -3,6 +3,7 @@
   .gantt-timeline-day {
     width: {{dayWidthPx}};
   }
+
 </style>
 
 Day width (px): {{input value=dayWidth}}
@@ -11,10 +12,30 @@ Day width (px): {{input value=dayWidth}}
 
 <div class="gantt-chart-inner">
 
-  {{! today line }}
-  {{#if showToday}}
-    <div class="gant-timeline-today" style={{todayStyle}}><div></div></div>
-  {{/if}}
+  <div class="gantt-chart-grid">
+
+    {{! today line }}
+    {{#if showToday}}
+      <div class="gant-timeline-today" style={{todayStyle}}><div></div></div>
+    {{/if}}
+
+    {{! vertical grid}}
+    <div class="gantt-chart-grid-vertical">
+      <div class="gantt-line">
+        {{!--<div class="gantt-line-title"></div>--}}
+        <div class="gantt-line-timeline">
+         {{#each timelineMonths as |month|}}
+            <div class="gantt-timeline-month">
+              {{#each month.days as |day|}}
+                <div class="gantt-timeline-day {{if day.isWeekend 'gantt-timeline-day-weekend'}}"> </div>
+              {{/each}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   {{! header }}
   <div class="gantt-chart-header">
@@ -35,32 +56,16 @@ Day width (px): {{input value=dayWidth}}
     </div>
   </div>
 
-  <div class="gantt-chart-header-verticalgrid">
-    <div class="gantt-line">
-      {{!--<div class="gantt-line-title"></div>--}}
-      <div class="gantt-line-timeline">
-       {{#each timelineMonths as |month|}}
-          <div class="gantt-timeline-month">
-            {{#each month.days as |day|}}
-              <div class="gantt-timeline-day {{if day.isWeekend 'gantt-timeline-day-weekend'}}"> </div>
-            {{/each}}
-          </div>
-        {{/each}}
-      </div>
-    </div>
-  </div>
 
-  {{! vertical grid}}
-
-  
 
   {{! lines and sublines }}
-  {{yield
-    (hash
-      line=(component "gantt-line" chart=this  )
-    )
-  }}
-
+  <div class="gant-lines">
+    {{yield
+      (hash
+        line=(component "gantt-line" chart=this  )
+      )
+    }}
+  </div>
 
 
 </div>

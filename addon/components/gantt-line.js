@@ -1,14 +1,13 @@
-import Component from '@ember/component';
-import {computed,get,set} from '@ember/object';
 import { run } from '@ember/runloop';
-import {alias, or} from '@ember/object/computed';
-import layout from '../templates/components/gantt-line';
 import { htmlSafe } from '@ember/string';
+import {computed,get,set} from '@ember/object';
+import {alias, or} from '@ember/object/computed';
+import Component from '@ember/component';
+import layout from '../templates/components/gantt-line';
 
 export default Component.extend({
   layout,
 
-  classNames: 'gantt-line-wrap',
 
   /**
    * link to chart object
@@ -59,7 +58,7 @@ export default Component.extend({
    * @public
    */
   dateStart: null,
-  
+
   /**
    * End-date of bar
    *
@@ -79,10 +78,10 @@ export default Component.extend({
    * @public
    */
   collapse: false,
-  
+
   /**
-   * If bar can be manipulated: resize/move. 
-   * It's possible to make parents non-editable and use max/min date of childs to align parent gantt-bar 
+   * If bar can be manipulated: resize/move.
+   * It's possible to make parents non-editable and use max/min date of childs to align parent gantt-bar
    *
    * @property isEditable
    * @type bool
@@ -91,21 +90,36 @@ export default Component.extend({
    */
   isEditable: false,
 
+  /**
+   * Reference to chart element
+   *
+   * @property chartElement
+   * @type object
+   * @default null
+   * @private
+   */
+  chartElement: null,
 
   /**
-   * Called for a click event
+   * Reference to bar element
    *
-   * @method init
-   * -param e
-   * @protected
+   * @property barElement
+   * @type object
+   * @default null
+   * @private
    */
+  barElement: null,
+
+
+  classNames: 'gantt-line-wrap',
+
   init() {
     this._super(...arguments);
 
     if (get(this, 'isEditable')) {
       this._handleMoveStart = run.bind(this, this.activateMove);
-      this._handleResizeStart = run.bind(this, this.activateResizeStart);
-      this._handleResizeEnd = run.bind(this, this.activateResizeEnd);
+      this._handleResizeLeft = run.bind(this, this.activateResizeLeft);
+      this._handleResizeRight = run.bind(this, this.activateResizeRight);
       this._handleResizeMove = run.bind(this, this.resizeBar);
       this._handleFinish = run.bind(this, this.deactivateAll);
     }
@@ -121,25 +135,32 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
 
+    // bar reference
+    let bar = this.element.querySelector('.gantt-line-bar');
+    set(this, 'barElement', bar);
+
+    // chart reference
+    let chart = get(this, 'chart').element;
+    set(this, 'chartElement', chart);
+
+    // below, only if editable
     if (!get(this, 'isEditable')) return;
 
-
     // register resize and drag handlers
-    let bar = this.element.querySelector('.gantt-line-bar');
     let barResizeL = this.element.querySelector('.bar-resize-l');
     let barResizeR = this.element.querySelector('.bar-resize-r');
-    let chart = document.querySelector('.gantt-chart-inner'); // TODO: should it be possible to have multiple gant-charts in one doc?
+    // let chart = document.querySelector('.gantt-chart-inner'); // TODO: should it be possible to have multiple gant-charts in one doc?
 
     // resize
-    barResizeL.addEventListener('mousedown', this._handleResizeStart);
-    barResizeR.addEventListener('mousedown', this._handleResizeEnd);
+    barResizeL.addEventListener('mousedown', this._handleResizeLeft);
+    barResizeR.addEventListener('mousedown', this._handleResizeRight);
 
-    // move 
+    // move
     bar.addEventListener('mousedown', this._handleMoveStart);
 
     // resize/move
-    chart.addEventListener('mousemove', this._handleResizeMove);
-    chart.addEventListener('mouseup', this._handleFinish);
+    document.addEventListener('mousemove', this._handleResizeMove);
+    document.addEventListener('mouseup', this._handleFinish);
 
 
   },
@@ -153,12 +174,12 @@ export default Component.extend({
    * @protected
    */
   barOffset: computed('dateStart', 'dayWidth', function(){
-    return get(this, 'chart').dateToPixel( get(this, 'dateStart') );
+    return get(this, 'chart').dateToOffset( get(this, 'dateStart') );
   }),
 
   // width of bar on months
   barWidth: computed('dateStart', 'dateEnd', 'dayWidth', function() {
-    return get(this, 'chart').dateToPixel( get(this, 'dateEnd'), get(this, 'dateStart'), true );
+    return get(this, 'chart').dateToOffset( get(this, 'dateEnd'), get(this, 'dateStart'), true );
   }),
 
   // styling for left/width
@@ -168,44 +189,52 @@ export default Component.extend({
 
   // title -> ?
   barTitle: computed('dateStart', 'dateEnd', function() {
-    let days = get(this, 'chart').dateToPixel( get(this, 'dateStart') ) / get(this, 'dayWidth');
+    let days = get(this, 'chart').dateToOffset( get(this, 'dateStart') ) / get(this, 'dayWidth');
     let start = get(this, 'dateStart'),
         end = get(this, 'dateEnd');
 
     if (start && end) {
-      return `days: ${days} : `+start.toString()+' to '+end.toString();  
+      return `days: ${days} : `+start.toString()+' to '+end.toString();
     }
     return '';
   }),
 
 
-  // helper functions (move somewhere !?)
+
+  /**
+   * Get element offset to parent (including scroll)
+   * TODO: use from util package or ember?
+   *
+   * @method offsetLeft
+   * @param el
+   * @protected
+   */
   offsetLeft(el) {
     let rect = el.getBoundingClientRect(),
     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    // scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    //return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
     return rect.left + scrollLeft;
   },
 
 
   // RESIZING FUNCTIONS
-  isResizing: or('isResizingStart','isMoving','isResizingEnd'),
-  isResizingStart: false,
-  isResizingEnd: false,
+  isResizing: or('isResizingLeft','isMoving','isResizingRight'),
+  isResizingLeft: false,
+  isResizingRight: false,
   timelineOffset: 0,
 
-  activateResizeStart(){
+  activateResizeLeft(){
     this.initTimlineOffset();
-    set(this, 'isResizingStart', true);
+    set(this, 'isResizingLeft', true);
   },
-  activateResizeEnd(){
+
+  activateResizeRight(){
     this.initTimlineOffset();
-    set(this, 'isResizingEnd', true);
+    set(this, 'isResizingRight', true);
   },
+
   initTimlineOffset() {
-    let chart = this.$('.bar-resize-l').closest('.gantt-line-timeline');
-    set(this, 'timelineOffset', chart.offset().left);
+    let timelineElement = get(this, 'chartElement').querySelector('.gantt-line-timeline');
+    set(this, 'timelineOffset', this.offsetLeft(timelineElement));
     set(this, 'movingMouseOffset', 0);
   },
 
@@ -216,37 +245,34 @@ export default Component.extend({
 
   activateMove(e) {
     this.initTimlineOffset();
-    
-    // remember days-duration of line
-    let moveDays = Math.floor(Math.abs(get(this, 'dateStart').getTime() - get(this, 'dateEnd').getTime()) / 86400000) +1;
 
-    // remember click-offset 
-    // let mouseOffset = e.clientX - this.element.querySelector('.gantt-line-bar').offsetLeft;
-    console.log(e, 'event');
+    // remember days-duration of line
+    let moveDays = Math.floor(Math.abs(get(this, 'dateStart').getTime() - get(this, 'dateEnd').getTime()) / 86400000);
+
+    // remember click-offset for adjusting mouse-to-bar
     let mouseOffset = e.clientX - this.offsetLeft(e.target);
 
-
-    console.log(moveDays, 'activate');
     set(this, 'movingDays', moveDays);
     set(this, 'movingMouseOffset', mouseOffset);
     set(this, 'isMoving', true);
   },
 
-
-
   resizeBar(e) {
     if (!get(this, 'isResizing')) return;
 
-    let offsetLeft = (e.clientX - get(this, 'timelineOffset') - get(this, 'movingMouseOffset'));  
-    console.log(e.clientX+" - "+get(this, 'timelineOffset')+"=offsetLeft", 'calc offset');
-
     // offset -> start/end-date
-    let dateOffset = get(this, 'chart').pixelToDate(offsetLeft);
+    let offsetLeft = (e.clientX - get(this, 'timelineOffset') - get(this, 'movingMouseOffset'));
+    let dateOffset = get(this, 'chart').offsetToDate(offsetLeft);
 
-    if (get(this, 'isResizingStart')) {
+    // resize left
+    if (get(this, 'isResizingLeft')) {
       set(this, 'dateStart', dateOffset);
-    } else if (get(this, 'isResizingEnd')) {
+
+    // resize right
+    } else if (get(this, 'isResizingRight')) {
       set(this, 'dateEnd', dateOffset);
+
+    // move
     } else if (get(this, 'isMoving')) {
       let dateOffsetEnd = new Date(dateOffset.getTime() + (get(this, 'movingDays')*86400000));
       set(this, 'dateStart', dateOffset);
@@ -254,33 +280,29 @@ export default Component.extend({
     }
 
   },
+
   deactivateAll(){
-    set(this, 'isResizingStart', false);
-    set(this, 'isResizingEnd', false);
+    set(this, 'isResizingLeft', false);
+    set(this, 'isResizingRight', false);
     set(this, 'isMoving', false);
   },
 
-  
-
-
-
-
   willDestroyelement() {
     this._super(...arguments);
-    
+
     if (!get(this, 'isEditable')) return;
 
-    let bar = this.element.querySelector('.gantt-line-bar');
-    let barResizeL = this.element.querySelector('.bar-resize-l');
-    let barResizeR = this.element.querySelector('.bar-resize-r');
-    let chart = document.querySelector('.gantt-chart-inner');
+    let bar = get(this, 'barElement');
+    let barResizeL = bar.querySelector('.bar-resize-l');
+    let barResizeR = bar.querySelector('.bar-resize-r');
+    // let chart = document.querySelector('.gantt-chart-inner');
 
     // unregister resize and drag helpers
     bar.removeEventListener('mousedown', this._handleMoveStart);
-    barResizeL.removeEventListener('mousedown', this._handleResizeStart);
-    barResizeR.removeEventListener('mousedown', this._handleResizeEnd);
-    chart.removeEventListener('mousemove', this._handleResizeMove);
-    chart.removeEventListener('mouseup', this._handleFinish);
+    barResizeL.removeEventListener('mousedown', this._handleResizeLeft);
+    barResizeR.removeEventListener('mousedown', this._handleResizeRight);
+    document.removeEventListener('mousemove', this._handleResizeMove);
+    document.removeEventListener('mouseup', this._handleFinish);
   }
 
 
