@@ -79,6 +79,16 @@ export default Component.extend({
    */
   collapse: false,
 
+   /**
+   * Bar color
+   *
+   * @property color
+   * @type string
+   * @default null
+   * @public
+   */
+  color: null,
+
   /**
    * If bar can be manipulated: resize/move.
    * It's possible to make parents non-editable and use max/min date of childs to align parent gantt-bar
@@ -162,7 +172,6 @@ export default Component.extend({
     document.addEventListener('mousemove', this._handleResizeMove);
     document.addEventListener('mouseup', this._handleFinish);
 
-
   },
 
 
@@ -184,10 +193,15 @@ export default Component.extend({
 
   // styling for left/width
   barStyle: computed('barOffset','barWidth', function() {
-    return htmlSafe(`left:${get(this, 'barOffset')}px;width:${get(this, 'barWidth')}px;`);
+
+    let style = `left:${get(this, 'barOffset')}px;width:${get(this, 'barWidth')}px;`;
+    if (get(this, 'color')) {
+      style+= `background-color:${get(this, 'color')}`;
+    }
+    return htmlSafe(style);
   }),
 
-  // title -> ?
+  // TODO: title -> ?
   barTitle: computed('dateStart', 'dateEnd', function() {
     let days = get(this, 'chart').dateToOffset( get(this, 'dateStart') ) / get(this, 'dayWidth');
     let start = get(this, 'dateStart'),
@@ -198,7 +212,6 @@ export default Component.extend({
     }
     return '';
   }),
-
 
 
   /**

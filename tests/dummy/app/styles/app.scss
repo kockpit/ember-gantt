@@ -185,6 +185,20 @@ $gantt-weekend-background: #efefef;
   padding: 5px 10px 0;
 }
 
+// inline-bar childs
+.gantt-line-inline-childs {
+  width: 100%;
+  height: 20%;
+  overflow: hidden;
+
+  > div {
+    // display: inline-block;
+    float: left;
+    height: 100%;
+  }
+}
+
+
 .gantt-line-timeline {
 	display: flex;
   flex-wrap: nowrap;

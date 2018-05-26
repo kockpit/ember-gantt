@@ -12,14 +12,26 @@ export default Route.extend({
     let projects = [];
     let today = new Date();
 
+    // job-types with color
+    let jobTypes = [{
+      title: 'Concept',
+      color: '#d84599'
+    },{
+      title: 'Design',
+      color: '#71b5a0'
+    },{
+      title: 'Programming',
+      color: '#e5ce42'
+    }];
+
     // let intelligent project object
     let ProjectObject = EmberObject.extend({
           title: 'empty',
           jobs: null,
 
-          jobsStart: mapBy('jobs','startsAt'),
+          jobsStart: mapBy('jobs','dateStart'),
           minStart: min('jobsStart'),
-          jobsEnd: mapBy('jobs','endsAt'),
+          jobsEnd: mapBy('jobs','dateEnd'),
           maxEnd: max('jobsEnd'),
 
           minStartDate: computed('minStart', function() {
@@ -43,7 +55,7 @@ export default Route.extend({
       });
 
     // create some dummy content
-    for(let i=1; i<4; i++) {
+    for(let i=1; i<=3; i++) {
 
       let jobs = [];
       let numJobs = Math.ceil(Math.random()*8)+2;
@@ -52,10 +64,12 @@ export default Route.extend({
       // some jobs for each project
       for(let j=1; j<numJobs; j++) {
         let jobStart = getRandomDate(projectStart);
+        let jobType = jobTypes[j%3];
         jobs.push({
-          title: `Job ${j}`,
-          startsAt: jobStart,
-          endsAt: getRandomDate(jobStart)
+          title: `${jobType.title} ${j}`,
+          dateStart: jobStart,
+          dateEnd: getRandomDate(jobStart),
+          color: jobType.color
         });
       }
 

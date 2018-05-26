@@ -4,6 +4,8 @@ import {set,get,computed} from '@ember/object';
 import {equal} from '@ember/object/computed';
 import {isNone,isEqual} from '@ember/utils';
 import { htmlSafe } from '@ember/string';
+
+import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-chart';
 
@@ -183,13 +185,7 @@ export default Component.extend({
       return 0;
     }
 
-    let oneDay = 86400000; // 24*60*60*1000;
-    let diffDays = Math.floor(Math.abs(date.getTime() - startDate.getTime()) / (oneDay));
-
-    if (includeDay) {
-      diffDays+=1;
-    }
-
+    let diffDays = dateUtil.diffDays(startDate, date, includeDay);
     let offset = (diffDays * dayWidth) + (diffDays*1); // + borders: TODO make auto-detecting borders
 
     // console.log(date, '=('+diffDays+'*'+dayWidth+' -> '+offset+'');
