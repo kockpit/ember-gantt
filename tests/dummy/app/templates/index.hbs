@@ -1,0 +1,60 @@
+<h1>ember-gantt addon</h1>
+
+<p class="lead">
+  Simple and leightweight gantt ember-addon.
+  <br>No external libraries are necessary – pure Ember (3KB unzipped).
+</p>
+
+
+<h2>Demo</h2>
+
+Day width (px): {{input value=dayWidth}}
+<br><br>
+View: [
+  <a href="" {{action 'setView' 'day'}}>Day</a> |
+  <a href="" {{action 'setView' 'week'}}>week</a> |
+  <a href="" {{action 'setView' 'month'}}>Month</a> ]
+
+
+<br><br>
+
+{{#gantt-chart dayWidth=dayWidth headerTitle="Project/Job" as |chart|}}
+
+  {{#each model.projects as |project|}}
+
+    {{! line for each project }}
+    {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
+    {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
+
+      {{! more complex title inner}}
+      {{#line.title}}
+        <span>
+          <svg width="12px" height="12px"><rect fill="#7891d7" width="12" height="12"></rect></svg>
+          <a href="" {{action 'collapse' project}}>{{project.title}}</a>
+        </span>
+      {{/line.title}}
+
+      {{! inline childs }}
+      {{line.inlineChilds childLines=project.jobs }}
+
+      {{! child line for each job in project }}
+      {{#bs-collapse collapsed=project.collapsed}}
+        {{#unless project.collapsed}}
+          {{#each project.jobs as |job|}}
+            {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd
+                              isEditable=true color=job.color as |childLine|}}
+              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+            {{/line.childLine}}
+          {{/each}}
+        {{/unless}}
+      {{/bs-collapse}}
+
+    {{/chart.line}}
+
+  {{/each}}
+
+{{/gantt-chart}}
+
+
+<h3>... results from following code:</h3>
+{{code-snippet name="1-standard-example.hbs"}}
