@@ -96,7 +96,7 @@ export default Component.extend({
     colors = colors.sort(); // assure color-order always the same
 
     // single-color
-    if (colors === 1) {
+    if (colors.length === 1) {
       return colors[0];
     }
 
