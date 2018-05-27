@@ -1,4 +1,5 @@
 
+@import "ember-bootstrap/bootstrap";
 
 /**
  *
@@ -13,11 +14,17 @@ body, p {
   font-size: 14px;
 }
 h1, h2, h3 {
-  font-family: 'Roboto Slab', serif;
+  font-family: 'Roboto', serif;
   margin-top: 30px;
 }
-p.lead {
-  font-size: 1.4em;
+h1 {
+  font-family: 'Roboto Slab', serif;
+}
+
+.navbar-brand small {
+  font-family: 'Roboto Slab', serif;
+  font-size: 9px;
+  color: #666;
 }
 
 
@@ -35,13 +42,14 @@ $gantt-line-height: 40px;
 $gantt-line-bar-height: 36px;
 $gantt-line-title-width: 150px;
 
-$gantt-border-color: #efefef;
+$gantt-border-color: #000;
 $gantt-weekend-background: #efefef;
 
 
 
-// gant chart elements
-// -----------------
+// **************************
+//   MAIN gantt-chart
+// **************************
 
 .gantt-chart {
   position: relative;
@@ -49,14 +57,15 @@ $gantt-weekend-background: #efefef;
 .gantt-chart-inner {
   overflow-x: scroll;
   overflow-y: hidden;
-  border: 1px solid #000;
-  // position: relative;
 
+  background: #fff;
+  border: 1px solid $gantt-border-color;
 }
 
 
-
 // header
+// ------------------------
+
 .gantt-chart-header {
   border-bottom: 1px solid $gantt-border-color;
 
@@ -66,18 +75,20 @@ $gantt-weekend-background: #efefef;
   .gantt-line-title {
     height: 60px;
   }
-  .gantt-line-timeline .day {
-    // display: table-cell;
-    // vertical-align: middle;
-    text-align: center;
+  .gantt-line-timeline-month {
 
-    border-left: 1px solid $gantt-border-color;
-    border-right: none;
+  }
+  .gantt-line-timeline .day {
+    // ! set borders directly in .gantt-timeline ... so its applied for header+grid
     font-size: 12px;
+    text-align: center;
   }
 }
 
+
 // vertical grid
+// ------------------------
+
 .gantt-chart-grid {
   position: relative;
   height: 100%;
@@ -99,6 +110,7 @@ $gantt-weekend-background: #efefef;
 }
 
 // today
+// ------------------------
 .gant-timeline-today {
   position: absolute;
   top: 61px;
@@ -121,23 +133,87 @@ $gantt-weekend-background: #efefef;
   }
 }
 
-// gant line/timline
-// ----------
+
+
+
+// **************************
+//   TIMELINE
+// **************************
+
+// set timeline styles (e.g. borders etc.) here, so its applied for header + grid
+
+.gantt-line-timeline {
+  display: flex;
+  flex-wrap: nowrap;
+  position: relative;
+
+  margin-left: $gantt-line-title-width; // place for title
+
+  .gantt-timeline-month {
+
+  }
+
+  .day {
+    display: inline-block;
+    height: 20px;
+    // width: !!! width is set by chart-component globally (allows zooming)
+    box-sizing: border-box; // ! important for calculations! border should not be calculated
+
+    transition: width $gantt-animation-duration ease-out;
+
+    background: #fff;
+    // border-left: 1px solid transparent;
+    border-top: 1px solid $gantt-border-color;
+    border-left: 1px solid $gantt-border-color;
+  }
+
+  .day-weekend {
+    background: $gantt-weekend-background;
+  }
+}
+
+.gantt-timeline-month {
+  display: inline-block;
+  box-sizing: border-box; // ! important for calculations! border should not be calculated
+}
+
+.gantt-timeline-days {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.gantt-timeline-month-name {
+  background: #fff;
+  font-size: initial;
+
+  span {
+    padding: 10px;
+    display: block;
+    border-left: 1px solid $gantt-border-color;
+  }
+}
+
+
+
+// **************************
+//   LINE / BAR
+// **************************
 
 .gantt-line {
-	height: $gantt-line-height;
+  height: $gantt-line-height;
   white-space: nowrap; // keep all in-line
   border: none;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $gantt-border-color;
 }
 
 .gantt-line-title {
-	position: absolute;
-	width: $gantt-line-title-width;
+  position: absolute;
+  width: $gantt-line-title-width;
   z-index: 3;
   height: $gantt-line-height;
 
-	background: #fff;
+  background: #fff;
 
   span {
     display: block;
@@ -198,49 +274,9 @@ $gantt-weekend-background: #efefef;
   }
 }
 
-
-.gantt-line-timeline {
-	display: flex;
-  flex-wrap: nowrap;
-  margin-left: 150px;
-  position: relative;
-
-  .day {
-    display: inline-block;
-    height: 20px;
-    // !!! width is set by chart-component globally (allows zooming)
-    transition: width $gantt-animation-duration ease-out;
-
-    background: #fff;
-    border-left: 1px solid transparent;
-    border-top: 1px solid $gantt-border-color;
-  }
-
-  .day-weekend {
-    background: $gantt-weekend-background;
-  }
-}
-
-.gantt-timeline-month {
-  display: inline-block;
-}
-
-.gantt-timeline-days {
-  display: flex;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-}
-
-.gantt-timeline-month-name {
-  background: #fff;
-  font-size: initial;
-
-  span {
-    padding: 10px;
-    display: block;
-    border-left: 1px solid $gantt-border-color;
-  }
-}
+// ******** *********************
+//
+//        TIMELINE
 
 
 
@@ -256,6 +292,7 @@ $gantt-weekend-background: #efefef;
   }
   .gantt-line-title span {
     // padding-left: 10px;
+    font-size: 0.9em;
     &:before {
       content: '–  ';
     }

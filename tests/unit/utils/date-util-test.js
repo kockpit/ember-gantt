@@ -81,7 +81,6 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
   test('diffDays', function(assert) {
     assert.expect(4);
 
-    let date1 = testStartDate;
     let days = dateUtil.diffDays(testStartDate, testStartDate, false);
     assert.equal(days, 0, 'same day, not including last day = 0');
 

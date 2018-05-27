@@ -101,7 +101,7 @@ export default Component.extend({
     }
 
     // multi-color
-    let background = 'repeating-linear-gradient(90deg,';
+    let background = 'repeating-linear-gradient(90deg,'; // or 180? ;)
     let pxOffset = 0;
     let stripeWidth = get(this, 'stripeWidth');
 

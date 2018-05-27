@@ -72,12 +72,12 @@ export default Component.extend({
   /**
    * Collapse child lines (if available)
    *
-   * @property collapse
+   * @property collapsed
    * @type bool
    * @default false
    * @public
    */
-  collapse: false,
+  // collapsed: false, // use ember-bootstrap !
 
    /**
    * Bar color
@@ -159,7 +159,6 @@ export default Component.extend({
     // register resize and drag handlers
     let barResizeL = this.element.querySelector('.bar-resize-l');
     let barResizeR = this.element.querySelector('.bar-resize-r');
-    // let chart = document.querySelector('.gantt-chart-inner'); // TODO: should it be possible to have multiple gant-charts in one doc?
 
     // resize
     barResizeL.addEventListener('mousedown', this._handleResizeLeft);

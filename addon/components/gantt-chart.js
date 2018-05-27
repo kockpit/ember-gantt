@@ -186,7 +186,7 @@ export default Component.extend({
     }
 
     let diffDays = dateUtil.diffDays(startDate, date, includeDay);
-    let offset = (diffDays * dayWidth) + (diffDays*1); // + borders: TODO make auto-detecting borders
+    let offset = (diffDays * dayWidth); // borders: border-width should be omitted using border-box
 
     // console.log(date, '=('+diffDays+'*'+dayWidth+' -> '+offset+'');
     // console.log(startDate, 'start');
@@ -198,7 +198,7 @@ export default Component.extend({
     let startDate = get(this, 'viewStartDate');
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
-    let days = pixelOffset / (dayWidth+1); // border-left
+    let days = pixelOffset / (dayWidth);
 
     let newDateTime = startDate.getTime() + (days * 86400000);
     return this.getNewDate(newDateTime);
