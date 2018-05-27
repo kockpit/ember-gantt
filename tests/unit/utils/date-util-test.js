@@ -78,6 +78,16 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.equal(result.getTime(), 1501286400000, 'negative value for days');
   });
 
+  test('daysInMonth', function(assert) {
+    assert.expect(4);
+
+    assert.equal(dateUtil.daysInMonth(new Date('2018-02-05')), 28, 'february');
+    assert.equal(dateUtil.daysInMonth(new Date('2016-02-05')), 29, 'february in moving-year');
+    assert.equal(dateUtil.daysInMonth(new Date('2017-06-05')), 30, 'june');
+    assert.equal(dateUtil.daysInMonth(new Date('2017-07-05')), 31, 'july');
+
+  });
+
   test('diffDays', function(assert) {
     assert.expect(4);
 

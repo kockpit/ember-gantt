@@ -42,7 +42,8 @@ $gantt-line-height: 40px;
 $gantt-line-bar-height: 36px;
 $gantt-line-title-width: 150px;
 
-$gantt-border-color: #000;
+$gantt-border-color: #ccc;
+$gantt-grid-border-color: #eee;
 $gantt-weekend-background: #efefef;
 
 
@@ -68,18 +69,23 @@ $gantt-weekend-background: #efefef;
 
 .gantt-chart-header {
   border-bottom: 1px solid $gantt-border-color;
+  box-sizing: border-box;
 
   .gantt-line {
-    height: 60px;
+    height: auto;
+    border-bottom: none;
   }
   .gantt-line-title {
-    height: 60px;
+    //height: auto;
   }
   .gantt-line-timeline-month {
 
   }
   .gantt-line-timeline .day {
-    // ! set borders directly in .gantt-timeline ... so its applied for header+grid
+    border-top: 1px solid $gantt-border-color;
+    // border-bottom: 1px solid $gantt-border-color;
+    // border-left: 1px solid $gantt-border-color;
+
     font-size: 12px;
     text-align: center;
   }
@@ -96,7 +102,6 @@ $gantt-weekend-background: #efefef;
 .gantt-chart-grid-vertical {
   position: absolute;
   top: 0;
-  z-index: -1;
   height: 99999999px;
 
   .gantt-line,
@@ -163,8 +168,8 @@ $gantt-weekend-background: #efefef;
 
     background: #fff;
     // border-left: 1px solid transparent;
-    border-top: 1px solid $gantt-border-color;
-    border-left: 1px solid $gantt-border-color;
+    // border-top: 1px solid $gantt-border-color;
+    border-left: 1px solid $gantt-grid-border-color;
   }
 
   .day-weekend {

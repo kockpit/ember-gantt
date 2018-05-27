@@ -15,6 +15,10 @@ export default Controller.extend({
     this._super(...arguments);
 
     // start-end date
+    let today = new Date();
+    today.setDate(today.getDate() - 10);
+    set(this, 'viewStartDate', today);
+    // end date is set to 3 months after automatically
   },
 
   actions: {

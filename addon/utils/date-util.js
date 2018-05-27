@@ -62,6 +62,21 @@ export default {
   },
 
   /**
+   * Calculate number of days in a month
+   *
+   * @method daysInMonth
+   * @param Date  date  date of day in that month
+   * @return int number of days in that month (28-31)
+   * @public
+   */
+  daysInMonth(date) {
+    let newDate = this.getNewDate(date);
+    newDate.setMonth(newDate.getMonth()+1);
+    newDate.setDate(0);  // set to last day of previous month
+    return newDate.getDate();
+  },
+
+  /**
    * Day difference between two dates
    *
    * @method datePlusDays

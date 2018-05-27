@@ -15,18 +15,9 @@ export default Component.extend({
   classNames: 'gantt-chart',
   classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
 
-  /**
-   * Show today-line
-   *
-   * @property showToday
-   * @type bool
-   * @default true
-   * @public
-   */
-  showToday: true,
 
   /**
-   * View granularity{day|week|month}
+   * View granularity {day|week|month} -> todo
    * Only has impact on header, change dayView accordingly
    *
    * @property view
@@ -78,6 +69,16 @@ export default Component.extend({
   }),
 
   /**
+   * Show today-line
+   *
+   * @property showToday
+   * @type bool
+   * @default true
+   * @public
+   */
+  showToday: true,
+
+  /**
    * Header title, above line titles
    *
    * @property headerTitle
@@ -88,22 +89,19 @@ export default Component.extend({
   headerTitle: '',
 
 
-
-
   init() {
     this._super(...arguments);
 
     // start date
     if (!get(this, 'viewStartDate')) {
-      let viewStart = this.getNewDate();
-      // viewStart.setDate(1); // start of month!?
+      let viewStart = dateUtil.getNewDate();
       set(this, 'viewStartDate', viewStart);
     }
 
     // end date
     if (!get(this, 'viewEndDate')) {
       let startDate = get(this, 'viewStartDate');
-      let endDate = this.getNewDate(startDate);
+      let endDate = dateUtil.getNewDate(startDate);
       endDate.setMonth(endDate.getMonth()+3);
       set(this, 'viewEndDate', endDate);
     }
@@ -113,28 +111,28 @@ export default Component.extend({
   },
 
   todayStyle: computed('viewStartDate', 'dayWidth', function() {
-    let today = this.getNewDate();
-    let offsetLeft = this.dateToOffset(today);
+    let today = dateUtil.getNewDate();
+    let offsetLeft = this.dateToOffset(today, null, true);
 
     return htmlSafe( `left:${offsetLeft}px`);
   }),
 
   timelineMonths: computed('viewStartDate', 'viewEndDate', function() {
-    let start = get(this, 'viewStartDate'),
-        end = get(this, 'viewEndDate');
+    let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
+        end = dateUtil.getNewDate(get(this, 'viewEndDate'));
 
     if (!start || !end || !(start<end)) {
       return [];
     }
 
-    let actDate = this.getNewDate(start.getTime()),
+    let actDate = dateUtil.getNewDate(start.getTime()),
         months = [];
 
     while(actDate < end) {
 
       let month = {
-        date: (new Date(actDate.getTime())),
-        totalDays: this.daysInMonth(actDate),
+        date: dateUtil.getNewDate(actDate),
+        totalDays: dateUtil.daysInMonth(actDate),
         days: []
       };
 
@@ -156,7 +154,7 @@ export default Component.extend({
 
       // iterate all days to generate data-array
       for(let d=startDay; d<=lastDay; d++) {
-        let dayDate = new Date(actDate.getTime());
+        let dayDate = dateUtil.getNewDate(actDate);
         month.days.push({
           nr: d,
           date: dayDate.setDate(d),
@@ -186,10 +184,7 @@ export default Component.extend({
     }
 
     let diffDays = dateUtil.diffDays(startDate, date, includeDay);
-    let offset = (diffDays * dayWidth); // borders: border-width should be omitted using border-box
-
-    // console.log(date, '=('+diffDays+'*'+dayWidth+' -> '+offset+'');
-    // console.log(startDate, 'start');
+    let offset = (diffDays * dayWidth); // borders: border-width can be omitted using `border-box`
 
     return offset;
   },
@@ -201,47 +196,8 @@ export default Component.extend({
     let days = pixelOffset / (dayWidth);
 
     let newDateTime = startDate.getTime() + (days * 86400000);
-    return this.getNewDate(newDateTime);
+    return dateUtil.getNewDate(newDateTime);
   },
-
-  /**
-   * DATE HELPER FUNCTIONS
-   * TODO: move to date-util class
-   */
-
-  // calculate days of month (TODO move to moment?)
-  daysInMonth(date) {
-    let newDate = this.getNewDate(date);
-    newDate.setMonth(newDate.getMonth()+1);
-    newDate.setDate(0);  // set to last day of previous month
-    return newDate.getDate();
-  },
-
-  // get new date (from given date) in UTC and without time!
-  getNewDate(fromDate) {
-    let date = null;
-
-    if (fromDate && typeof fromDate.getTime === 'function') {
-      date = new Date(fromDate.getTime());
-
-    } else if (typeof fromDate === 'string' || typeof fromDate === 'number') {
-      date = new Date(fromDate);
-    }
-
-    if (isNone(fromDate)) {
-      date = new Date();
-    }
-
-    date = this.dateNoTime(date);
-    return date;
-  },
-
-  // remove time (set 0) and set to UTC
-  dateNoTime(date) {
-    date.setUTCHours(0,0,0,0);
-    return date;
-  }
-
 
 
 });
