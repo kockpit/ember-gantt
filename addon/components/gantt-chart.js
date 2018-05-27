@@ -1,6 +1,6 @@
 // import { run } from '@ember/runloop';
 // import moment from 'moment'; // ? needed
-import {set,get,computed} from '@ember/object';
+import {set,setProperties,get,computed,observer} from '@ember/object';
 import {equal} from '@ember/object/computed';
 import {isNone,isEqual} from '@ember/utils';
 import { htmlSafe } from '@ember/string';
@@ -15,22 +15,47 @@ export default Component.extend({
   classNames: 'gantt-chart',
   classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
 
-
   /**
-   * View granularity {day|week|month} -> todo
-   * Only has impact on header, change dayView accordingly
+   * Activate automatical timeline view adjustments, based on dayWidth
+   * Breakpoints can be set for ????
    *
-   * @property view
-   * @type string
-   * @default 'day'
+   * @property autoView
+   * @type bool
+   * @default true
    * @public
    */
-  view: 'day',
+  autoTimeline: true,
 
-  // computings to set view class
-  ganttChartViewDay: equal('view','day'),
-  ganttChartViewWeek: equal('view','week'),
-  ganttChartViewMonth: equal('view','month'),
+  timelineDay: true,
+  timelineCW: true,
+  timelineMonth: true,
+  timelineYear: true,
+
+  autoViewObs: observer('dayWidth', 'autoTimeline', function() {
+    this.evaluateTimlineElements();
+  }),
+
+  evaluateTimlineElements() {
+    let dayWidth = get(this, 'dayWidth');
+    let views = { timelineDay: true, timelineCW: false, timelineMonth: true, timelineYear: false }
+
+    if (dayWidth < 15) { // cw's instead of days
+      views.timelineDay = false;
+      views.timelineCW = true;
+    }
+
+    if (dayWidth < 5) { // months
+      views.timelineCW = false;
+      views.timelineMonth = true;
+    }
+
+    if (dayWidth < 1) { // year
+      views.timelineYear = true;
+      views.timelineMonth = false;
+    }
+
+    setProperties(this, views);
+  },
 
   /**
    * Gantt timeline start-date
@@ -108,6 +133,14 @@ export default Component.extend({
 
     // bind listener functions
     // this._handleScroll = run.bind(this, this.updateTitleScroll);
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+
+    if (get(this, 'autoTimeline')) {
+      this.evaluateTimlineElements();
+    }
   },
 
   todayStyle: computed('viewStartDate', 'dayWidth', function() {

@@ -8,20 +8,6 @@ module('Integration | Component | gantt-chart', function(hooks) {
   setupRenderingTest(hooks);
 
 
-  // test('basic rendering - no viewport dates (now - 3 months)', async function(assert) {
-
-
-  //   // Template block usage:
-  //   await render(hbs`
-  //     {{#gantt-chart dayWidth=10 }}
-  //       template block text
-  //     {{/gantt-chart}}
-  //   `);
-
-
-  //   assert.equal(this.element.textContent.trim(), 'template block text');
-  // });
-
   test('basic rendering', async function(assert) {
 
     // basic chart data
@@ -50,8 +36,6 @@ module('Integration | Component | gantt-chart', function(hooks) {
     assert.equal(firstMonth.querySelector('.gantt-timeline-month-name').textContent.trim(), 'May 2018', 'starts with month May');
     assert.equal(timeline.querySelectorAll('.gantt-timeline-days .day').length, 51, 'amount of generated days');
 
-
-    console.log(firstMonth, 'first');
   });
 
 });

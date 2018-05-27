@@ -44,6 +44,14 @@ Contributing
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 
+
+Features coming
+------------------------------------------------------------------------------
+- Sticky header
+- scrollTo(Date) API
+- infinity-Scroll for loading previous later time-ranges automatically
+
+
 License
 ------------------------------------------------------------------------------
 

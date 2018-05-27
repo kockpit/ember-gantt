@@ -67,11 +67,13 @@ export default Component.extend({
     let periods = dateUtil.mergeTimePeriods(childs, start, end);
 
     // calculate width of segments
-    periods.forEach(period => {
-      period.width = chart.dateToOffset(period.dateEnd, period.dateStart, true);
-      period.background = this.getBackgroundStyle(period.childs);
-      period.style = htmlSafe(`width:${period.width}px;background:${period.background};`);
-    });
+    if (periods && periods.length > 0) {
+      periods.forEach(period => {
+        period.width = chart.dateToOffset(period.dateEnd, period.dateStart, true);
+        period.background = this.getBackgroundStyle(period.childs);
+        period.style = htmlSafe(`width:${period.width}px;background:${period.background};`);
+      });
+    }
 
     set(this, 'periods', periods);
   },
