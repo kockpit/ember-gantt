@@ -8,7 +8,8 @@ export default Route.extend({
 
 
   model() {
-    return get(this, 'demoData').getDemoData();
+    // return get(this, 'demoData').getRandomDemoData();
+    return get(this, 'demoData').getDataScenario1();
   }
 
 });

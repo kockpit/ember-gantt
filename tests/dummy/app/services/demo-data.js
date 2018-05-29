@@ -1,18 +1,11 @@
 import {isNone} from '@ember/utils';
-import EmberObject, { get, computed} from '@ember/object';
-import { mapBy, max, min } from '@ember/object/computed';
-
+import EmberObject from '@ember/object';
+import { alias } from '@ember/object/computed';
+import dateUtil from '../utils/date-util';
+import MinMaxChildDatesMixin from '../mixins/min-max-child-dates-mixin';
 import Service from '@ember/service';
 
-export default Service.extend({
-
-
-  getDemoData() {
-    let projects = [];
-    let today = new Date();
-
-    // job-types with color
-    let jobTypes = [{
+const jobTypes = [{
       title: 'Concept',
       color: '#d84599'
     },{
@@ -23,35 +16,86 @@ export default Service.extend({
       color: '#e5ce42'
     }];
 
+export default Service.extend({
+
+
+
+  getDataScenario1() {
+    let projects = [];
+    let today = new Date();
+    let types = jobTypes;
+
+
     // let intelligent project object
-    let ProjectObject = EmberObject.extend({
-          title: 'empty',
-          jobs: null,
-          collapsed: false,
+    let ProjectObject = EmberObject.extend(MinMaxChildDatesMixin, {
+        title: 'empty',
+        collapsed: false,
+        jobs: alias('childs')
+      });
 
-          jobsStart: mapBy('jobs','dateStart'),
-          minStart: min('jobsStart'),
-          jobsEnd: mapBy('jobs','dateEnd'),
-          maxEnd: max('jobsEnd'),
+    // P1
+    projects.push(ProjectObject.create({
+        title: `Coca Cola Logo`,
+        jobs: [{
+          title: types[0].title,
+          color: types[0].color,
+          dateStart: dateUtil.datePlusDays(today, 3),
+          dateEnd: dateUtil.datePlusDays(today, 6),
+        },{
+          title: types[1].title,
+          color: types[1].color,
+          dateStart: dateUtil.datePlusDays(today, 7),
+          dateEnd: dateUtil.datePlusDays(today, 10),
+        },{
+          title: types[0].title+' - second round',
+          color: types[0].color,
+          dateStart: dateUtil.datePlusDays(today, 12),
+          dateEnd: dateUtil.datePlusDays(today, 17),
+        },{
+          title: types[1].title+' - second round',
+          color: types[1].color,
+          dateStart: dateUtil.datePlusDays(today, 14),
+          dateEnd: dateUtil.datePlusDays(today, 20),
+        }]
+    }));
 
-          minStartDate: computed('minStart', function() {
-            let start = get(this, 'minStart');
-            if (typeof start === 'number') {
-              let newdate = new Date(start);
-              newdate.setUTCHours(0,0,0,0);
-              return newdate;
-            }
-            return start;
-          }),
-          maxEndDate: computed('maxEnd', function() {
-            let end = get(this, 'maxEnd');
-            if (typeof end === 'number') {
-              let newdate = new Date(end);
-              newdate.setUTCHours(0,0,0,0);
-              return newdate;
-            }
-            return end;
-          }),
+    // P2 - web
+    let todayAfter = dateUtil.datePlusDays(today, 15);
+    projects.push(ProjectObject.create({
+        title: `Coca Cola Website`,
+        jobs: [{
+          title: types[0].title,
+          color: types[0].color,
+          dateStart: dateUtil.datePlusDays(todayAfter, 0),
+          dateEnd: dateUtil.datePlusDays(todayAfter, 20),
+        },{
+          title: types[1].title,
+          color: types[1].color,
+          dateStart: dateUtil.datePlusDays(todayAfter, 3),
+          dateEnd: dateUtil.datePlusDays(todayAfter, 25),
+        },{
+          title: types[2].title,
+          color: types[2].color,
+          dateStart: dateUtil.datePlusDays(todayAfter, 7),
+          dateEnd: dateUtil.datePlusDays(todayAfter, 30)
+        }]
+    }));
+
+    return { projects };
+  },
+
+  getRandomDemoData() {
+    let projects = [];
+    let today = new Date();
+
+    // job-types with color
+    let jobTypes = jobTypes;
+
+    // let intelligent project object
+    let ProjectObject = EmberObject.extend(MinMaxChildDatesMixin, {
+        title: 'empty',
+        collapsed: false,
+        jobs: alias('childs')
       });
 
     // create some dummy content
@@ -60,6 +104,7 @@ export default Service.extend({
       let jobs = [];
       let numJobs = Math.ceil(Math.random()*8)+2;
       let projectStart = this.getRandomDate(today, 20, false);
+
 
       // some jobs for each project
       for(let j=1; j<numJobs; j++) {

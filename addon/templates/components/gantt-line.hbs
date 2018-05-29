@@ -3,16 +3,16 @@
 <div class="gantt-line">
 
   {{! title - from title attribute or }}
-  <div class="gantt-line-title">
-    {{#if title}}
+  {{#if title}}
+    <div class="gantt-line-title">
       <span>{{title}}</span>
-    {{else}}
-      {{yield
-        (hash
-          title=(component "gantt-line-title" line=this)
-        )}}
-    {{/if}}
-  </div>
+    </div>
+  {{else}}
+    {{yield
+      (hash
+        title=(component "gantt-line-title" line=this)
+      )}}
+  {{/if}}
 
   {{! timeline }}
   <div class="gantt-line-timeline">
@@ -50,15 +50,13 @@
 
 
 
-<div class="gant-line-childs">
-
-  {{! child lines }}
+{{! child lines }}
+<div class="gantt-line-childs">
 	{{yield
 	  (hash
 	    childLine=(component "gantt-line" chart=chart  parentLine=this)
 	  )
 	}}
-
 </div>
 
 

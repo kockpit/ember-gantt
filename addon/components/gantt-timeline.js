@@ -39,8 +39,8 @@ export default Component.extend({
 
   scrollLeft: alias('chart.scrollLeft'),
   stickyOffset: alias('chart.stickyOffset'),
-  stickyStyle: '',
-  stickyPlaceholderStyle: '',
+  stickyStyle: htmlSafe(''),
+  stickyPlaceholderStyle: htmlSafe(''),
   isSticky: false,
 
   // use document scroll event to check for sticky
@@ -99,8 +99,8 @@ export default Component.extend({
   },
   resetSticky() {
     set(this, 'isSticky', false);
-    set(this, 'stickyStyle', '');
-    set(this, 'stickyPlaceholderStyle', '');
+    set(this, 'stickyStyle', htmlSafe(''));
+    set(this, 'stickyPlaceholderStyle', htmlSafe(''));
   },
 
   // timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling

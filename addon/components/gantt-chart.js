@@ -139,6 +139,7 @@ export default Component.extend({
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
     startDate = startDate || get(this, 'viewStartDate');
+    startDate = dateUtil.getNewDate(startDate); // assure UTC
     includeDay = isNone(includeDay) ? false : includeDay;
 
     if (isNone(date) || isNone(startDate) || typeof date.getTime !== 'function') {
@@ -152,7 +153,7 @@ export default Component.extend({
   },
 
   offsetToDate(pixelOffset) {
-    let startDate = get(this, 'viewStartDate');
+    let startDate = dateUtil.getNewDate(get(this, 'viewStartDate'));
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
     let days = pixelOffset / (dayWidth);

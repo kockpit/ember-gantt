@@ -23,7 +23,7 @@ export default Controller.extend({
 
   actions: {
     zoom(value) {
-      set(this, 'dayWidth', (get(this, 'dayWidth') + value) );
+      set(this, 'dayWidth', parseInt(get(this, 'dayWidth') + parseInt(value)) );
     },
     setView(view) {
       let dayWidth = 20;

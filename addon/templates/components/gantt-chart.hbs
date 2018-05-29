@@ -7,7 +7,8 @@
   {{gantt-timeline chart=this }}
 
   {{! lines and (recursive) sublines }}
-  <div class="gant-lines">
+  <div class="gantt-titles-background"></div>
+  <div class="gantt-lines">
     {{yield (hash line=(component "gantt-line" chart=this )) }}
   </div>
 

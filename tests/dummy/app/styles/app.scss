@@ -40,7 +40,7 @@ h1 {
 $gantt-animation-duration: 200ms;
 $gantt-line-height: 40px;
 $gantt-line-bar-height: 36px;
-$gantt-line-title-width: 150px;
+$gantt-line-title-width: 200px;
 
 $gantt-border-color: #ccc;
 $gantt-grid-border-color: #eee;
@@ -64,7 +64,14 @@ $gantt-weekend-background: #efefef;
   border: 1px solid $gantt-border-color;
 }
 
-
+.gantt-titles-background {
+  position: absolute;
+  top: 1px; // border!
+  height: 100%;
+  width: $gantt-line-title-width;
+  background: #fff;
+  z-index: 3;
+}
 
 
 
@@ -87,12 +94,12 @@ $gantt-weekend-background: #efefef;
 
   .gantt-header-title {
     position: absolute;
-    left: 0;
+    left: 1px; // border
     height: 80px;
     width: $gantt-line-title-width;
-    z-index: 2;
+    z-index: 4;
 
-    padding: 15px;
+    padding: 10px;
     font-weight: bold;
     font-size: 1.2em;
     background: #fff;
@@ -197,7 +204,7 @@ $gantt-weekend-background: #efefef;
 
 // today
 // ------------------------
-.gant-timeline-today {
+.gantt-timeline-today {
   position: absolute;
   top: 61px;
   height: 99999999px;
@@ -236,15 +243,18 @@ $gantt-weekend-background: #efefef;
 
 .gantt-line-title {
   position: absolute;
+  height: $gantt-line-height;
   width: $gantt-line-title-width;
   z-index: 3;
-  height: $gantt-line-height;
+  display: table; // used to vertical-align text in middle
 
-  background: #fff;
+  // background: #fff; // -> use background
 
   span {
-    display: block;
-    padding: 3px 10px;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 10px;
   }
 }
 
@@ -286,7 +296,7 @@ $gantt-weekend-background: #efefef;
   position: absolute;
   color: #fff;
   font-size: 12px;
-  padding: 5px 10px 0;
+  padding: 2px 10px 0;
 }
 
 // inline-bar childs
@@ -302,28 +312,30 @@ $gantt-weekend-background: #efefef;
   }
 }
 
-// ******** *********************
+
+
+// ****************************
 //
-//        TIMELINE
+//        1st / 2nd level lines
 
 
+.gantt-lines > .gantt-line-wrap {
+  margin-bottom: 30px;
+}
 
 
 // line-childs (can be defined recursively)
-.gant-line-childs {
-  .gantt-line {
-    height: (2*$gantt-line-height/3);
+.gantt-line-childs {
+  .gantt-line,
+  .gantt-line-title {
+    height: round(2*$gantt-line-height/3);
   }
   .gantt-line-bar {
     background: #71b5a0;
-    height: (2 * $gantt-line-bar-height / 3) - 1;
+    height: round((2 * $gantt-line-bar-height / 3) - 3);
   }
   .gantt-line-title span {
-    // padding-left: 10px;
     font-size: 0.9em;
-    &:before {
-      content: '–  ';
-    }
   }
 }
 
