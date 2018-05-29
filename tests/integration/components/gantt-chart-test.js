@@ -29,7 +29,7 @@ module('Integration | Component | gantt-chart', function(hooks) {
     //  assert.equal(this.element.querySelector('div').getAttribute('style'), 'color: red', 'starts as red');
 
     // check generated timeline
-    let timeline = this.element.querySelector('.gantt-chart-inner .gantt-chart-header .gantt-line-timeline');
+    let timeline = this.element.querySelector('.gantt-chart-inner .gantt-timeline .gantt-chart-header');
     let firstMonth = timeline.querySelector('.gantt-timeline-month');
 
     assert.equal(firstMonth.querySelector('.gantt-timeline-days .day').textContent, '25', 'starts with 25 day');

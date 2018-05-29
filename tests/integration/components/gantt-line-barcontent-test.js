@@ -7,20 +7,20 @@ module('Integration | Component | gantt-line-barcontent', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`{{gantt-line-barcontent}}`);
-
-    assert.equal(this.element.textContent.trim(), '');
 
     // Template block usage:
     await render(hbs`
       {{#gantt-line-barcontent}}
-        template block text
+        <span class="myspan">HI</span>
       {{/gantt-line-barcontent}}
     `);
 
-    assert.equal(this.element.textContent.trim(), 'template block text');
+    let div = this.element.querySelector('.gantt-line-bar-content');
+
+    assert.equal(this.element.textContent.trim(), 'HI');
+    assert.ok(div, 'has div');
+    assert.ok(div.querySelector('span'), 'has inner span');
+
   });
 });

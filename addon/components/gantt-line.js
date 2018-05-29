@@ -299,9 +299,11 @@ export default Component.extend({
   },
 
   deactivateAll(){
-    set(this, 'isResizingLeft', false);
-    set(this, 'isResizingRight', false);
-    set(this, 'isMoving', false);
+    if (!this.isDestroyed) {
+      set(this, 'isResizingLeft', false);
+      set(this, 'isResizingRight', false);
+      set(this, 'isMoving', false);
+    }
   },
 
   willDestroyelement() {

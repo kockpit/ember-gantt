@@ -24,7 +24,7 @@ export default Component.extend({
     let today = dateUtil.getNewDate();
     let offsetLeft = get(this, 'chart').dateToOffset(today, null, true);
 
-    return htmlSafe( `left:${offsetLeft}px`);
+    return htmlSafe(`left:${offsetLeft}px;`);
   }),
 
 
@@ -108,7 +108,7 @@ export default Component.extend({
     if (get(this, 'isSticky')) {
       return htmlSafe(`left:-${get(this,'scrollLeft')}px;`);
     }
-    return '';
+    return htmlSafe('');
   }),
 
   /**
