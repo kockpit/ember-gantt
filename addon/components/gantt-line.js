@@ -256,6 +256,7 @@ export default Component.extend({
   movingMouseOffset: 0,
 
   activateMove(e) {
+    e.preventDefault();
     this.initTimlineOffset();
 
     // remember days-duration of line
@@ -267,10 +268,12 @@ export default Component.extend({
     set(this, 'movingDays', moveDays);
     set(this, 'movingMouseOffset', mouseOffset);
     set(this, 'isMoving', true);
+
   },
 
   resizeBar(e) {
     if (!get(this, 'isResizing')) return;
+    e.preventDefault();
 
     // offset -> start/end-date
     let offsetLeft = (e.clientX - get(this, 'timelineOffset') - get(this, 'movingMouseOffset'));
@@ -278,10 +281,12 @@ export default Component.extend({
 
     // resize left
     if (get(this, 'isResizingLeft')) {
+      dateOffset = (dateOffset > get(this, 'dateEnd')) ? get(this, 'dateEnd') : dateOffset; // dont allow lower than start
       set(this, 'dateStart', dateOffset);
 
     // resize right
     } else if (get(this, 'isResizingRight')) {
+      dateOffset = (dateOffset < get(this, 'dateStart')) ? get(this, 'dateStart') : dateOffset; // dont allow lower than start
       set(this, 'dateEnd', dateOffset);
 
     // move
