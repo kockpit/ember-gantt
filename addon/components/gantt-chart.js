@@ -1,9 +1,8 @@
-// import { run } from '@ember/runloop';
 // import moment from 'moment'; // ? needed
-import {set,setProperties,get,computed,observer} from '@ember/object';
-import {equal} from '@ember/object/computed';
-import {isNone,isEqual} from '@ember/utils';
-import { htmlSafe } from '@ember/string';
+
+import {set,get} from '@ember/object';
+import {isNone} from '@ember/utils';
+import { bind } from '@ember/runloop';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -15,47 +14,6 @@ export default Component.extend({
   classNames: 'gantt-chart',
   classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
 
-  /**
-   * Activate automatical timeline view adjustments, based on dayWidth
-   * Breakpoints can be set for ????
-   *
-   * @property autoView
-   * @type bool
-   * @default true
-   * @public
-   */
-  autoTimeline: true,
-
-  timelineDay: true,
-  timelineCW: true,
-  timelineMonth: true,
-  timelineYear: true,
-
-  autoViewObs: observer('dayWidth', 'autoTimeline', function() {
-    this.evaluateTimlineElements();
-  }),
-
-  evaluateTimlineElements() {
-    let dayWidth = get(this, 'dayWidth');
-    let views = { timelineDay: true, timelineCW: false, timelineMonth: true, timelineYear: false }
-
-    if (dayWidth < 15) { // cw's instead of days
-      views.timelineDay = false;
-      views.timelineCW = true;
-    }
-
-    if (dayWidth < 5) { // months
-      views.timelineCW = false;
-      views.timelineMonth = true;
-    }
-
-    if (dayWidth < 1) { // year
-      views.timelineYear = true;
-      views.timelineMonth = false;
-    }
-
-    setProperties(this, views);
-  },
 
   /**
    * Gantt timeline start-date
@@ -89,9 +47,15 @@ export default Component.extend({
    */
   dayWidth: 20, //px
 
-  dayWidthPx: computed('dayWidth', function() {
-    return `${get(this, 'dayWidth')}px`;
-  }),
+  /**
+   * Get/update gantt-width to adjust sub-elements via observer/computed
+   *
+   * @property ganttWidth
+   * @type int
+   * @default 0
+   * @protected
+   */
+  ganttWidth: 0, //px
 
   /**
    * Show today-line
@@ -104,6 +68,17 @@ export default Component.extend({
   showToday: true,
 
   /**
+   * Make header sticky using this top-offset when out of viewport
+   * Set null to deactivate sticky-header
+   *
+   * @property stickyHeader
+   * @type number
+   * @default 0
+   * @public
+   */
+  stickyOffset: 0,
+
+  /**
    * Header title, above line titles
    *
    * @property headerTitle
@@ -112,6 +87,16 @@ export default Component.extend({
    * @public
    */
   headerTitle: '',
+
+  /**
+   * Get scroll-left to adjust header bar and to controll infinity-load
+   *
+   * @property scrollLeft
+   * @type int
+   * @default 0
+   * @private
+   */
+  scrollLeft: 0,
 
 
   init() {
@@ -132,77 +117,21 @@ export default Component.extend({
     }
 
     // bind listener functions
-    // this._handleScroll = run.bind(this, this.updateTitleScroll);
+    this._handleScroll = bind(this, this.updateScroll);
+    this._handleResize = bind(this, this.updateResize);
   },
 
   didInsertElement() {
     this._super(...arguments);
 
-    if (get(this, 'autoTimeline')) {
-      this.evaluateTimlineElements();
-    }
+    // inner-scroll listener
+    let inner = this.element.querySelector('.gantt-chart-inner');
+    inner.addEventListener('scroll', this._handleScroll);
+
+    // resize listener
+    this.updateResize();
+    window.addEventListener('resize', this._handleResize);
   },
-
-  todayStyle: computed('viewStartDate', 'dayWidth', function() {
-    let today = dateUtil.getNewDate();
-    let offsetLeft = this.dateToOffset(today, null, true);
-
-    return htmlSafe( `left:${offsetLeft}px`);
-  }),
-
-  timelineMonths: computed('viewStartDate', 'viewEndDate', function() {
-    let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
-        end = dateUtil.getNewDate(get(this, 'viewEndDate'));
-
-    if (!start || !end || !(start<end)) {
-      return [];
-    }
-
-    let actDate = dateUtil.getNewDate(start.getTime()),
-        months = [];
-
-    while(actDate < end) {
-
-      let month = {
-        date: dateUtil.getNewDate(actDate),
-        totalDays: dateUtil.daysInMonth(actDate),
-        days: []
-      };
-
-      // from/to days
-      let startDay = 1;
-      let lastDay = month.totalDays;
-
-      // first month
-      if (isEqual(start, actDate)) {
-        startDay = actDate.getDate();
-      } else {
-        actDate.setDate(1);
-      }
-
-      // last month
-      if (actDate.getMonth()===end.getMonth() && actDate.getFullYear()===end.getFullYear()) {
-        lastDay = end.getDate();
-      }
-
-      // iterate all days to generate data-array
-      for(let d=startDay; d<=lastDay; d++) {
-        let dayDate = dateUtil.getNewDate(actDate);
-        month.days.push({
-          nr: d,
-          date: dayDate.setDate(d),
-          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0)
-        });
-      }
-
-      // add days to month
-      months.push(month);
-      actDate.setMonth(actDate.getMonth()+1);
-
-    }
-
-    return months;
-  }),
 
 
   // calculate pixel-difference between two dates (for bar-offset or bar-width)
@@ -231,6 +160,21 @@ export default Component.extend({
     let newDateTime = startDate.getTime() + (days * 86400000);
     return dateUtil.getNewDate(newDateTime);
   },
+
+  updateScroll(e) {
+    set(this, 'scrollLeft', e.target.scrollLeft);
+  },
+
+  updateResize(/*e*/) {
+    set(this, 'ganttWidth', this.element.offsetWidth);
+  },
+
+  willDestroyelement() {
+    this._super(...arguments);
+
+    this.element.querySelector('.gantt-chart-inner').removeEventListener('scroll', this._handleScroll);
+    window.removeEventListener('resize', this._handleResize);
+  }
 
 
 });

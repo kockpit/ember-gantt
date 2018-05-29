@@ -1,5 +1,5 @@
 
-import { set } from '@ember/object';
+import { set, get } from '@ember/object';
 import Controller from '@ember/controller';
 
 export default Controller.extend({
@@ -22,6 +22,9 @@ export default Controller.extend({
   },
 
   actions: {
+    zoom(value) {
+      set(this, 'dayWidth', (get(this, 'dayWidth') + value) );
+    },
     setView(view) {
       let dayWidth = 20;
 

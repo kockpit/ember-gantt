@@ -59,85 +59,14 @@ $gantt-weekend-background: #efefef;
   overflow-x: scroll;
   overflow-y: hidden;
 
+  padding-bottom: 50px;
   background: #fff;
   border: 1px solid $gantt-border-color;
 }
 
 
-// header
-// ------------------------
-
-.gantt-chart-header {
-  border-bottom: 1px solid $gantt-border-color;
-  box-sizing: border-box;
-
-  .gantt-line {
-    height: auto;
-    border-bottom: none;
-  }
-  .gantt-line-title {
-    //height: auto;
-    height: 60px;
-  }
-  .gantt-line-timeline-month {
-
-  }
-  .gantt-line-timeline .day {
-    border-top: 1px solid $gantt-border-color;
-    // border-bottom: 1px solid $gantt-border-color;
-    // border-left: 1px solid $gantt-border-color;
-
-    font-size: 12px;
-    text-align: center;
-  }
-}
 
 
-// vertical grid
-// ------------------------
-
-.gantt-chart-grid {
-  position: relative;
-  height: 100%;
-}
-.gantt-chart-grid-vertical {
-  position: absolute;
-  top: 0;
-  height: 99999999px;
-
-  .gantt-line,
-  .gantt-line-timeline,
-  .gantt-timeline-month,
-  .gantt-timeline-days,
-  .gantt-line-timeline .day  {
-    height: 100%;
-    min-height: 100%;
-  }
-}
-
-// today
-// ------------------------
-.gant-timeline-today {
-  position: absolute;
-  top: 61px;
-  height: 99999999px;
-  margin-left: $gantt-line-title-width; // needs offset as absolute
-
-  z-index: 2;
-
-  border-left: 1px solid #444;
-
-  > div {
-    position: relative;
-    left: -5px;
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-
-    border-top: 7px solid #444;
-  }
-}
 
 
 
@@ -148,17 +77,105 @@ $gantt-weekend-background: #efefef;
 
 // set timeline styles (e.g. borders etc.) here, so its applied for header + grid
 
-.gantt-line-timeline {
-  display: flex;
-  flex-wrap: nowrap;
-  position: relative;
+// header
+// ------------------------
 
-  margin-left: $gantt-line-title-width; // place for title
+.gantt-chart-header {
+  box-sizing: border-box;
+  height: 80px;
+  z-index: 1;
 
-  .gantt-timeline-month {
+  .gantt-header-title {
+    position: absolute;
+    left: 0;
+    height: 80px;
+    width: $gantt-line-title-width;
+    z-index: 2;
 
+    padding: 15px;
+    font-weight: bold;
+    font-size: 1.2em;
+    background: #fff;
   }
 
+  .gantt-timeline-days .day {
+    border-top: 1px solid $gantt-border-color;
+    // border-bottom: 1px solid $gantt-border-color;
+    // border-left: 1px solid $gantt-border-color;
+
+    font-size: 12px;
+    text-align: center;
+  }
+
+  // sticky
+  &.gantt-chart-header-sticky .gantt-chart-header-inner {
+    position: fixed;
+    overflow: hidden;
+    z-index: 4;
+    padding-left: ($gantt-line-title-width+1);
+
+    .gantt-header-title {
+      z-index: 5;
+    }
+  }
+}
+
+// vertical grid
+// ------------------------
+
+
+.gantt-timeline {
+
+  // position: relative; // lines above grid (so borders are visible if needed)
+  // border-bottom: 1px solid $gantt-grid-border-color;
+  padding-left: $gantt-line-title-width; // place for title
+
+  // grid lines (full height)
+  .gantt-timeline-grid {
+    position: relative;
+    height: 100%;
+  }
+  .gantt-timeline-vertical-grid {
+    position: absolute;
+    top: 0;
+    height: 99999999px;
+
+    .gantt-timeline-months,
+    .gantt-timeline-month,
+    .gantt-timeline-days,
+    .day  {
+      height: 100%;
+      min-height: 100%;
+    }
+  }
+
+  // keep aside
+  .gantt-timeline-months,
+  .gantt-timeline-days {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  // MONTHs
+  .gantt-timeline-month {
+    display: inline-block;
+    box-sizing: border-box; // ! important for calculations! border should not be calculated
+    transition: width $gantt-animation-duration ease-out;
+  }
+  .gantt-timeline-month-name {
+    background: #fff;
+    font-size: initial;
+
+    span {
+      padding: 10px;
+      display: block;
+      border-left: 1px solid $gantt-border-color;
+    }
+  }
+
+  // DAYs
   .day {
     display: inline-block;
     height: 20px;
@@ -178,39 +195,43 @@ $gantt-weekend-background: #efefef;
   }
 }
 
-.gantt-timeline-month {
-  display: inline-block;
-  box-sizing: border-box; // ! important for calculations! border should not be calculated
-}
+// today
+// ------------------------
+.gant-timeline-today {
+  position: absolute;
+  top: 61px;
+  height: 99999999px;
 
-.gantt-timeline-days {
-  display: flex;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-}
+  z-index: 2;
 
-.gantt-timeline-month-name {
-  background: #fff;
-  font-size: initial;
+  border-left: 1px solid #444;
 
-  span {
-    padding: 10px;
-    display: block;
-    border-left: 1px solid $gantt-border-color;
+  > div {
+    position: relative;
+    left: -5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+
+    border-top: 7px solid #444;
   }
 }
-
 
 
 // **************************
 //   LINE / BAR
 // **************************
-
+.gantt-line-wrap {
+}
 .gantt-line {
   height: $gantt-line-height;
-  white-space: nowrap; // keep all in-line
   border: none;
-  border-bottom: 1px solid $gantt-border-color;
+
+  .gantt-line-timeline {
+    position: relative; // scroll with grid
+    margin-left: $gantt-line-title-width;
+  }
 }
 
 .gantt-line-title {
@@ -254,6 +275,7 @@ $gantt-weekend-background: #efefef;
   .bar-resize-r {
     left: auto;
     right: 0;
+    cursor: e-resize;
   }
 
   &.gantt-line-bar-editable {

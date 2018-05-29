@@ -10,11 +10,15 @@
 
 Day width (px): {{input value=dayWidth}}
 <br><br>
+{{!--
 View: [
   <a href="" {{action 'setView' 'day'}}>Day</a> |
   <a href="" {{action 'setView' 'week'}}>week</a> |
   <a href="" {{action 'setView' 'month'}}>Month</a> ]
+--}}
 
+<a href="" {{action 'zoom' 15}}>Zoom in</a> | 
+<a href="" {{action 'zoom' -15}}>Zoom out</a>
 
 <br><br>
 

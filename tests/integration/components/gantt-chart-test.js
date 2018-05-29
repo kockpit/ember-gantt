@@ -11,7 +11,7 @@ module('Integration | Component | gantt-chart', function(hooks) {
   test('basic rendering', async function(assert) {
 
     // basic chart data
-    set(this, 'dayWidth', 10);
+    set(this, 'dayWidth', 15);
     set(this, 'dateStart', new Date('2018-05-25'));
     set(this, 'dateEnd', new Date('2018-07-14'));
 

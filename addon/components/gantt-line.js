@@ -1,4 +1,4 @@
-import { run } from '@ember/runloop';
+import { bind } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import {computed,get,set} from '@ember/object';
 import {alias, or} from '@ember/object/computed';
@@ -126,12 +126,12 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
-    if (get(this, 'isEditable')) {
-      this._handleMoveStart = run.bind(this, this.activateMove);
-      this._handleResizeLeft = run.bind(this, this.activateResizeLeft);
-      this._handleResizeRight = run.bind(this, this.activateResizeRight);
-      this._handleResizeMove = run.bind(this, this.resizeBar);
-      this._handleFinish = run.bind(this, this.deactivateAll);
+    if (get(this, 'isEditable') && !this._handleMoveStart) {
+      this._handleMoveStart = bind(this, this.activateMove);
+      this._handleResizeLeft = bind(this, this.activateResizeLeft);
+      this._handleResizeRight = bind(this, this.activateResizeRight);
+      this._handleResizeMove = bind(this, this.resizeBar);
+      this._handleFinish = bind(this, this.deactivateAll);
     }
   },
 
