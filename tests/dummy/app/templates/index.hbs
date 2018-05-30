@@ -8,24 +8,15 @@
 
 <h2>Demo</h2>
 
-Day width (px): {{input value=dayWidth}}
-<br><br>
-{{!--
-View: [
-  <a href="" {{action 'setView' 'day'}}>Day</a> |
-  <a href="" {{action 'setView' 'week'}}>week</a> |
-  <a href="" {{action 'setView' 'month'}}>Month</a> ]
---}}
 
-<a href="" {{action 'zoom' 5}}>Zoom in</a> | 
-<a href="" {{action 'zoom' -5}}>Zoom out</a>
+Day width (px): {{input value=dayWidth}}<br><br>
 
+<a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
 <br><br>
 
 {{#gantt-chart dayWidth=dayWidth viewStartDate=viewStartDate headerTitle="Project/Job" as |chart|}}
 
   {{#each model.projects as |project|}}
-
 
     {{! line for each project }}
     {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
@@ -45,8 +36,7 @@ View: [
           {{#each project.jobs as |job|}}
 
             {{! child lines}}
-            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd
-                              isEditable=true color=job.color as |childLine|}}
+            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
 
               {{! more complex title inner}}
               {{#childLine.title}}
@@ -57,9 +47,7 @@ View: [
               {{/childLine.title}}
 
               {{! add something to the bar content}}
-              {{#childLine.barContent}}
-                {{job.title}}
-              {{/childLine.barContent}}
+              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
 
             {{/line.childLine}}
           {{/each}}

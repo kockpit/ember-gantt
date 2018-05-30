@@ -23,22 +23,7 @@ export default Controller.extend({
 
   actions: {
     zoom(value) {
-      set(this, 'dayWidth', parseInt(get(this, 'dayWidth') + parseInt(value)) );
-    },
-    setView(view) {
-      let dayWidth = 20;
-
-      switch(view) {
-        case 'week': dayWidth = 5; break;
-        case 'month': dayWidth = 1; break;
-        default:
-          dayWidth = 20;
-          view = 'day';
-          break;
-      }
-
-      set(this, 'dayWidth', dayWidth);
-      set(this, 'view', view);
+      set(this, 'dayWidth', parseInt(get(this, 'dayWidth')) + parseInt(value) );
     },
 
     collapse(project) {

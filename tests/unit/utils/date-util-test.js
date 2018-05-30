@@ -103,10 +103,10 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.equal(dateUtil.diffDays(date1, date2, true), 8, '29th may to 5th june, including day');
 
     days = dateUtil.diffDays(testStartDate, testEndDate, false);
-    assert.equal(days, 49, 'start-end test dates, not including last day');
+    assert.equal(days, 50, 'start-end test dates, not including last day');
 
     days = dateUtil.diffDays(testStartDate, testEndDate, true);
-    assert.equal(days, 50, 'start-end test dates, DO include last day');
+    assert.equal(days, 51, 'start-end test dates, DO include last day');
   });
 
 
