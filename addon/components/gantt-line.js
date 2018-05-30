@@ -121,7 +121,8 @@ export default Component.extend({
   barElement: null,
 
 
-  classNames: 'gantt-line-wrap',
+  classNames: ['gantt-line-wrap'],
+  classNameBindings: ['isResizing','isMoving'],
 
   init() {
     this._super(...arguments);

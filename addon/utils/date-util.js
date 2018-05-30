@@ -88,6 +88,11 @@ export default {
    */
   diffDays(startDate, endDate, includeLastDay) {
 
+    if (!startDate || !endDate) return;
+
+    startDate.setUTCHours(0,0,0,0);
+    endDate.setUTCHours(0,0,0,0);
+
     let diffDays = Math.floor((endDate.getTime() - startDate.getTime()) / (86400000)); // 86400000 = 24*60*60*1000;
 
     if (includeLastDay) {
@@ -95,6 +100,21 @@ export default {
     }
 
     return diffDays;
+  },
+
+  /**
+   * Get Calendar-Week to date
+   *
+   * @method getCW
+   * @param Date  date
+   * @return int  calendar week
+   * @public
+   */
+  getCW(date) {
+    date.setUTCHours(0,0,0,0);
+    let onejan = new Date(date.getFullYear(),0,1);
+    let dayOfYear = ((date - onejan + 86400000)/86400000);
+    return Math.ceil(dayOfYear/7)
   },
 
   /**

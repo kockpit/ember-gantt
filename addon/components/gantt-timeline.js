@@ -30,8 +30,13 @@ export default Component.extend({
 
   dayWidth: alias('chart.dayWidth'),
   dayWidthPx: computed('dayWidth', function() {
-    return `${get(this, 'dayWidth')}px`;
+    return htmlSafe(`${get(this, 'dayWidth')}px`);
   }),
+  cwWidthPx: computed('dayWidth', function() {
+    let width = get(this, 'dayWidth')*7;
+    return htmlSafe(`${width}px`);
+  }),
+
 
   // sticky header
   headerElement: null,
@@ -103,12 +108,22 @@ export default Component.extend({
     set(this, 'stickyPlaceholderStyle', htmlSafe(''));
   },
 
+
+  totalWidth: computed('viewStartDate', 'viewEndDate','dayWidth', function() {
+    return (get(this, 'dayWidth') * dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true))
+  }),
+
   // timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling
-  stickyTimelineStyle: computed('isSticky','scrollLeft', function() {
+  scaleStyle: computed('totalWidth', 'isSticky','scrollLeft', function() {
+
+    // total width
+    let totalWidth = get(this, 'totalWidth');
+    let style = `width:${totalWidth}px;`;
+
     if (get(this, 'isSticky')) {
-      return htmlSafe(`left:-${get(this,'scrollLeft')}px;`);
+      style+= `left:-${get(this,'scrollLeft')}px;`;
     }
-    return htmlSafe('');
+    return htmlSafe(style);
   }),
 
   /**
@@ -155,7 +170,7 @@ export default Component.extend({
   },
 
 
-  timelineMonths: computed('viewStartDate', 'viewEndDate','dayWidth', function() {
+  timelineScale: computed('viewStartDate', 'viewEndDate','dayWidth', function() {
 
     let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
         end = dateUtil.getNewDate(get(this, 'viewEndDate')),
@@ -168,6 +183,8 @@ export default Component.extend({
     let actDate = dateUtil.getNewDate(start.getTime()),
         months = [];
 
+
+    // MONTHS AND DAYS
     while(actDate < end) {
 
       let month = {
@@ -209,10 +226,33 @@ export default Component.extend({
       // add days to month
       months.push(month);
       actDate.setMonth(actDate.getMonth()+1);
-
     }
 
-    return months;
+    // CWs
+    let cws = [];
+    // if (get(this, 'timelineCW')) {
+      let firstCW = dateUtil.getCW(start);
+      let firstCWrest = ((7 - start.getDay())+1) % 7;
+
+      cws.push({ date: firstCW, width: htmlSafe('width: '+(firstCWrest * dayWidth)+'px;') }); // special width for first/last
+
+      actDate = dateUtil.datePlusDays(start, firstCWrest);
+      while(actDate < end) {
+        cws.push({ date: actDate, nr: dateUtil.getCW(actDate) });
+        actDate.setDate(actDate.getDate() + 7); // add 7 days
+      }
+
+      // adjust last week
+      let lastCWrest = ((7 - cws[cws.length - 1].date.getDay())+1) % 7;
+      cws[cws.length - 1].width = htmlSafe('width: '+(lastCWrest * dayWidth)+'px');
+    // }
+
+    console.log(cws, 'cws');
+
+    return {
+      months,
+      calendarWeeks: cws
+    }
   }),
 
 

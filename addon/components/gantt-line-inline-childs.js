@@ -40,10 +40,10 @@ export default Component.extend({
     this.calculatePeriods();
   },
 
-  // if innerChilds are given (with dateStart, dateEnd, color attributes), calculate a compound bar with overlappings
+  // if childLines are given (with dateStart, dateEnd, color attributes), calculate a compound bar with overlappings
   childLines: null,
   periods: null,
-  reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines','innerChild.@each.{dateStart,dateEnd,color}', function() {
+  reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines','childLines.@each.{dateStart,dateEnd,color}', function() {
     debounce(this, this.calculatePeriods, get(this, 'debounceTime'));
   }),
 

@@ -48,16 +48,6 @@ export default Component.extend({
   dayWidth: 20, //px
 
   /**
-   * Get/update gantt-width to adjust sub-elements via observer/computed
-   *
-   * @property ganttWidth
-   * @type int
-   * @default 0
-   * @protected
-   */
-  ganttWidth: 0, //px
-
-  /**
    * Show today-line
    *
    * @property showToday
@@ -66,6 +56,26 @@ export default Component.extend({
    * @public
    */
   showToday: true,
+
+  /**
+   * Header title, above line titles
+   *
+   * @property headerTitle
+   * @type string
+   * @default ''
+   * @public
+   */
+  headerTitle: '',
+
+  /**
+   * Get/update gantt-width to so sub-elements can consume via observer/computed
+   *
+   * @property ganttWidth
+   * @type int
+   * @default 0
+   * @protected
+   */
+  ganttWidth: 0, //px
 
   /**
    * Make header sticky using this top-offset when out of viewport
@@ -77,16 +87,6 @@ export default Component.extend({
    * @public
    */
   stickyOffset: 0,
-
-  /**
-   * Header title, above line titles
-   *
-   * @property headerTitle
-   * @type string
-   * @default ''
-   * @public
-   */
-  headerTitle: '',
 
   /**
    * Get scroll-left to adjust header bar and to controll infinity-load

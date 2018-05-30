@@ -156,7 +156,12 @@ $gantt-weekend-background: #efefef;
     }
   }
 
+  .gantt-timeline-scale {
+    position: relative;
+  }
+
   // keep aside
+  .gantt-timeline-cws,
   .gantt-timeline-months,
   .gantt-timeline-days {
     position: relative;
@@ -226,9 +231,11 @@ $gantt-weekend-background: #efefef;
 }
 
 
+
 // **************************
 //   LINE / BAR
 // **************************
+
 .gantt-line-wrap {
 }
 .gantt-line {
@@ -238,6 +245,8 @@ $gantt-weekend-background: #efefef;
   .gantt-line-timeline {
     position: relative; // scroll with grid
     margin-left: $gantt-line-title-width;
+
+    // border-bottom: 1px solid red; // DEBUG
   }
 }
 
@@ -311,7 +320,28 @@ $gantt-weekend-background: #efefef;
     height: 100%;
   }
 }
+.gantt-line-wrap.is-moving .gantt-line-bar ,
+.gantt-line-wrap.is-resizing .gantt-line-bar  {
 
+  &:before {
+    position:absolute;
+    top:-10px;
+    bottom:-10px;
+    left:-10px;
+    right: -10px;
+    background: blue;
+    opacity: 0.5;
+  }
+}
+.gantt-line-bar:before {
+    position:absolute;
+    top:-10px;
+    bottom:-10px;
+    left:-10px;
+    right: -10px;
+    background: blue;
+    opacity: 0.5;
+}
 
 
 // ****************************
