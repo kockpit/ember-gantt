@@ -82,14 +82,14 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.expect(4);
 
     assert.equal(dateUtil.daysInMonth(new Date('2018-02-05')), 28, 'february');
-    assert.equal(dateUtil.daysInMonth(new Date('2016-02-05')), 29, 'february in moving-year');
+    assert.equal(dateUtil.daysInMonth(new Date('2016-02-05')), 29, 'february in leap year');
     assert.equal(dateUtil.daysInMonth(new Date('2017-06-05')), 30, 'june');
     assert.equal(dateUtil.daysInMonth(new Date('2017-07-05')), 31, 'july');
 
   });
 
   test('diffDays', function(assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     let days = dateUtil.diffDays(testStartDate, testStartDate, false);
     assert.equal(days, 0, 'same day, not including last day = 0');
@@ -107,6 +107,35 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
 
     days = dateUtil.diffDays(testStartDate, testEndDate, true);
     assert.equal(days, 51, 'start-end test dates, DO include last day');
+
+    days = dateUtil.diffDays(dateUtil.getNewDate('2015-01-01'), dateUtil.getNewDate('2016-12-31'), true);
+    assert.equal(days, 731, '2015-01-01 to 2016-12-31 (2016 as leap year)');
+  });
+
+  test('getCW', function(assert) {
+    assert.expect(7);
+
+    let date = dateUtil.getNewDate('2016-12-31');
+    assert.equal(dateUtil.getCW(date), 52, 'last day of 2016');
+
+    date = dateUtil.getNewDate('2017-01-01');
+    assert.equal(dateUtil.getCW(date), 52, 'first day of 2017');
+
+    date = dateUtil.getNewDate('2017-01-02');
+    assert.equal(dateUtil.getCW(date), 1, 'starting first cw in 2017');
+
+    date = dateUtil.getNewDate('2017-01-08');
+    assert.equal(dateUtil.getCW(date), 1, 'last day of first cw in 2017');
+
+    date = dateUtil.getNewDate('2017-01-09');
+    assert.equal(dateUtil.getCW(date), 2, '2017-01-09');
+
+    date = dateUtil.getNewDate('2017-12-24');
+    assert.equal(dateUtil.getCW(date), 51, '2017-12-24');
+
+    date = dateUtil.getNewDate('2015-12-31');
+    assert.equal(dateUtil.getCW(date), 53, '2015-12-31'); // having 53 cws
+
   });
 
 

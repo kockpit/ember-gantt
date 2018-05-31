@@ -111,10 +111,25 @@ export default {
    * @public
    */
   getCW(date) {
-    date.setUTCHours(0,0,0,0);
-    let onejan = new Date(date.getFullYear(),0,1);
-    let dayOfYear = ((date - onejan + 86400000)/86400000);
-    return Math.ceil(dayOfYear/7)
+    date = this.getNewDate(date);
+
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Make Sunday's day number 7
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay()||7)); // Get first day of year
+    let yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1)); // Calculate full weeks to nearest Thursday
+    let week = Math.ceil(( ( (date - yearStart) / 86400000) + 1)/7);
+
+    return week;
+
+    // MY VERSION
+    // let firstJan = this.getNewDate(date.getFullYear()+'-01-01');
+    // let days = this.diffDays(firstJan, date, true);
+
+    // let firstYearWeekday = firstJan.getDay() || 7; // 1
+    // let weekOffset = ((8 - firstYearWeekday)  % 7);
+    // let week = Math.ceil((days - weekOffset) / 7);
+    //  console.log(`(${days} - ${weekOffset}) / 7)`, '='+week+' in '+ date.toString());
+    // return week;
   },
 
   /**

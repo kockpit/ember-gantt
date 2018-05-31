@@ -70,7 +70,7 @@
       {{!#if timelineDay}}
         <div class="gantt-timeline-cws">
          {{#each timelineScale.calendarWeeks as |cw|}}
-              <div class="cw">{{cw.nr}}</div>
+              <div class="cw" style={{cw.width}}>{{cw.nr}}</div>
           {{/each}}
         </div>
       {{!/if}}
@@ -86,7 +86,7 @@
         </div>
       {{/if}}
 
- 
+
 
     </div>
 

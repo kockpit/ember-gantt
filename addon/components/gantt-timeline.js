@@ -149,7 +149,7 @@ export default Component.extend({
 
   evaluateTimlineElements() {
     let dayWidth = get(this, 'dayWidth');
-    let views = { timelineDay: true, timelineCW: false, timelineMonth: true, timelineYear: false }
+    let views = { timelineDay: true, timelineCW: true, timelineMonth: true, timelineYear: false }
 
     if (dayWidth < 15) { // cw's instead of days
       views.timelineDay = false;
@@ -157,13 +157,13 @@ export default Component.extend({
     }
 
     if (dayWidth < 5) { // months
-      views.timelineCW = false;
       views.timelineMonth = true;
     }
 
     if (dayWidth < 1) { // year
       views.timelineYear = true;
       views.timelineMonth = false;
+      views.timelineCW = false;
     }
 
     setProperties(this, views);
@@ -230,24 +230,27 @@ export default Component.extend({
 
     // CWs
     let cws = [];
-    // if (get(this, 'timelineCW')) {
+    if (get(this, 'timelineCW')) {
       let firstCW = dateUtil.getCW(start);
-      let firstCWrest = ((7 - start.getDay())+1) % 7;
+      let firstWD = start.getDay() || 7; // Sunday -> 7
+      let firstCWrest = 8 - firstWD;
+      console.log(firstCWrest, 'rest');
 
-      cws.push({ date: firstCW, width: htmlSafe('width: '+(firstCWrest * dayWidth)+'px;') }); // special width for first/last
 
+      // first cw
+      cws.push({ date: firstCW, nr: dateUtil.getCW(start), width: htmlSafe('width: '+(firstCWrest * dayWidth)+'px;') }); // special width for first/last
+
+      // middle cws
       actDate = dateUtil.datePlusDays(start, firstCWrest);
-      while(actDate < end) {
-        cws.push({ date: actDate, nr: dateUtil.getCW(actDate) });
+      while(actDate <= end) {
+        cws.push({ date: dateUtil.getNewDate(actDate), nr: dateUtil.getCW(actDate) });
         actDate.setDate(actDate.getDate() + 7); // add 7 days
       }
 
-      // adjust last week
-      let lastCWrest = ((7 - cws[cws.length - 1].date.getDay())+1) % 7;
+      // adjust last cw
+      let lastCWrest = dateUtil.diffDays(cws[cws.length - 1].date, end, true);
       cws[cws.length - 1].width = htmlSafe('width: '+(lastCWrest * dayWidth)+'px');
-    // }
-
-    console.log(cws, 'cws');
+    }
 
     return {
       months,

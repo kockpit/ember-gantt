@@ -43,7 +43,7 @@ $gantt-line-bar-height: 36px;
 $gantt-line-title-width: 200px;
 
 $gantt-border-color: #ccc;
-$gantt-grid-border-color: #eee;
+$gantt-grid-border-color: #efefef;
 $gantt-weekend-background: #efefef;
 
 
@@ -67,10 +67,12 @@ $gantt-weekend-background: #efefef;
 .gantt-titles-background {
   position: absolute;
   top: 1px; // border!
-  height: 100%;
+  height: calc(100% - 2px); // minus borders
   width: $gantt-line-title-width;
-  background: #fff;
+
   z-index: 3;
+
+  background: #fff;
 }
 
 
@@ -84,50 +86,8 @@ $gantt-weekend-background: #efefef;
 
 // set timeline styles (e.g. borders etc.) here, so its applied for header + grid
 
-// header
-// ------------------------
 
-.gantt-chart-header {
-  box-sizing: border-box;
-  height: 80px;
-  z-index: 1;
-
-  .gantt-header-title {
-    position: absolute;
-    left: 1px; // border
-    height: 80px;
-    width: $gantt-line-title-width;
-    z-index: 4;
-
-    padding: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
-    background: #fff;
-  }
-
-  .gantt-timeline-days .day {
-    border-top: 1px solid $gantt-border-color;
-    // border-bottom: 1px solid $gantt-border-color;
-    // border-left: 1px solid $gantt-border-color;
-
-    font-size: 12px;
-    text-align: center;
-  }
-
-  // sticky
-  &.gantt-chart-header-sticky .gantt-chart-header-inner {
-    position: fixed;
-    overflow: hidden;
-    z-index: 4;
-    padding-left: ($gantt-line-title-width+1);
-
-    .gantt-header-title {
-      z-index: 5;
-    }
-  }
-}
-
-// vertical grid
+// vertical grid & scale
 // ------------------------
 
 
@@ -142,6 +102,7 @@ $gantt-weekend-background: #efefef;
     position: relative;
     height: 100%;
   }
+
   .gantt-timeline-vertical-grid {
     position: absolute;
     top: 0;
@@ -156,9 +117,6 @@ $gantt-weekend-background: #efefef;
     }
   }
 
-  .gantt-timeline-scale {
-    position: relative;
-  }
 
   // keep aside
   .gantt-timeline-cws,
@@ -170,22 +128,7 @@ $gantt-weekend-background: #efefef;
     white-space: nowrap;
   }
 
-  // MONTHs
-  .gantt-timeline-month {
-    display: inline-block;
-    box-sizing: border-box; // ! important for calculations! border should not be calculated
-    transition: width $gantt-animation-duration ease-out;
-  }
-  .gantt-timeline-month-name {
-    background: #fff;
-    font-size: initial;
 
-    span {
-      padding: 10px;
-      display: block;
-      border-left: 1px solid $gantt-border-color;
-    }
-  }
 
   // DAYs
   .day {
@@ -204,7 +147,94 @@ $gantt-weekend-background: #efefef;
 
   .day-weekend {
     background: $gantt-weekend-background;
+    border-color: #fff;
   }
+}
+
+// header
+// ------------------------
+
+.gantt-chart-header {
+  box-sizing: border-box;
+  height: 110px;
+  z-index: 1;
+
+  .gantt-header-title {
+    position: absolute;
+    left: 1px; // border
+    height: 110px;
+    width: $gantt-line-title-width;
+    z-index: 4;
+
+    padding: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+    background: #fff;
+  }
+
+  // sticky
+  &.gantt-chart-header-sticky .gantt-chart-header-inner {
+    position: fixed;
+    overflow: hidden;
+    z-index: 4;
+    padding-left: ($gantt-line-title-width+1);
+
+    .gantt-header-title {
+      z-index: 5;
+    }
+  }
+
+  .gantt-timeline-scale {
+    position: relative;
+    background: #fff;
+  }
+
+  // MONTHs
+  .gantt-timeline-months {
+    border-right: 1px solid $gantt-border-color;
+  }
+  .gantt-timeline-month {
+    display: inline-block;
+    box-sizing: border-box; // ! important for calculations! border should not be calculated
+    transition: width $gantt-animation-duration ease-out;
+
+    border-bottom: 1px solid $gantt-border-color;
+  }
+  .gantt-timeline-month-name {
+    background: #fff;
+    font-size: initial;
+
+    span {
+      padding: 10px;
+      display: block;
+      border-left: 1px solid $gantt-border-color;
+    }
+  }
+
+  // calendar weeks
+  .gantt-timeline-cws {
+    border-right: 1px solid $gantt-border-color;
+
+    .cw {
+      border-left: 1px solid $gantt-border-color;
+      border-bottom: 1px solid $gantt-border-color;
+      text-align: center;
+      box-sizing: border-box; // ! important for calculations! border should not be calculated
+    }
+  }
+
+  // day format in header scale
+  .gantt-timeline-days {
+    border-right: 1px solid $gantt-border-color;
+
+    .day {
+      padding: 2px 0;
+      font-size: 12px;
+      text-align: center;
+      // borders are set for grid and header above
+    }
+  }
+
 }
 
 // today
