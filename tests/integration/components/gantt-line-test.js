@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render,settled,triggerEvent } from '@ember/test-helpers';
-import { set, get } from '@ember/object';
+import { set/*, get*/ } from '@ember/object';
 import dateUtil from 'dummy/utils/date-util';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -33,7 +33,7 @@ module('Integration | Component | gantt-line', function(hooks) {
     // RENDER
     await render(hbs`
       {{#gantt-chart viewStartDate=start dayWidth=dayWidth as |chart|}}
-        
+
         {{chart.line dateStart=data.0.start dateEnd=data.0.end title="ONE"}}
 
         {{#chart.line dateStart=data.1.start dateEnd=data.1.end as |line|}}
@@ -103,7 +103,7 @@ module('Integration | Component | gantt-line', function(hooks) {
         // RENDER
     await render(hbs`
       {{#gantt-chart viewStartDate=start dayWidth=dayWidth as |chart|}}
-        
+
         {{#chart.line dateStart=data.start dateEnd=data.end title="PARENT" as |line|}}
 
           {{#each data.childs as |child|}}
@@ -148,7 +148,7 @@ module('Integration | Component | gantt-line', function(hooks) {
     let editableLine = lines[0];
     let editableBar = editableLine.querySelector('.gantt-line-bar');
     let notEditableLine = lines[1];
-    let notEditableBar = notEditableLine.querySelector('.gantt-line-bar');
+    // let notEditableBar = notEditableLine.querySelector('.gantt-line-bar');
 
     assert.ok(editableLine.querySelector('.gantt-line-bar').classList.contains('gantt-line-bar-editable'), 'has editable class');
     assert.notOk(notEditableLine.querySelector('.gantt-line-bar').classList.contains('gantt-line-bar-editable'), 'has not editable class');
@@ -164,9 +164,9 @@ module('Integration | Component | gantt-line', function(hooks) {
     // //getComputedStyle
     // console.log(offset, 'offset');
     // console.log(editableBar.clientLeft, 'editableBar');
-    await triggerEvent(editableBar, 'mousedown', { pageX: left+20, pageY: offset.top+5, which: 1 }); // click in 
+    await triggerEvent(editableBar, 'mousedown', { pageX: left+20, pageY: offset.top+5, which: 1 }); // click in
     assert.ok(editableLine.classList.contains('is-moving'), 'has moving class');
-    
+
     // TODO: drag it and check changed date
 
     // console.log(get(data, 'start'), 'before moved');
@@ -176,7 +176,7 @@ module('Integration | Component | gantt-line', function(hooks) {
     // console.log(get(data, 'start'), 'moved');
 
 
-    
+
     // assert.ok(bars[0]., 2, 'has two child lines');
 
   });

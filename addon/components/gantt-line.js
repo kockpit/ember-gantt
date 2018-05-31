@@ -273,6 +273,7 @@ export default Component.extend({
   },
 
   resizeBar(e) {
+    if (this.isDestroyed) return;
     if (!get(this, 'isResizing')) return;
     e.preventDefault();
 

@@ -32,7 +32,7 @@ module('Integration | Component | gantt-chart', function(hooks) {
     let timeline = this.element.querySelector('.gantt-chart-inner .gantt-timeline .gantt-chart-header');
     let firstMonth = timeline.querySelector('.gantt-timeline-month');
 
-    assert.equal(firstMonth.querySelector('.gantt-timeline-days .day').textContent, '25', 'starts with 25 day');
+    assert.equal(timeline.querySelector('.gantt-timeline-days .day').textContent, '25', 'starts with 25 day');
     assert.equal(firstMonth.querySelector('.gantt-timeline-month-name').textContent.trim(), 'May 2018', 'starts with month May');
     assert.equal(timeline.querySelectorAll('.gantt-timeline-days .day').length, 51, 'amount of generated days');
 

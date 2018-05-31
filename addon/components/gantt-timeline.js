@@ -234,8 +234,6 @@ export default Component.extend({
       let firstCW = dateUtil.getCW(start);
       let firstWD = start.getDay() || 7; // Sunday -> 7
       let firstCWrest = 8 - firstWD;
-      console.log(firstCWrest, 'rest');
-
 
       // first cw
       cws.push({ date: firstCW, nr: dateUtil.getCW(start), width: htmlSafe('width: '+(firstCWrest * dayWidth)+'px;') }); // special width for first/last
@@ -251,6 +249,7 @@ export default Component.extend({
       let lastCWrest = dateUtil.diffDays(cws[cws.length - 1].date, end, true);
       cws[cws.length - 1].width = htmlSafe('width: '+(lastCWrest * dayWidth)+'px');
     }
+
 
     return {
       months,
