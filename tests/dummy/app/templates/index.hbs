@@ -36,7 +36,8 @@ Day width (px): {{input value=dayWidth}}<br><br>
           {{#each project.jobs as |job|}}
 
             {{! child lines}}
-            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
+            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                              color=job.color datesChanged=(action "datesChanged" job) as |childLine|}}
 
               {{! more complex title inner}}
               {{#childLine.title}}

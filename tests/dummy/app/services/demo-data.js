@@ -36,7 +36,7 @@ export default Service.extend({
     // P1
     projects.push(ProjectObject.create({
         title: `Coca Cola Logo`,
-        jobs: [{
+        childs: [{
           title: types[0].title,
           color: types[0].color,
           dateStart: dateUtil.datePlusDays(today, 3),
@@ -89,7 +89,7 @@ export default Service.extend({
     let today = new Date();
 
     // job-types with color
-    let jobTypes = jobTypes;
+    let types = jobTypes;
 
     // let intelligent project object
     let ProjectObject = EmberObject.extend(MinMaxChildDatesMixin, {
@@ -109,7 +109,7 @@ export default Service.extend({
       // some jobs for each project
       for(let j=1; j<numJobs; j++) {
         let jobStart = this.getRandomDate(projectStart);
-        let jobType = jobTypes[j%3];
+        let jobType = types[j%3];
         jobs.push({
           title: `${jobType.title} ${j}`,
           dateStart: jobStart,

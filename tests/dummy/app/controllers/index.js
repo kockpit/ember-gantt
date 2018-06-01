@@ -28,6 +28,13 @@ export default Controller.extend({
 
     collapse(project) {
       project.toggleProperty('collapsed');
+    },
+    datesChanged(job, start, end, action) {
+      console.log(start, 'start changed');
+      console.log(end, 'end changed');
+      console.log(action, 'action');
+      set(job, 'dateStart', start);
+      set(job, 'dateEnd', end);
     }
   }
 

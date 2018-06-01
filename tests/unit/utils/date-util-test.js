@@ -1,4 +1,3 @@
-import { A } from "@ember/array";
 import { getProperties } from "@ember/object";
 import dateUtil from 'dummy/utils/date-util';
 import { module, test } from 'qunit';
@@ -178,8 +177,8 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
   test('mergeTimePeriods: child starting later than range', function(assert) {
     assert.expect(2);
 
-    let childs = A(A(timePeriodChilds).toArray()); // clone test-data
-    childs.removeObject(childs.lastObject); // remove starting child (which has same start-date as range)
+    // clone test-data, without starting child (which has same start-date as range)
+    let childs = timePeriodChilds.slice(0, 4);
 
     let periods = dateUtil.mergeTimePeriods(childs, testStartDate, testEndDate);
 

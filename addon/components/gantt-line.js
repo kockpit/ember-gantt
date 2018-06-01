@@ -1,6 +1,7 @@
 import { bind } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import {computed,get,set} from '@ember/object';
+import {isEmpty} from '@ember/utils';
 import {alias, or} from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-line';
@@ -230,7 +231,8 @@ export default Component.extend({
 
 
   // RESIZING FUNCTIONS
-  isResizing: or('isResizingLeft','isMoving','isResizingRight'),
+  isEditing: or('isResizingLeft','isResizingRight','isMoving'),
+  isResizing: or('isResizingLeft','isResizingRight'),
   isResizingLeft: false,
   isResizingRight: false,
   timelineOffset: 0,
@@ -274,7 +276,7 @@ export default Component.extend({
 
   resizeBar(e) {
     if (this.isDestroyed) return;
-    if (!get(this, 'isResizing')) return;
+    if (!get(this, 'isEditing')) return;
     e.preventDefault();
 
     // offset -> start/end-date
@@ -301,10 +303,23 @@ export default Component.extend({
   },
 
   deactivateAll(){
-    if (!this.isDestroyed) {
-      set(this, 'isResizingLeft', false);
-      set(this, 'isResizingRight', false);
-      set(this, 'isMoving', false);
+    if (this.isDestroyed) return;
+
+    // check if something happened on this line
+    let action = '';
+    if (get(this, 'isResizing')) {
+      action = 'resize';
+
+    } else if (get(this, 'isMoving')) {
+      action = 'move';
+    }
+
+    set(this, 'isResizingLeft', false);
+    set(this, 'isResizingRight', false);
+    set(this, 'isMoving', false);
+
+    if (!isEmpty(action)) {
+      this.sendAction('datesChanged', get(this, 'dateStart'), get(this, 'dateEnd'), action);
     }
   },
 

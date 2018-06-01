@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import { run } from '@ember/runloop';
 import { render, settled } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import dateUtil from 'dummy/utils/date-util';
@@ -34,10 +35,12 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
       color: 'green'
     }];
 
-    this.set('start', start);
-    this.set('line', line);
-    this.set('childs', childs);
 
+    run(() => {
+      this.set('start', start);
+      this.set('line', line);
+      this.set('childs', childs);
+    });
 
     // RENDER
     await render(hbs`
@@ -60,14 +63,18 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
     assert.ok(/^width:60px;background:repeating-linear-gradient(.*)blue(.*)red/.test( segments[1].getAttribute('style') ), 'second blue/red-ish');
 
     // change second child
-    set(childs[1], 'color', 'yellow');
+    run(() => {
+      set(childs[1], 'color', 'yellow');
+    });
     await settled();
 
     segments = bar.querySelectorAll('.gantt-line-inline-childs > div');
     assert.ok(/^width:60px;background:repeating-linear-gradient(.*)red(.*)yellow/.test( segments[1].getAttribute('style') ), 'second yellow/red-ish'); // color is sorted by ABC
 
     // change date
-    set(childs[1], 'dateStart', dateUtil.datePlusDays(start, 2));
+    run(() => {
+      set(childs[1], 'dateStart', dateUtil.datePlusDays(start, 2));
+    });
     await settled();
 
     segments = bar.querySelectorAll('.gantt-line-inline-childs > div');
