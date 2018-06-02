@@ -21,6 +21,7 @@ export default {
 
     } else if (typeof fromDate === 'string' && !isNaN(fromDate)) {
       date = new Date(parseInt(fromDate));
+
     } else if (typeof fromDate === 'number' || typeof fromDate === 'string') {
       date = new Date(fromDate);
     }
@@ -42,8 +43,7 @@ export default {
    * @public
    */
   dateNoTime(date) {
-    date.setUTCHours(0,0,0,0);
-    return date;
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   },
 
   /**
