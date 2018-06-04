@@ -1,8 +1,8 @@
 // import moment from 'moment'; // ? needed
 
-import {set,get} from '@ember/object';
+import {set,get,observer} from '@ember/object';
 import {isNone} from '@ember/utils';
-import { bind } from '@ember/runloop';
+import {bind} from '@ember/runloop';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -36,6 +36,16 @@ export default Component.extend({
    * @public
    */
   viewEndDate: null,
+
+  /**
+   * Callback, when view start/end date changed, by application or infinity scroll
+   *
+   * @property onViewDateChange
+   * @type function
+   * @default null
+   * @public
+   */
+  onViewDateChange: null,
 
   /**
    * Pixel-width of day-columns
@@ -78,6 +88,16 @@ export default Component.extend({
   ganttWidth: 0, //px
 
   /**
+   * Get/update total width of timeline canvas (days*dayWidth)
+   *
+   * @property totalWidth
+   * @type int
+   * @default 0
+   * @protected
+   */
+  // totalWidth: 0, //px
+
+  /**
    * Make header sticky using this top-offset when out of viewport
    * Set null to deactivate sticky-header
    *
@@ -97,6 +117,16 @@ export default Component.extend({
    * @private
    */
   scrollLeft: 0,
+
+  /**
+   * Get scroll-left to adjust header bar and to controll infinity-load
+   *
+   * @property infinityScroll
+   * @type bool
+   * @default true
+   * @public
+   */
+  infinityScroll: true,
 
 
   init() {
@@ -133,6 +163,22 @@ export default Component.extend({
     window.addEventListener('resize', this._handleResize);
   },
 
+    willDestroyelement() {
+    this._super(...arguments);
+
+    this.element.querySelector('.gantt-chart-inner').removeEventListener('scroll', this._handleScroll);
+    window.removeEventListener('resize', this._handleResize);
+  },
+
+
+
+  // * *
+  //
+  //                PIXEL CALCULATIONS
+  //
+  // This is also used by child-components to distinguish left/width pixel positions
+  //
+
 
   // calculate pixel-difference between two dates (for bar-offset or bar-width)
   dateToOffset(date, startDate, includeDay) {
@@ -162,20 +208,65 @@ export default Component.extend({
     return dateUtil.getNewDate(newDateTime);
   },
 
+
+
+  // * *
+  //
+  //                SCROLL & ENDLESS/INFINITY
+  //
+  // scroll-event for endless/infinit-scroll and timeline scroll in sticky position
+  //
+
   updateScroll(e) {
     set(this, 'scrollLeft', e.target.scrollLeft);
+
+    if(get(this, 'infinityScroll')) {
+      this.checkInfinityScroll(e);
+    }
   },
+
+  refreshWidths: observer('viewStartDate','viewEndDate','dayWidth', function() {
+    this.updateResize();
+  }),
 
   updateResize(/*e*/) {
     set(this, 'ganttWidth', this.element.offsetWidth);
+
+    // let totalWidth = this.dateToOffset(get(this, 'viewEndDate'), get(this, 'viewStartDate'), true);
+    // set(this, 'totalWidth', totalWidth);
   },
 
-  willDestroyelement() {
-    this._super(...arguments);
+  checkInfinityScroll(e) {
+    let target = e.target;
+    let sum = target.offsetWidth + target.scrollLeft;
 
-    this.element.querySelector('.gantt-chart-inner').removeEventListener('scroll', this._handleScroll);
-    window.removeEventListener('resize', this._handleResize);
+    if (sum >= target.scrollWidth) {
+      this.expandView({ right: true });
+
+    } else if(target.scrollLeft == 0) {
+      this.expandView({ left: true });
+    }
+  },
+
+  expandView(directions) {
+    let numDays = Math.ceil(get(this, 'ganttWidth') / get(this, 'dayWidth'));
+
+    if (directions.right) {
+      let newEndDate = dateUtil.datePlusDays(get(this, 'viewEndDate'), numDays);
+      set(this, 'viewEndDate', newEndDate);
+
+    } else if (directions.left) {
+      let newStartDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), numDays*(-1));
+      set(this, 'viewStartDate', newStartDate);
+    }
+
+    let callback = get(this, 'onViewDateChange');
+    if (typeof callback === 'function') {
+      callback(get(this, 'viewDateStart'), get(this, 'viewDateEnd'));
+    }
   }
+
+
 
 
 });

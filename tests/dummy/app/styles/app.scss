@@ -95,7 +95,7 @@ $gantt-weekend-background: #efefef;
 
   // position: relative; // lines above grid (so borders are visible if needed)
   // border-bottom: 1px solid $gantt-grid-border-color;
-  padding-left: $gantt-line-title-width; // place for title
+  margin-left: $gantt-line-title-width; // place for title
 
   // grid lines (full height)
   .gantt-timeline-grid {

@@ -14,7 +14,8 @@ Day width (px): {{input value=dayWidth}}<br><br>
 <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
 <br><br>
 
-{{#gantt-chart dayWidth=dayWidth viewStartDate=viewStartDate infinityScroll=false headerTitle="Project/Job" as |chart|}}
+{{#gantt-chart dayWidth=dayWidth viewStartDate=viewStartDate infinityScroll=true headerTitle="Project/Job"
+                onViewDateChange=(action 'viewDateChange') as |chart|}}
 
   {{#each model.projects as |project|}}
 
@@ -37,7 +38,7 @@ Day width (px): {{input value=dayWidth}}<br><br>
 
             {{! child lines}}
             {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                              color=job.color onDateChange=(action "datesChanged" job) as |childLine|}}
+                              color=job.color as |childLine|}}
 
               {{! more complex title inner}}
               {{#childLine.title}}

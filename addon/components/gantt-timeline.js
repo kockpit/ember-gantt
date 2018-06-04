@@ -71,6 +71,14 @@ export default Component.extend({
     }
   },
 
+  willDestroyelement() {
+    this._super(...arguments);
+
+    if (!isNone(get(this, 'stickyOffset'))) {
+      document.removeEventListener('scroll', this._handleDocScroll);
+    }
+  },
+
 
   // STICKY
   // -------------------
@@ -144,7 +152,9 @@ export default Component.extend({
 
 
   autoViewObs: observer('dayWidth', 'autoTimeline', function() {
-    this.evaluateTimlineElements();
+    if (get(this, 'autoTimeline')) {
+      this.evaluateTimlineElements();
+    }
   }),
 
   evaluateTimlineElements() {
@@ -183,19 +193,12 @@ export default Component.extend({
     let actDate = dateUtil.getNewDate(start.getTime()),
         months = [];
 
-
     // MONTHS AND DAYS
     while(actDate < end) {
 
-      let month = {
-        date: dateUtil.getNewDate(actDate),
-        totalDays: dateUtil.daysInMonth(actDate),
-        days: []
-      };
-
       // from/to days
       let startDay = 1;
-      let lastDay = month.totalDays;
+      let lastDay = dateUtil.daysInMonth(actDate);
 
       // first month
       if (isEqual(start, actDate)) {
@@ -209,8 +212,14 @@ export default Component.extend({
         lastDay = end.getDate();
       }
 
-      // pass width, if days are not shown (?)
-      month.width = ((lastDay - startDay) +1) * dayWidth;
+      // month data
+      let month = {
+        date: dateUtil.getNewDate(actDate),
+        totalDays: lastDay,
+        days: [],
+        width: ((lastDay - startDay) +1) * dayWidth,
+      };
+
       month.style = htmlSafe(`width:${month.width}px`);
 
       // iterate all days to generate data-array
@@ -250,19 +259,9 @@ export default Component.extend({
       cws[cws.length - 1].width = htmlSafe('width: '+(lastCWrest * dayWidth)+'px');
     }
 
-
     return {
       months,
       calendarWeeks: cws
     }
-  }),
-
-
-  willDestroyelement() {
-    this._super(...arguments);
-
-    if (!isNone(get(this, 'stickyOffset'))) {
-      document.removeEventListener('scroll', this._handleDocScroll);
-    }
-  }
+  })
 });

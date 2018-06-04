@@ -121,6 +121,16 @@ export default Component.extend({
    */
   barElement: null,
 
+  /**
+   * Callback, when start/end date changed due to moving or resizing
+   *
+   * @property onDateChange
+   * @type function
+   * @default null
+   * @public
+   */
+  onDateChange: null,
+
 
   classNames: ['gantt-line-wrap'],
   classNameBindings: ['isResizing','isMoving'],
@@ -175,6 +185,23 @@ export default Component.extend({
 
   },
 
+  willDestroyelement() {
+    this._super(...arguments);
+
+    if (!get(this, 'isEditable')) return;
+
+    let bar = get(this, 'barElement');
+    let barResizeL = bar.querySelector('.bar-resize-l');
+    let barResizeR = bar.querySelector('.bar-resize-r');
+    // let chart = document.querySelector('.gantt-chart-inner');
+
+    // unregister resize and drag helpers
+    bar.removeEventListener('mousedown', this._handleMoveStart);
+    barResizeL.removeEventListener('mousedown', this._handleResizeLeft);
+    barResizeR.removeEventListener('mousedown', this._handleResizeRight);
+    document.removeEventListener('mousemove', this._handleResizeMove);
+    document.removeEventListener('mouseup', this._handleFinish);
+  },
 
   /**
    * Bar offset from left (in px)
@@ -183,7 +210,7 @@ export default Component.extend({
    * @method barOffset
    * @protected
    */
-  barOffset: computed('dateStart', 'dayWidth', function(){
+  barOffset: computed('dateStart', 'dayWidth','chart.viewStartDate', function(){
     return get(this, 'chart').dateToOffset( get(this, 'dateStart') );
   }),
 
@@ -319,26 +346,11 @@ export default Component.extend({
     set(this, 'isMoving', false);
 
     if (!isEmpty(action)) {
-      this.sendAction('datesChanged', get(this, 'dateStart'), get(this, 'dateEnd'), action);
+      let callback = get(this, 'onDateChange');
+      if (typeof callback === 'function') {
+        callback(get(this, 'dateStart'), get(this, 'dateEnd'), action);
+      }
     }
-  },
-
-  willDestroyelement() {
-    this._super(...arguments);
-
-    if (!get(this, 'isEditable')) return;
-
-    let bar = get(this, 'barElement');
-    let barResizeL = bar.querySelector('.bar-resize-l');
-    let barResizeR = bar.querySelector('.bar-resize-r');
-    // let chart = document.querySelector('.gantt-chart-inner');
-
-    // unregister resize and drag helpers
-    bar.removeEventListener('mousedown', this._handleMoveStart);
-    barResizeL.removeEventListener('mousedown', this._handleResizeLeft);
-    barResizeR.removeEventListener('mousedown', this._handleResizeRight);
-    document.removeEventListener('mousemove', this._handleResizeMove);
-    document.removeEventListener('mouseup', this._handleFinish);
   }
 
 

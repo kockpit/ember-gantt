@@ -8,6 +8,10 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route('getting-started');
+
+  this.route('examples', function() {
+    this.route('infinity');
+  });
 });
 
 export default Router;

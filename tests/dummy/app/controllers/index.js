@@ -23,17 +23,20 @@ export default Controller.extend({
 
   actions: {
     zoom(value) {
-      set(this, 'dayWidth', parseInt(get(this, 'dayWidth')) + parseInt(value) );
+      let newDayWidth = Math.max(1, parseInt(get(this, 'dayWidth')) + parseInt(value) );
+      set(this, 'dayWidth', newDayWidth);
     },
 
     collapse(project) {
       project.toggleProperty('collapsed');
     },
     datesChanged(job, start, end, action) {
-      console.log(start, 'start changed');
-      console.log(end, 'end changed');
-      console.log(action, 'action');
-      set(job, 'dateStart', start);
+      // console.log(job, 'job ref');
+      // console.log(start, 'start changed');
+      // console.log(end, 'end changed');
+      // console.log(action, 'action');
+
+      set(job, 'dateStart', start); // NOT NEEDED -> is set directly
       set(job, 'dateEnd', end);
     }
   }
