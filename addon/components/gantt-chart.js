@@ -88,6 +88,16 @@ export default Component.extend({
   ganttWidth: 0, //px
 
   /**
+   * Element .gantt-chart-inner to observe scrolling
+   *
+   * @property innerElement
+   * @type object
+   * @default null
+   * @private
+   */
+  innerElement: null,
+
+  /**
    * Get/update total width of timeline canvas (days*dayWidth)
    *
    * @property totalWidth
@@ -155,18 +165,19 @@ export default Component.extend({
     this._super(...arguments);
 
     // inner-scroll listener
-    let inner = this.element.querySelector('.gantt-chart-inner');
-    inner.addEventListener('scroll', this._handleScroll);
+    set(this, 'innerElement', this.element.querySelector('.gantt-chart-inner'));
+    get(this, 'innerElement').addEventListener('scroll', this._handleScroll);
 
     // resize listener
     this.updateResize();
     window.addEventListener('resize', this._handleResize);
   },
 
-    willDestroyelement() {
+  willDestroyelement() {
     this._super(...arguments);
 
-    this.element.querySelector('.gantt-chart-inner').removeEventListener('scroll', this._handleScroll);
+    get(this, 'innerElement').removeEventListener('scroll', this._handleScroll);
+
     window.removeEventListener('resize', this._handleResize);
   },
 
@@ -251,6 +262,7 @@ export default Component.extend({
   expandView(directions) {
     let numDays = Math.ceil(get(this, 'ganttWidth') / get(this, 'dayWidth'));
 
+    // expand left/right
     if (directions.right) {
       let newEndDate = dateUtil.datePlusDays(get(this, 'viewEndDate'), numDays);
       set(this, 'viewEndDate', newEndDate);
@@ -258,11 +270,15 @@ export default Component.extend({
     } else if (directions.left) {
       let newStartDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), numDays*(-1));
       set(this, 'viewStartDate', newStartDate);
+
+      // set new scrollOffset
+      get(this, 'innerElement').scrollLeft = (get(this, 'innerElement').scrollLeft + get(this, 'ganttWidth'));
     }
 
+    // fire callback
     let callback = get(this, 'onViewDateChange');
     if (typeof callback === 'function') {
-      callback(get(this, 'viewDateStart'), get(this, 'viewDateEnd'));
+      callback(get(this, 'viewStartDate'), get(this, 'viewEndDate'));
     }
   }
 

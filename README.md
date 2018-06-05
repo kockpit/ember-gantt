@@ -58,9 +58,10 @@ For more information on using ember-cli, visit [https://ember-cli.com/](https://
 
 Features coming
 ------------------------------------------------------------------------------
-- Sticky header
-- scrollTo(Date) API
-- infinity-Scroll for loading previous later time-ranges automatically
+
+[✔] Sticky header
+[✔] infinity-Scroll for loading previous later time-ranges automatically
+[ ] scrollTo(Date) API
 
 
 License

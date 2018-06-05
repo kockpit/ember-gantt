@@ -18,19 +18,7 @@
 
   {{! vertical grid}}
   <div class="gantt-timeline-vertical-grid">
-    {{!--
-      <div class="gantt-timeline-months">
-        {{#each timelineScale.months as |month|}}
-          <div class="gantt-timeline-month">
-            <div class="gantt-timeline-days">
-              {{#each month.days as |day|}}
-                <div class="day {{if day.isWeekend 'day-weekend'}}"> </div>
-              {{/each}}
-            </div>
-          </div>
-        {{/each}}
-      </div>
-    --}}
+
     <div class="gantt-timeline-days">
      {{#each timelineScale.months as |month|}}
         {{#each month.days as |day|}}

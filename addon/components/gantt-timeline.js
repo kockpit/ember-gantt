@@ -22,12 +22,12 @@ export default Component.extend({
   showToday: alias('chart.showToday'),
   todayStyle: computed('viewStartDate', 'dayWidth', function() {
     let today = dateUtil.getNewDate();
-    let offsetLeft = get(this, 'chart').dateToOffset(today, null, true);
+    let offsetLeft = get(this, 'chart').dateToOffset(today, null, false);
 
     return htmlSafe(`left:${offsetLeft}px;`);
   }),
 
-
+  // in-page styles
   dayWidth: alias('chart.dayWidth'),
   dayWidthPx: computed('dayWidth', function() {
     return htmlSafe(`${get(this, 'dayWidth')}px`);
@@ -117,16 +117,17 @@ export default Component.extend({
   },
 
 
-  totalWidth: computed('viewStartDate', 'viewEndDate','dayWidth', function() {
-    return (get(this, 'dayWidth') * dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true))
+  scaleWidth: computed('viewStartDate', 'viewEndDate', 'dayWidth', function() {
+    let width = (get(this, 'dayWidth') * parseInt(dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true)));
+    return width;
   }),
 
   // timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling
-  scaleStyle: computed('totalWidth', 'isSticky','scrollLeft', function() {
+  scaleStyle: computed('scaleWidth', 'isSticky','scrollLeft', function() {
 
     // total width
-    let totalWidth = get(this, 'totalWidth');
-    let style = `width:${totalWidth}px;`;
+    let scaleWidth = get(this, 'scaleWidth');
+    let style = `width:${scaleWidth}px;`;
 
     if (get(this, 'isSticky')) {
       style+= `left:-${get(this,'scrollLeft')}px;`;

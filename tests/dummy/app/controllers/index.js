@@ -6,8 +6,6 @@ export default Controller.extend({
 
   dayWidth: 20,
 
-  view: 'day',
-
   viewStartDate: null,
   viewEndDate: null,
 
