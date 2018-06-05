@@ -1,3 +1,6 @@
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
+
 var sass = require('node-sass'); // eslint-disable-line
 var fs = require('fs');
 var path = require('path');

@@ -17,9 +17,9 @@ export default Controller.extend({
       project.toggleProperty('collapsed');
     },
 
-    viewDateChange(startDate, endDate) {
-      console.log(startDate, 'start view date changed');
-      console.log(endDate, ' end view date changed');
+    viewDateChange(/*startDate, endDate*/) {
+      // console.log(startDate, 'start view date changed');
+      // console.log(endDate, ' end view date changed');
     }
 
   }

@@ -1,14 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { set } from '@ember/object';
 import dateUtil from 'dummy/utils/date-util';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | gantt-timeline', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
+  test('timeline rendering', async function(assert) {
     assert.expect(6);
 
     let start = dateUtil.getNewDate('2018-05-05');
@@ -18,10 +17,10 @@ module('Integration | Component | gantt-timeline', function(hooks) {
         end:  dateUtil.datePlusDays(start, 23)
       };
 
-    set(this, 'dayWidth', 30);
-    set(this, 'start', start);
-    set(this, 'end', end);
-    set(this, 'data', data);
+    this.set('dayWidth', 30);
+    this.set('start', start);
+    this.set('end', end);
+    this.set('data', data);
 
     await render(hbs`
       {{#gantt-chart viewStartDate=start viewEndDate=end dayWidth=dayWidth as |chart|}}
@@ -47,7 +46,7 @@ module('Integration | Component | gantt-timeline', function(hooks) {
     assert.equal(gridWeekendDays.length, 28, 'has grid weekend days');
 
     // ZOOM OUT
-    set(this, 'dayWidth', 10);
+    this.set('dayWidth', 10);
     await settled();
 
     gridDays = verticalGrid.querySelectorAll('.gantt-timeline-days .day');

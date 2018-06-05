@@ -6,8 +6,8 @@ ember-gantt
 [![npm version](https://badge.fury.io/js/ember-gantt.svg)](https://badge.fury.io/js/ember-gantt)
 [![Dependency Status](https://david-dm.org/kockpit/ember-gantt.svg)](https://david-dm.org/kockpit/ember-gantt)
 [![devDependency Status](https://david-dm.org/kockpit/ember-gantt/dev-status.svg)](https://david-dm.org/kockpit/ember-gantt#info=devDependencies)
-[![Greenkeeper badge](https://badges.greenkeeper.io/kockpit/ember-gantt.svg)](https://greenkeeper.io/)
-[![Browser Status](https://badges.herokuapp.com/sauce/ember-gantt)](https://saucelabs.com/u/ember-gantt)
+<!--[![Greenkeeper badge](https://badges.greenkeeper.io/kockpit/ember-gantt.svg)](https://greenkeeper.io/) -->
+<!--[![Browser Status](https://badges.herokuapp.com/sauce/ember-gantt)](https://saucelabs.com/u/ember-gantt)-->
 
 An ember-cli addon for showing beautiful gantt-charts from your data.
 No additional library is used – pure ember. So slick and soooo fast.
