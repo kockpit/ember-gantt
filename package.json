@@ -1,7 +1,7 @@
 {
   "name": "@kockpit/ember-gantt",
   "version": "0.0.1",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "ember addon for beautiful gantt charts",
   "keywords": [
     "ember-addon",
     "gantt"
@@ -20,7 +20,8 @@
     "lint:js": "eslint ./*.js addon addon-test-support app config lib server test-support tests",
     "start": "ember serve",
     "test": "ember test",
-    "test:all": "ember try:each"
+    "test:all": "ember try:each",
+    "up": "npm publish --access public"
   },
   "dependencies": {
     "ember-cli-babel": "^6.14.1",

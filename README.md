@@ -1,6 +1,7 @@
 ember-gantt
 ==============================================================================
 
+<!-- BADGES: https://github.com/exogen/badge-matrix -->
 [![Build Status](https://travis-ci.org/kockpit/ember-gantt.svg?branch=master)](https://travis-ci.org/kockpit/ember-gantt)
 [![Ember Observer Score](http://emberobserver.com/badges/ember-gantt.svg)](http://emberobserver.com/addons/ember-gantt)
 [![npm version](https://badge.fury.io/js/ember-gantt.svg)](https://badge.fury.io/js/ember-gantt)
