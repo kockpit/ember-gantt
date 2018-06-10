@@ -2,7 +2,6 @@ import {computed,get} from '@ember/object';
 import { mapBy, max, min } from '@ember/object/computed';
 import Mixin from '@ember/object/mixin';
 
-// const MinMaxChildDatesMixin = Mixin.create({
 export default Mixin.create({
 
   childs: [],

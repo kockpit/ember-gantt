@@ -213,7 +213,7 @@ export default Component.extend({
     let startDate = dateUtil.getNewDate(get(this, 'viewStartDate'));
     let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
 
-    let days = pixelOffset / (dayWidth);
+    let days = pixelOffset / dayWidth;
 
     let newDateTime = startDate.getTime() + (days * 86400000);
     return dateUtil.getNewDate(newDateTime);
@@ -252,22 +252,27 @@ export default Component.extend({
     let sum = target.offsetWidth + target.scrollLeft;
 
     if (sum >= target.scrollWidth) {
-      this.expandView({ right: true });
+      this.expandView({ after: true });
 
     } else if(target.scrollLeft == 0) {
-      this.expandView({ left: true });
+      this.expandView({ before: true });
     }
   },
 
   expandView(directions) {
     let numDays = Math.ceil(get(this, 'ganttWidth') / get(this, 'dayWidth'));
+    let previousStart = get(this, 'viewStartDate');
+    let previousEnd = get(this, 'viewEndDate');
+    let expanded = 'before';
 
-    // expand left/right
-    if (directions.right) {
+    // expand after
+    if (directions.after) {
       let newEndDate = dateUtil.datePlusDays(get(this, 'viewEndDate'), numDays);
+      expanded = 'after';
       set(this, 'viewEndDate', newEndDate);
 
-    } else if (directions.left) {
+    // expand before
+    } else if (directions.before) {
       let newStartDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), numDays*(-1));
       set(this, 'viewStartDate', newStartDate);
 
@@ -278,7 +283,7 @@ export default Component.extend({
     // fire callback
     let callback = get(this, 'onViewDateChange');
     if (typeof callback === 'function') {
-      callback(get(this, 'viewStartDate'), get(this, 'viewEndDate'));
+      callback(get(this, 'viewStartDate'), get(this, 'viewEndDate'), expanded, previousStart, previousEnd);
     }
   }
 
