@@ -1,1 +1,1 @@
-export { default } from 'ember-gantt/utils/date-util';
+export { default } from '@kockpit/ember-gantt/utils/date-util';

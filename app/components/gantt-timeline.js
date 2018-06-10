@@ -1,1 +1,1 @@
-export { default } from 'ember-gantt/components/gantt-timeline';
+export { default } from '@kockpit/ember-gantt/components/gantt-timeline';

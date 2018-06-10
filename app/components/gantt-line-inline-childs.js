@@ -1,1 +1,1 @@
-export { default } from 'ember-gantt/components/gantt-line-inline-childs';
+export { default } from '@kockpit/ember-gantt/components/gantt-line-inline-childs';

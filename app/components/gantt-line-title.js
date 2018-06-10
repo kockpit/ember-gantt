@@ -1,1 +1,1 @@
-export { default } from 'ember-gantt/components/gantt-line-title';
+export { default } from '@kockpit/ember-gantt/components/gantt-line-title';

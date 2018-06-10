@@ -1,1 +1,1 @@
-export { default } from 'ember-gantt/controllers/application';
+export { default } from '@kockpit/ember-gantt/controllers/application';

@@ -1,1 +1,1 @@
-export { default } from 'ember-gantt/components/gantt-chart';
+export { default } from '@kockpit/ember-gantt/components/gantt-chart';
