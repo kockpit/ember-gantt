@@ -3,6 +3,8 @@ import { htmlSafe } from '@ember/string';
 import {computed,get,set} from '@ember/object';
 import {isEmpty} from '@ember/utils';
 import {alias, or} from '@ember/object/computed';
+
+import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-line';
 
@@ -211,12 +213,14 @@ export default Component.extend({
    * @protected
    */
   barOffset: computed('dateStart', 'dayWidth','chart.viewStartDate', function(){
-    return get(this, 'chart').dateToOffset( get(this, 'dateStart') );
+    let start = dateUtil.getNewDate(Math.max(get(this, 'dateStart'), get(this, 'chart.viewStartDate')));
+    return get(this, 'chart').dateToOffset( start );
   }),
 
   // width of bar on months
-  barWidth: computed('dateStart', 'dateEnd', 'dayWidth', function() {
-    return get(this, 'chart').dateToOffset( get(this, 'dateEnd'), get(this, 'dateStart'), true );
+  barWidth: computed('dateStart', 'dateEnd', 'dayWidth','chart.viewStartDate', function() {
+    let start = dateUtil.getNewDate(Math.max(get(this, 'dateStart'), get(this, 'chart.viewStartDate')));
+    return get(this, 'chart').dateToOffset( get(this, 'dateEnd'), start, true );
   }),
 
   // styling for left/width
@@ -231,9 +235,9 @@ export default Component.extend({
 
   // TODO: title -> ?
   barTitle: computed('dateStart', 'dateEnd', function() {
-    let days = get(this, 'chart').dateToOffset( get(this, 'dateStart') ) / get(this, 'dayWidth');
     let start = get(this, 'dateStart'),
-        end = get(this, 'dateEnd');
+        end = get(this, 'dateEnd'),
+        days = dateUtil.diffDays(start, end, true);
 
     if (start && end) {
       return `days: ${days} : `+start.toString()+' to '+end.toString();
