@@ -36,6 +36,7 @@ $gantt-weekend-background: #efefef;
 .gantt-titles-background {
   position: absolute;
   top: 1px; // border!
+  left: 1px;
   height: calc(100% - 2px); // minus borders
   width: $gantt-line-title-width;
 
@@ -253,6 +254,7 @@ $gantt-weekend-background: #efefef;
   position: absolute;
   height: $gantt-line-height;
   width: $gantt-line-title-width;
+  left: 1px;
   z-index: 3;
   display: table; // used to vertical-align text in middle
 

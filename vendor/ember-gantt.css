@@ -16,6 +16,7 @@
 .gantt-titles-background {
   position: absolute;
   top: 1px;
+  left: 1px;
   height: calc(100% - 2px);
   width: 200px;
   z-index: 3;
@@ -132,6 +133,7 @@
   position: absolute;
   height: 40px;
   width: 200px;
+  left: 1px;
   z-index: 3;
   display: table; }
   .gantt-line-title span {
