@@ -119,6 +119,7 @@ export default Component.extend({
 
   scaleWidth: computed('viewStartDate', 'viewEndDate', 'dayWidth', function() {
     let width = (get(this, 'dayWidth') * parseInt(dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true)));
+
     return width;
   }),
 
@@ -181,16 +182,24 @@ export default Component.extend({
   },
 
 
-  timelineScale: computed('viewStartDate', 'viewEndDate','dayWidth', function() {
+  timelineScale: computed('viewStartDate', 'viewEndDate','dayWidth','scaleWidth', function() {
 
     let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
         end = dateUtil.getNewDate(get(this, 'viewEndDate')),
-        dayWidth = get(this, 'dayWidth');
+        dayWidth = get(this, 'dayWidth'),
+        chart =  get(this, 'chart');
 
     if (!start || !end || !(start<end)) {
       return [];
     }
 
+    // evaluate, if timeline-grid is smaller than viewport (and expand if needed while zooming)
+    if (get(this, 'scaleWidth') < get(chart, 'ganttWidth')) {
+      end = chart.offsetToDate(get(chart, 'ganttWidth')*1.5);
+      set(this, 'viewEndDate', end);
+    }
+
+    // iterate months (from actDate)
     let actDate = dateUtil.getNewDate(start.getTime()),
         months = [];
 
