@@ -1,14 +1,19 @@
-ember-gantt
-==============================================================================
 
 <!-- BADGES: https://github.com/exogen/badge-matrix -->
+
 [![Build Status](https://travis-ci.org/kockpit/ember-gantt.svg?branch=master)](https://travis-ci.org/kockpit/ember-gantt)
-[![Ember Observer Score](http://emberobserver.com/badges/ember-gantt.svg)](http://emberobserver.com/addons/ember-gantt)
-[![npm version](https://badge.fury.io/js/ember-gantt.svg)](https://badge.fury.io/js/ember-gantt)
+[![Ember Observer Score](https://emberobserver.com/badges/-kockpit-ember-gantt.svg)](https://emberobserver.com/addons/@kockpit/ember-gantt)
+[![npm version](https://badge.fury.io/js/%40kockpit%2Fember-gantt.svg)](https://badge.fury.io/js/%40kockpit%2Fember-gantt)
 [![Dependency Status](https://david-dm.org/kockpit/ember-gantt.svg)](https://david-dm.org/kockpit/ember-gantt)
 [![devDependency Status](https://david-dm.org/kockpit/ember-gantt/dev-status.svg)](https://david-dm.org/kockpit/ember-gantt#info=devDependencies)
+
+
+<!--[![Victory size](https://badges.herokuapp.com/size/npm/%40kockpit%2Fember-gantt/dist/victory.min.js?gzip=true)](https://badge.fury.io/js/%40kockpit%2Fember-gantt) -->
 <!--[![Greenkeeper badge](https://badges.greenkeeper.io/kockpit/ember-gantt.svg)](https://greenkeeper.io/) -->
 <!--[![Browser Status](https://badges.herokuapp.com/sauce/ember-gantt)](https://saucelabs.com/u/ember-gantt)-->
+
+ember-gantt
+==============================================================================
 
 An ember-cli addon for showing beautiful gantt-charts from your data.
 No additional library is used – pure ember. So slick and soooo fast.
@@ -17,7 +22,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install ember-gantt
+ember install @kockpit/ember-gantt
 ```
 
 

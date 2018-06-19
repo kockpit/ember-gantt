@@ -34,15 +34,33 @@ export default Component.extend({
    */
   debounceTime: 0,
 
+  /**
+   * pass childs as "childLines" with attributrs {dateStart, dateEnd, color}
+   *
+   * @property debounceTime
+   * @type array
+   * @default null
+   * @public
+   */
+  childLines: null,
+
+  /**
+   * calculated periods for rendering in template
+   *
+   * @property periods
+   * @type array
+   * @default null
+   * @protected
+   */
+  periods: null,
+
+
 
   didInsertElement() {
     this._super(...arguments);
     this.calculatePeriods();
   },
 
-  // if childLines are given (with dateStart, dateEnd, color attributes), calculate a compound bar with overlappings
-  childLines: null,
-  periods: null,
   reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines','childLines.@each.{dateStart,dateEnd,color}', function() {
     debounce(this, this.calculatePeriods, get(this, 'debounceTime'));
   }),
@@ -60,11 +78,12 @@ export default Component.extend({
     // go through all jobs and generate compound child elements
     let chart = get(this, 'chart'),
         childs = get(this, 'childLines'),
-        start = get(this, 'parentLine.dateStart'),
-        end = get(this, 'parentLine.dateEnd');
+        start = Math.max(get(this, 'parentLine.dateStart'), get(chart,'viewStartDate')),
+        end =  Math.min(get(this, 'parentLine.dateEnd'), get(chart,'viewEndDate'));
 
     // generate period segments
     let periods = dateUtil.mergeTimePeriods(childs, start, end);
+
 
     // calculate width of segments
     if (periods && periods.length > 0) {

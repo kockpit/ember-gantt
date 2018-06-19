@@ -1,6 +1,7 @@
 import { getProperties } from "@ember/object";
 import dateUtil from 'dummy/utils/date-util';
 import { module, test } from 'qunit';
+import {htmlSafe} from '@ember/string';
 
 // prepare test data
 const testStartDate = new Date(1527266746009);                // Fri May 25 2018 18:45:46 GMT+0200 (CEST)
@@ -196,6 +197,35 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.equal(periods.length, 7, 'should create 7 period segments');
     assert.deepEqual( result, expectedResult, "deep-equal resulting data");
   });
+
+
+  test('yearsInPeriod', function(assert) {
+    assert.expect(2);
+
+    let start = dateUtil.getNewDate('2015-02-15');
+    let end = dateUtil.getNewDate('2017-01-01');
+    let dayWidth = 10;
+
+    let result = dateUtil.yearsInPeriod(start, end, dayWidth);
+    let exptected = [
+      { date: start, nr: 2015, width: htmlSafe('width:3200px')}, // 365 - (31 + 14) = 320
+      { date: dateUtil.getNewDate('2016-01-01'), nr: 2016, width: htmlSafe('width:3660px')}, // 366 days
+      { date: dateUtil.getNewDate('2017-01-01'), nr: 2017, width: htmlSafe('width:10px')}, // 1 day
+    ];
+
+    assert.deepEqual( result, exptected, "deep-equal resulting years");
+
+
+    end = dateUtil.getNewDate('2015-06-15');
+    result = dateUtil.yearsInPeriod(start, end, dayWidth);
+    exptected = [{ date: start, nr: 2015, width: htmlSafe('width:1210px') }];
+
+    assert.deepEqual( result, exptected, "deep-equal resulting years #2");
+  });
+
+
+
+
 
 
 });

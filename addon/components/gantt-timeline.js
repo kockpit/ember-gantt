@@ -1,7 +1,7 @@
 import {computed,observer,get,set,setProperties} from '@ember/object';
 import {alias} from '@ember/object/computed';
 import {htmlSafe} from '@ember/string';
-import {isEqual,isNone} from '@ember/utils';
+import {isNone} from '@ember/utils';
 import {bind} from '@ember/runloop';
 
 import dateUtil from '../utils/date-util';
@@ -92,13 +92,16 @@ export default Component.extend({
       this.resetSticky();
     }
   },
+
   onResize: observer('ganttWidth', function() {
     this.updateSticky();
   }),
+
   makeSticky() {
     set(this, 'isSticky', true);
     this.updateSticky();
   },
+
   updateSticky() {
     if (get(this, 'isSticky')) {
       let stickyOffset = get(this, 'stickyOffset');
@@ -110,6 +113,7 @@ export default Component.extend({
       set(this, 'stickyPlaceholderStyle', htmlSafe(`height:${headerHeight}px;`));
     }
   },
+
   resetSticky() {
     set(this, 'isSticky', false);
     set(this, 'stickyStyle', htmlSafe(''));
@@ -119,7 +123,7 @@ export default Component.extend({
 
   scaleWidth: computed('viewStartDate', 'viewEndDate', 'dayWidth', function() {
     let width = (get(this, 'dayWidth') * parseInt(dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true)));
-
+    console.log(dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true), 'days');
     return width;
   }),
 
@@ -150,6 +154,7 @@ export default Component.extend({
   timelineDay: true,
   timelineCW: true,
   timelineMonth: true,
+  timelineMonthShort: false,
   timelineYear: true,
 
 
@@ -161,18 +166,23 @@ export default Component.extend({
 
   evaluateTimlineElements() {
     let dayWidth = get(this, 'dayWidth');
-    let views = { timelineDay: true, timelineCW: true, timelineMonth: true, timelineYear: false }
+    let views = { timelineDay: true, timelineCW: true, timelineMonth: true, timelineMonthShort: false, timelineYear: false }
 
-    if (dayWidth < 15) { // cw's instead of days
+    if (dayWidth < 20) { // cw's instead of days
       views.timelineDay = false;
       views.timelineCW = true;
     }
 
-    if (dayWidth < 5) { // months
+    if (dayWidth < 15) { // months
       views.timelineMonth = true;
     }
 
-    if (dayWidth < 1) { // year
+    if (dayWidth < 10) { // months (small)
+      views.timelineYear = true;
+      views.timelineMonthShort = true;
+    }
+
+    if (dayWidth < 5) { // year
       views.timelineYear = true;
       views.timelineMonth = false;
       views.timelineCW = false;
@@ -182,7 +192,8 @@ export default Component.extend({
   },
 
 
-  timelineScale: computed('viewStartDate', 'viewEndDate','dayWidth','scaleWidth', function() {
+  timelineScale: computed('viewStartDate', 'viewEndDate','dayWidth','scaleWidth','chart.ganttWidth', function() {
+
 
     let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
         end = dateUtil.getNewDate(get(this, 'viewEndDate')),
@@ -196,82 +207,16 @@ export default Component.extend({
     // evaluate, if timeline-grid is smaller than viewport (and expand if needed while zooming)
     if (get(this, 'scaleWidth') < get(chart, 'ganttWidth')) {
       end = chart.offsetToDate(get(chart, 'ganttWidth')*1.5);
-      set(this, 'viewEndDate', end);
-    }
+      // set(this, 'viewEndDate', end);
 
-    // iterate months (from actDate)
-    let actDate = dateUtil.getNewDate(start.getTime()),
-        months = [];
-
-    // MONTHS AND DAYS
-    while(actDate < end) {
-
-      // from/to days
-      let startDay = 1;
-      let lastDay = dateUtil.daysInMonth(actDate);
-
-      // first month
-      if (isEqual(start, actDate)) {
-        startDay = actDate.getDate();
-      } else {
-        actDate.setDate(1);
-      }
-
-      // last month
-      if (actDate.getMonth()===end.getMonth() && actDate.getFullYear()===end.getFullYear()) {
-        lastDay = end.getDate();
-      }
-
-      // month data
-      let month = {
-        date: dateUtil.getNewDate(actDate),
-        totalDays: lastDay,
-        days: [],
-        width: ((lastDay - startDay) +1) * dayWidth,
-      };
-
-      month.style = htmlSafe(`width:${month.width}px`);
-
-      // iterate all days to generate data-array
-      for(let d=startDay; d<=lastDay; d++) {
-        let dayDate = dateUtil.getNewDate(actDate);
-        month.days.push({
-          nr: d,
-          date: dayDate.setDate(d),
-          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0),
-        });
-      }
-
-      // add days to month
-      months.push(month);
-      actDate.setMonth(actDate.getMonth()+1);
-    }
-
-    // CWs
-    let cws = [];
-    if (get(this, 'timelineCW')) {
-      let firstCW = dateUtil.getCW(start);
-      let firstWD = start.getDay() || 7; // Sunday -> 7
-      let firstCWrest = 8 - firstWD;
-
-      // first cw
-      cws.push({ date: firstCW, nr: dateUtil.getCW(start), width: htmlSafe('width: '+(firstCWrest * dayWidth)+'px;') }); // special width for first/last
-
-      // middle cws
-      actDate = dateUtil.datePlusDays(start, firstCWrest);
-      while(actDate <= end) {
-        cws.push({ date: dateUtil.getNewDate(actDate), nr: dateUtil.getCW(actDate) });
-        actDate.setDate(actDate.getDate() + 7); // add 7 days
-      }
-
-      // adjust last cw
-      let lastCWrest = dateUtil.diffDays(cws[cws.length - 1].date, end, true);
-      cws[cws.length - 1].width = htmlSafe('width: '+(lastCWrest * dayWidth)+'px');
     }
 
     return {
-      months,
-      calendarWeeks: cws
+      months: dateUtil.monthsInPeriod(start, end, dayWidth),
+      calendarWeeks: get(this, 'timelineCW') ? dateUtil.calendarWeeksInPeriod(start, end, dayWidth) : null,
+      years: get(this, 'timelineYear') ? dateUtil.yearsInPeriod(start,end, dayWidth) : null
     }
+
   })
+
 });

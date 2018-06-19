@@ -1,6 +1,7 @@
 import { isArray, A } from "@ember/array";
 import { get } from "@ember/object";
-import { isNone } from "@ember/utils";
+import { isNone, isEqual } from "@ember/utils";
+import {htmlSafe} from '@ember/string';
 
 
 export default {
@@ -224,6 +225,151 @@ export default {
     });
 
     return dateMap.sortBy('timestamp');
-  }
+  },
+
+  /**
+   * Months in period
+   * generates an array with months in period including days (see return)
+   *
+   * @method monthsInPeriod
+   * @param Date  startDate
+   * @param Date  endDate
+   * @param int  dayWidth
+   * @return array e.g. [ { date: FIRST_DAY_OF_MONTH_DATE, totalDays: 31, width: 500, style: 'width:500px', days: [ ... ] -> day = { nr: 1, date: DATE, isWeekend: true}
+   * @public
+   */
+  monthsInPeriod(startDate, endDate, dayWidth) {
+
+    let months = [];
+    let actDate = this.getNewDate(startDate.getTime());
+
+    // MONTHS AND DAYS
+    while(actDate < endDate) {
+
+      // from/to days
+      let startDay = 1;
+      let lastDay = this.daysInMonth(actDate);
+
+      // first month
+      if (isEqual(startDate, actDate)) {
+        startDay = actDate.getDate();
+      } else {
+        actDate.setDate(1);
+      }
+
+      // last month
+      if (actDate.getMonth() === endDate.getMonth() &&
+          actDate.getFullYear() === endDate.getFullYear()) {
+
+        lastDay = endDate.getDate();
+      }
+
+      // month data
+      let month = {
+        date: this.getNewDate(actDate),
+        totalDays: lastDay,
+        days: [],
+        width: ((lastDay - startDay) +1) * dayWidth,
+      };
+
+      month.style = htmlSafe(`width:${month.width}px`);
+
+      // iterate all days to generate data-array
+      for(let d=startDay; d<=lastDay; d++) {
+        let dayDate = this.getNewDate(actDate);
+        month.days.push({
+          nr: d,
+          date: dayDate.setDate(d),
+          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0),
+        });
+      }
+
+      // add days to month
+      months.push(month);
+      actDate.setMonth(actDate.getMonth()+1);
+    }
+
+    return months;
+  },
+
+  /**
+   * calendar weeks in period
+   * generates an array with calendar weeks in period
+   *
+   * @method calendarWeeksInPeriod
+   * @param Date  startDate
+   * @param Date  endDate
+   * @param int  dayWidth
+   * @return array e.g. [ { date: FIRST_DATE, nr: 33, width: 'width: 55px' } ]
+   * @public
+   */
+  calendarWeeksInPeriod(startDate, endDate, dayWidth) {
+
+    let cws = [];
+    let firstCW = this.getCW(startDate);
+    let firstWD = startDate.getDay() || 7; // Sunday -> 7
+    let firstCWrest = 8 - firstWD;
+    let actDate = this.getNewDate(startDate.getTime());
+
+    // first cw
+    cws.push({ date: firstCW, nr: this.getCW(startDate), width: htmlSafe('width: ' + (firstCWrest * dayWidth) + 'px;') }); // special width for first/last
+
+    // middle cws
+    actDate = this.datePlusDays(startDate, firstCWrest);
+    while(actDate <= endDate) {
+      cws.push({ date: this.getNewDate(actDate), nr: this.getCW(actDate) });
+      actDate.setDate(actDate.getDate() + 7); // add 7 days
+    }
+
+    // adjust last cw
+    let lastCWrest = this.diffDays(cws[cws.length - 1].date, endDate, true);
+    cws[cws.length - 1].width = htmlSafe('width: ' + (lastCWrest * dayWidth) + 'px');
+
+    return cws;
+  },
+
+
+  /**
+   * year(s) in period
+   * generates an array with years in period
+   *
+   * @method monthsInPeriod
+   * @param Date  startDate
+   * @param Date  endDate
+   * @param int   dayWidth
+   * @return array e.g. [ { date: FIRST_DAY_OF_YEAR_DATE, nr: 2015, width: 'width: 250px' }, ... ]
+   * @public
+   */
+  yearsInPeriod(startDate, endDate, dayWidth) {
+
+    let years = [];
+    let actDate = this.getNewDate(startDate.getTime());
+
+    // middle cws
+    while(actDate <= endDate) {
+
+      let nextDate = this.getNewDate( (actDate.getFullYear()+1) + '-01-01');
+      nextDate = (endDate <= nextDate) ? endDate : nextDate; // max until endDate
+
+      let isLast = (actDate.getFullYear() === nextDate.getFullYear());
+
+      years.push({
+        date: actDate,
+        nr: actDate.getFullYear(),
+        width: htmlSafe( 'width:' + (this.diffDays(actDate, nextDate, isLast) * dayWidth) + 'px' ),
+      });
+
+      if (isLast) {
+        break;
+      }
+
+      actDate = nextDate;
+    }
+
+    return years;
+  },
+
+
+
 
 }

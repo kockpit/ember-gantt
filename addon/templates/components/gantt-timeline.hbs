@@ -19,13 +19,22 @@
   {{! vertical grid}}
   <div class="gantt-timeline-vertical-grid">
 
-    <div class="gantt-timeline-days">
-     {{#each timelineScale.months as |month|}}
-        {{#each month.days as |day|}}
-          <div class="day {{if day.isWeekend 'day-weekend'}}"> </div>
+    {{#if timelineMonth}}
+      <div class="gantt-timeline-days">
+       {{#each timelineScale.months as |month|}}
+          {{#each month.days as |day|}}
+            <div class="day {{if day.isWeekend 'day-weekend'}}"> </div>
+          {{/each}}
         {{/each}}
-      {{/each}}
-    </div>
+      </div>
+
+    {{else}}
+      <div class="gantt-timeline-years" >
+       {{#each timelineScale.years as |year|}}
+          <div class="gantt-timeline-year" style={{year.width}}> </div>
+        {{/each}}
+      </div>
+    {{/if}}
 
   </div>
 
@@ -41,18 +50,35 @@
     {{! header timeline }}
     <div class="gantt-timeline-scale" style={{scaleStyle}}>
 
-      <div class="gantt-timeline-months" >
-       {{#each timelineScale.months as |month|}}
-          <div class="gantt-timeline-month" style={{month.style}}>
 
-            {{! month }}
-            <div class="gantt-timeline-month-name">
-              <span>{{moment-format month.date 'MMMM YYYY'}}</span>
+      {{! years }}
+      {{#if timelineYear}}
+        <div class="gantt-timeline-years" >
+         {{#each timelineScale.years as |year|}}
+            <div class="gantt-timeline-year" style={{year.width}}>{{year.nr}}</div>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{! months }}
+      {{#if timelineMonth}}
+        <div class="gantt-timeline-months" >
+         {{#each timelineScale.months as |month|}}
+            <div class="gantt-timeline-month" style={{month.style}}>
+
+              {{! month }}
+              <div class="gantt-timeline-month-name">
+                {{#if timelineMonthShort}}
+                  <span>{{moment-format month.date 'MM'}}</span>
+                {{else}}
+                  <span>{{moment-format month.date 'MMMM YYYY'}}</span>
+                {{/if}}
+              </div>
+
             </div>
-
-          </div>
-        {{/each}}
-      </div>
+          {{/each}}
+        </div>
+      {{/if}}
 
       {{! calendar weeks }}
       {{!#if timelineDay}}
