@@ -3,6 +3,7 @@
 import {set,get,observer} from '@ember/object';
 import {isNone} from '@ember/utils';
 import {bind} from '@ember/runloop';
+import $ from 'jquery';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -13,6 +14,19 @@ export default Component.extend({
 
   classNames: 'gantt-chart',
   classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
+
+
+  /**
+   * focus this date
+   *
+   * default: today
+   *
+   * @property viewDate
+   * @type Date
+   * @default null
+   * @public
+   */
+  viewDate: null,
 
 
   /**
@@ -123,10 +137,10 @@ export default Component.extend({
    *
    * @property infinityScroll
    * @type bool
-   * @default true
+   * @default false
    * @public
    */
-  infinityScroll: true,
+  infinityScroll: false,
 
 
   init() {
@@ -161,6 +175,9 @@ export default Component.extend({
     // resize listener
     this.updateResize();
     window.addEventListener('resize', this._handleResize);
+    // initially scroll to center viewDate (today)
+    let viewDate = get(this, 'viewDate') || dateUtil.getNewDate();
+    this.scrollTo(viewDate);
   },
 
   willDestroyelement() {
@@ -217,6 +234,20 @@ export default Component.extend({
   //
   // scroll-event for endless/infinit-scroll and timeline scroll in sticky position
   //
+
+  scrollToObserve: observer('viewDate', function() {
+    let date = get(this, 'viewDate');
+    if (date) {
+      this.scrollTo(date);
+    }
+  }),
+
+  scrollTo(date) {
+    let scrollPx = this.dateToOffset(date) - (get(this, 'ganttWidth')*(1/4));
+    // get(this, 'innerElement').scrollLeft = scrollPx;
+
+    $(get(this, 'innerElement')).animate({ scrollLeft: scrollPx }, 500);
+  },
 
   updateScroll(e) {
     set(this, 'scrollLeft', e.target.scrollLeft);
