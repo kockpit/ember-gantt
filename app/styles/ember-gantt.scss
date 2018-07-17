@@ -140,8 +140,8 @@ $gantt-weekend-background: #efefef;
     z-index: 4;
 
     padding: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
+    // font-weight: bold;
+    // font-size: 1.2em;
     background: #fff;
   }
 
@@ -159,6 +159,8 @@ $gantt-weekend-background: #efefef;
 
   .gantt-timeline-scale {
     position: relative;
+    box-sizing: border-box;
+    border-left: 1px solid $gantt-border-color;
     background: #fff;
   }
 
@@ -166,6 +168,12 @@ $gantt-weekend-background: #efefef;
   .gantt-timeline-year {
     display: inline-block;
     box-sizing: border-box; // ! important for calculations! border should not be calculated
+    border-left: 1px solid $gantt-border-color;
+    border-bottom: 1px solid $gantt-border-color;
+
+    span {
+      padding: 10px;
+    }
   }
 
   // MONTHs
@@ -178,6 +186,7 @@ $gantt-weekend-background: #efefef;
     transition: width $gantt-animation-duration ease-out;
 
     border-bottom: 1px solid $gantt-border-color;
+    border-right: 1px solid $gantt-border-color;
   }
   .gantt-timeline-month-name {
     background: #fff;
@@ -186,7 +195,6 @@ $gantt-weekend-background: #efefef;
     span {
       padding: 10px;
       display: block;
-      border-left: 1px solid $gantt-border-color;
     }
   }
 
@@ -357,6 +365,26 @@ $gantt-weekend-background: #efefef;
     opacity: 0.5;
 }
 
+.gantt-line-milestone {
+  position: absolute;
+  top: 7px;
+
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-bottom: 7px solid #777;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: -5px; top: 7px;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top: 7px solid #777;
+  }
+}
+
 
 // ****************************
 //
@@ -364,7 +392,7 @@ $gantt-weekend-background: #efefef;
 
 
 .gantt-lines > .gantt-line-wrap {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 

@@ -270,6 +270,8 @@ export default {
         totalDays: lastDay,
         days: [],
         width: ((lastDay - startDay) +1) * dayWidth,
+        label: this.getMonthName(actDate, false),
+        labelShort: this.getMonthName(actDate, true)
       };
 
       month.style = htmlSafe(`width:${month.width}px`);
@@ -280,7 +282,7 @@ export default {
         month.days.push({
           nr: d,
           date: dayDate.setDate(d),
-          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0),
+          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0)
         });
       }
 
@@ -369,7 +371,27 @@ export default {
     return years;
   },
 
+  /**
+   * get month name
+   *
+   * @method getMonthName
+   * @param Date  date
+   * @param bool  short
+   * @return string
+   * @public
+   */
+  getMonthName(date, short) {
 
+    short = isNone(short) ? false : short,
+    date = this.getNewDate(date);
+
+    let lang = window.navigator.userLanguage || window.navigator.language;
+    let options = { weekday: 'narrow', year: 'numeric', month: (short ? 'short' : 'long' ), day: 'numeric' };
+    let dateString = date.toLocaleDateString(lang, options);
+    let monthName = dateString.match(/[A-Za-zöäü\.]{3,}/) || [''];
+
+    return monthName[0] + (!short ? ' '+date.getFullYear() : '') ;
+  }
 
 
 }

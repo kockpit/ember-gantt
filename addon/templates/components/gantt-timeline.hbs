@@ -58,7 +58,7 @@
       {{#if timelineYear}}
         <div class="gantt-timeline-years" >
          {{#each timelineScale.years as |year|}}
-            <div class="gantt-timeline-year" style={{year.width}}>{{year.nr}}</div>
+            <div class="gantt-timeline-year" style={{year.width}}><span>{{year.nr}}</span></div>
           {{/each}}
         </div>
       {{/if}}
@@ -71,11 +71,13 @@
 
               {{! month }}
               <div class="gantt-timeline-month-name">
-                {{#if timelineMonthShort}}
-                  <span>{{moment-format month.date 'MM'}}</span>
-                {{else}}
-                  <span>{{moment-format month.date 'MMMM YYYY'}}</span>
-                {{/if}}
+                <span>
+                  {{#if timelineMonthShort}}
+                      {{month.labelShort}}
+                  {{else}}
+                    {{month.label}}
+                  {{/if}}
+                </span>
               </div>
 
             </div>
