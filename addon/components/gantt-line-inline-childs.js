@@ -2,6 +2,7 @@ import {observer,get,set} from '@ember/object';
 import {debounce} from '@ember/runloop';
 import {htmlSafe} from '@ember/string';
 import {isArray, A} from "@ember/array";
+import {isEmpty} from "@ember/utils";
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -113,8 +114,10 @@ export default Component.extend({
     }
 
     let colors = A(A(childs).getEach('color'));
+    colors = colors.filter(color => !isEmpty(color)); // remove empty color strings
     colors = colors.uniq(); // every color only once!
     colors = colors.sort(); // assure color-order always the same
+
 
     // single-color
     if (colors.length === 1) {
