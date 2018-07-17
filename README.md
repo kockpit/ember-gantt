@@ -18,6 +18,9 @@ ember-gantt
 An ember-cli addon for showing beautiful gantt-charts from your data.
 No additional library is used – pure ember. So slick and soooo fast.
 
+
+> This branch is a test to add an is-visible class to every line, so it could be styled (or hidden) specifically. Especially in infinity load to smoothen new projects. But, performance has to be evaluated first!
+
 Installation
 ------------------------------------------------------------------------------
 

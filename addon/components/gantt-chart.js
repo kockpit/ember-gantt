@@ -51,6 +51,28 @@ export default Component.extend({
    */
   viewEndDate: null,
 
+   /**
+   * Gantt timeline start-date
+   * default: null
+   *
+   * @property viewVisibleStartDate
+   * @type Date
+   * @default null
+   * @private
+   */
+  viewVisibleStartDate: null,
+
+  /**
+   * Gantt timeline start-date
+   * default: null
+   *
+   * @property viewVisibleEndDate
+   * @type Date
+   * @default null
+   * @private
+   */
+  viewVisibleEndDate: null,
+
   /**
    * Callback, when view start/end date changed, by application or infinity scroll
    *
@@ -175,6 +197,10 @@ export default Component.extend({
     // resize listener
     this.updateResize();
     window.addEventListener('resize', this._handleResize);
+
+    // visible period
+    this.updateVisiblePeriod();
+
     // initially scroll to center viewDate (today)
     let viewDate = get(this, 'viewDate') || dateUtil.getNewDate();
     this.scrollTo(viewDate);
@@ -255,17 +281,31 @@ export default Component.extend({
     if(get(this, 'infinityScroll')) {
       this.checkInfinityScroll(e);
     }
+
+    this.updateVisiblePeriod();
   },
 
   refreshWidths: observer('viewStartDate','viewEndDate','dayWidth', function() {
     this.updateResize();
+    this.updateVisiblePeriod();
   }),
 
   updateResize(/*e*/) {
+    console.log("RESIZE");
     set(this, 'ganttWidth', this.element.offsetWidth);
 
     // let totalWidth = this.dateToOffset(get(this, 'viewEndDate'), get(this, 'viewStartDate'), true);
     // set(this, 'totalWidth', totalWidth);
+  },
+
+  // update visible time period
+  updateVisiblePeriod() {
+
+    // console.log(get(this, 'scrollLeft'),'scroll');
+    // console.log(get(this, 'ganttWidth'),'gantt');
+
+    set(this, 'viewVisibleStartDate', this.offsetToDate(get(this, 'scrollLeft')));
+    set(this, 'viewVisibleEndDate', this.offsetToDate(get(this, 'scrollLeft') + get(this, 'ganttWidth')));
   },
 
   checkInfinityScroll(e) {

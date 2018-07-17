@@ -1,6 +1,6 @@
-import { bind } from '@ember/runloop';
+import { bind, throttle } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
-import {computed,get,set} from '@ember/object';
+import {computed,observer,get,set} from '@ember/object';
 import {isEmpty} from '@ember/utils';
 import {alias, or} from '@ember/object/computed';
 
@@ -135,7 +135,7 @@ export default Component.extend({
 
 
   classNames: ['gantt-line-wrap'],
-  classNameBindings: ['isResizing','isMoving'],
+  classNameBindings: ['isResizing','isMoving','isInViewport'],
 
   init() {
     this._super(...arguments);
@@ -185,6 +185,9 @@ export default Component.extend({
     document.addEventListener('mousemove', this._handleResizeMove);
     document.addEventListener('mouseup', this._handleFinish);
 
+    //
+    this.updateIsInViewport();
+
   },
 
   willDestroyelement() {
@@ -203,6 +206,25 @@ export default Component.extend({
     barResizeR.removeEventListener('mousedown', this._handleResizeRight);
     document.removeEventListener('mousemove', this._handleResizeMove);
     document.removeEventListener('mouseup', this._handleFinish);
+  },
+
+
+
+  isInViewport: false,
+  observeViewport: observer('dateStart','dateEnd','chart.viewVisibleStartDate','chart.viewVisibleEndDate', function() {
+    throttle(this, this.updateIsInViewport, 500);
+  }),
+  updateIsInViewport() {
+
+    if (get(this, 'parentLine')) {
+      set(this, 'isInViewport', true);
+      return;
+    }
+
+    let inViewport = ( ( get(this, 'dateStart') > get(this, 'chart.viewVisibleStartDate') && get(this, 'dateStart') < get(this, 'chart.viewVisibleEndDate') ) ||
+            ( get(this, 'dateEnd') > get(this, 'chart.viewVisibleStartDate') && get(this, 'dateEnd') < get(this, 'chart.viewVisibleEndDate') ) );
+
+    set(this, 'isInViewport', inViewport);
   },
 
   /**
