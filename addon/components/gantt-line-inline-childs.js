@@ -62,7 +62,7 @@ export default Component.extend({
     this.calculatePeriods();
   },
 
-  reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines','childLines.@each.{dateStart,dateEnd,color}', function() {
+  reloadPeriods: observer('parentLine.{_start,_end,dayWidth}','childLines','childLines.@each.{_start,_end,color}', function() {
     debounce(this, this.calculatePeriods, get(this, 'debounceTime'));
   }),
 
@@ -79,8 +79,8 @@ export default Component.extend({
     // go through all jobs and generate compound child elements
     let chart = get(this, 'chart'),
         childs = get(this, 'childLines'),
-        start = Math.max(get(this, 'parentLine.dateStart'), get(chart,'viewStartDate')),
-        end =  Math.min(get(this, 'parentLine.dateEnd'), get(chart,'viewEndDate'));
+        start = get(this, 'parentLine._start'),
+        end =  get(this, 'parentLine._end')
 
     // generate period segments
     let periods = dateUtil.mergeTimePeriods(childs, start, end);

@@ -81,4 +81,6 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
     assert.equal(segments[1].getAttribute('style'), 'width:20px;background:yellow;', 'changed to yellow single');
 
   });
+
+
 });

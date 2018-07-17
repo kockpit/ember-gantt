@@ -1,8 +1,8 @@
 import { bind } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
-import {computed,get,set} from '@ember/object';
-import {isEmpty} from '@ember/utils';
-import {alias, or} from '@ember/object/computed';
+import { computed, get, set } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import { alias, or } from '@ember/object/computed';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -62,6 +62,12 @@ export default Component.extend({
    */
   dateStart: null,
 
+  _start: computed('dateStart', 'chart.viewStartDate', function() {
+    let max = Math.max(dateUtil.getNewDate(get(this, 'dateStart')), get(this, 'chart.viewStartDate'));
+    return dateUtil.getNewDate(max);
+  }),
+
+
   /**
    * End-date of bar
    *
@@ -71,6 +77,12 @@ export default Component.extend({
    * @public
    */
   dateEnd: null,
+
+  _end: computed('dateEnd', 'chart.viewEndDate', function() {
+    let max = Math.max(dateUtil.getNewDate(get(this, 'dateEnd')), get(this, 'chart.viewEndDate'));
+    return dateUtil.getNewDate(max);
+  }),
+
 
   /**
    * Collapse child lines (if available)
@@ -212,15 +224,13 @@ export default Component.extend({
    * @method barOffset
    * @protected
    */
-  barOffset: computed('dateStart', 'dayWidth','chart.viewStartDate', function(){
-    let start = dateUtil.getNewDate(Math.max(get(this, 'dateStart'), get(this, 'chart.viewStartDate')));
-    return get(this, 'chart').dateToOffset( start );
+  barOffset: computed('_start', 'dayWidth', function(){
+    return get(this, 'chart').dateToOffset( get(this, '_start') );
   }),
 
   // width of bar on months
-  barWidth: computed('dateStart', 'dateEnd', 'dayWidth','chart.viewStartDate', function() {
-    let start = dateUtil.getNewDate(Math.max(get(this, 'dateStart'), get(this, 'chart.viewStartDate')));
-    return get(this, 'chart').dateToOffset( get(this, 'dateEnd'), start, true );
+  barWidth: computed('_start', '_end', 'dayWidth', function() {
+    return get(this, 'chart').dateToOffset( get(this, '_end'), get(this, '_start'), true );
   }),
 
   // styling for left/width
