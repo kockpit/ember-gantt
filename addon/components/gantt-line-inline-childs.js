@@ -114,9 +114,9 @@ export default Component.extend({
     }
 
     let colors = A(A(childs).getEach('color'));
-    colors = colors.filter(color => !isEmpty(color)); // remove empty color strings
     colors = colors.uniq(); // every color only once!
     colors = colors.sort(); // assure color-order always the same
+    colors = colors.filter(color => !isEmpty(color)); // remove empty color strings
 
 
     // single-color

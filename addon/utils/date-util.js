@@ -388,7 +388,7 @@ export default {
     let lang = window.navigator.userLanguage || window.navigator.language;
     let options = { weekday: 'narrow', year: 'numeric', month: (short ? 'short' : 'long' ), day: 'numeric' };
     let dateString = date.toLocaleDateString(lang, options);
-    let monthName = dateString.match(/[A-Za-zöäü\.]{3,}/) || [''];
+    let monthName = dateString.match(/[A-Za-zöäü.]{3,}/) || [''];
 
     return monthName[0] + (!short ? ' '+date.getFullYear() : '') ;
   }
