@@ -45,7 +45,10 @@
 <div class="gantt-chart-header {{if isSticky 'gantt-chart-header-sticky'}}" style={{stickyPlaceholderStyle}}>
   <div class="gantt-chart-header-inner" style={{stickyStyle}}> {{! used for sticky handling }}
 
-    <div class="gantt-header-title"><span>{{headerTitle}}</span></div>
+    <div class="gantt-header-title">
+     {{! <span>{{headerTitle} }</span> }}
+     {{yield (hash header=(component "gantt-generic-content")) }}
+    </div>
 
     {{! header timeline }}
     <div class="gantt-timeline-scale" style={{scaleStyle}}>

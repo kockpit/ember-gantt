@@ -4,7 +4,9 @@
 
 
   {{! timeline - header and grid }}
-  {{gantt-timeline chart=this }}
+  {{#gantt-timeline chart=this as |timeline|}}
+    {{#timeline.header}}{{yield (hash header=(component "gantt-generic-content" )) }}{{/timeline.header}}
+  {{/gantt-timeline}}
 
   {{! lines and (recursive) sublines }}
   <div class="gantt-titles-background"></div>

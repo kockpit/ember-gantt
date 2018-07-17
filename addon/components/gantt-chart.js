@@ -68,16 +68,6 @@ export default Component.extend({
   showToday: true,
 
   /**
-   * Header title, above line titles
-   *
-   * @property headerTitle
-   * @type string
-   * @default ''
-   * @public
-   */
-  headerTitle: '',
-
-  /**
    * Get/update gantt-width to so sub-elements can consume via observer/computed
    *
    * @property ganttWidth
