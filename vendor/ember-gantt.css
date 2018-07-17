@@ -69,8 +69,6 @@
     width: 200px;
     z-index: 4;
     padding: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
     background: #fff; }
   .gantt-chart-header.gantt-chart-header-sticky .gantt-chart-header-inner {
     position: fixed;
@@ -84,21 +82,25 @@
     background: #fff; }
   .gantt-chart-header .gantt-timeline-year {
     display: inline-block;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc; }
+    .gantt-chart-header .gantt-timeline-year span {
+      padding: 10px; }
   .gantt-chart-header .gantt-timeline-months {
     border-right: 1px solid #ccc; }
   .gantt-chart-header .gantt-timeline-month {
     display: inline-block;
     box-sizing: border-box;
     transition: width 200ms ease-out;
-    border-bottom: 1px solid #ccc; }
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc; }
   .gantt-chart-header .gantt-timeline-month-name {
     background: #fff;
     font-size: initial; }
     .gantt-chart-header .gantt-timeline-month-name span {
       padding: 10px;
-      display: block;
-      border-left: 1px solid #ccc; }
+      display: block; }
   .gantt-chart-header .gantt-timeline-cws {
     border-right: 1px solid #ccc; }
     .gantt-chart-header .gantt-timeline-cws .cw {
@@ -207,8 +209,25 @@
   background: blue;
   opacity: 0.5; }
 
+.gantt-line-milestone {
+  position: absolute;
+  top: 7px;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-bottom: 7px solid #777; }
+  .gantt-line-milestone:after {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 7px;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top: 7px solid #777; }
+
 .gantt-lines > .gantt-line-wrap {
-  margin-bottom: 30px; }
+  margin-bottom: 20px; }
 
 .gantt-line-childs .gantt-line,
 .gantt-line-childs .gantt-line-title {

@@ -35,6 +35,13 @@
 
     </div>
 
+    {{! milestone(s) }}
+    {{yield
+        (hash
+          milestone=(component "gantt-milestone" line=this chart=chart)
+        )
+      }}
+
     {{! months }}
     {{!--#each chart.timelineMonths as |month|}}
       <div class="gantt-timeline-month">
