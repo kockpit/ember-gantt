@@ -138,25 +138,24 @@ export default {
    *
    * @method mergeTimePeriods
    * @param array childs
-   * @param Date  periodStartDate
-   * @param Date  periodEndDate
+   * @param Date  periodStart
+   * @param Date  periodEnd
    * @return array
    * @public
    */
-  mergeTimePeriods(childs, periodStartDate, periodEndDate) {
+  mergeTimePeriods(childs, periodStart, periodEnd) {
 
     if (!isArray(childs) || !(childs.length > 0)) return null;
-
 
     // go through dates and search periods including active childs
     let periods = A(),
         actChilds = A() ,
         actIndex = 0,
-        actDate = this.getNewDate(periodStartDate).getTime(), // assure 0 hours UTC
-        endDate = this.datePlusDays(periodEndDate, 1).getTime(),
-        dateMap = this.preparePeriodDateMap(childs);
+        actDate = this.getNewDate(periodStart).getTime(), // assure 0 hours UTC
+        endDate = this.datePlusDays(periodEnd, 1).getTime(),
+        dateMap = this.preparePeriodDateMap(childs, periodStart, periodEnd);
 
-    let debugmax = 3;
+    let debugmax = 0;
     while(actDate < endDate) {
 
       // TODO: remove once its stable
@@ -199,25 +198,34 @@ export default {
    *
    * @method preparePeriodDateMap
    * @param array childs
+   * @param Date  periodStart
+   * @param Date  periodEnd
    * @return array format: [{ timestamp:timestamp1, isStart:true, child:childObj }, {timestamp:timestamp2, isStart:false, child:childObj2 }}
    * @private
    */
-  preparePeriodDateMap(childs) {
+  preparePeriodDateMap(childs, periodStart, periodEnd) {
 
     let dateMap = A();
     childs.forEach(child => {
 
+      let start = get(child, 'dateStart');
+      let end = get(child, 'dateEnd');
+
+      // ignore childs out of boundary or adjust Date
+      if ( end < periodStart || start > periodEnd ) return;
+
       // dateStart
       dateMap.pushObject({
-        timestamp: this.getNewDate(get(child, 'dateStart')).getTime(),
-        debugDate: this.getNewDate(get(child, 'dateStart')),
+        timestamp: Math.max(start, periodStart), //this.getNewDate(Math.max()).getTime(),
+        // debugDate: this.getNewDate(Math.max(start, periodStart)),
         isStart: true,
         child: child
       });
 
       // dateEnd
       dateMap.pushObject({
-        timestamp: this.datePlusDays(get(child, 'dateEnd'), +1).getTime(), // add 1 day, so overlapping is ok
+        timestamp: this.datePlusDays(Math.min(end, periodEnd), +1).getTime(), // add 1 day, so overlapping is ok
+        // debugDate: this.datePlusDays(Math.min(end, periodEnd), +1),
         isStart: false,
         child: child
       });
