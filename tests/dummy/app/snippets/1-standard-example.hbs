@@ -1,15 +1,24 @@
-{{#gantt-chart dayWidth=dayWidth headerTitle="Project/Job" as |chart|}}
+{{#gantt-chart dayWidth=dayWidth as |chart|}}
+
+  {{#chart.header}}
+    <b>Project / Job</b><br>
+    <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
+  {{/chart.header}}
 
   {{#each model.projects as |project|}}
 
     {{! line for each project }}
     {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
       {{#line.title}}
         <span>
           <svg width="12px" height="12px"><rect fill="#7891d7" width="12" height="12"></rect></svg>
           {{project.title}}
         </span>
       {{/line.title}}
+
+      {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+      {{line.inlineChilds childLines=project.jobs }}
 
       {{! child line for each job in project }}
       {{#each project.jobs as |job|}}

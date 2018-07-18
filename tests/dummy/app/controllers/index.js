@@ -1,33 +1,11 @@
 
 import { set, get } from '@ember/object';
 import Controller from '@ember/controller';
+import ExampleController from '../mixins/example-controller';
 
-export default Controller.extend({
-
-  dayWidth: 20,
-
-  viewStartDate: null,
-  viewEndDate: null,
-
-  init() {
-    this._super(...arguments);
-
-    // start-end date
-    let today = new Date();
-    today.setDate(today.getDate() - 10);
-    set(this, 'viewStartDate', today);
-    // end date is set to 3 months after automatically
-  },
+export default Controller.extend(ExampleController, {
 
   actions: {
-    zoom(value) {
-      let newDayWidth = Math.max(1, parseInt(get(this, 'dayWidth')) + parseInt(value) );
-      set(this, 'dayWidth', newDayWidth);
-    },
-
-    collapse(project) {
-      project.toggleProperty('collapsed');
-    },
     datesChanged(job, start, end,/* action*/) {
       // console.log(job, 'job ref');
       // console.log(start, 'start changed');

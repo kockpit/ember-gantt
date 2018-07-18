@@ -1,66 +1,73 @@
-<h1>ember-gantt addon</h1>
 
-<p class="lead">
-  Simple and leightweight gantt ember-addon.
-  <br>No external libraries are necessary – pure Ember (3KB unzipped).
-</p>
+<div class="container">
+  <h1>ember-gantt addon</h1>
 
-
-<h2>Demo</h2>
-
-
-Day width (px): {{input value=dayWidth}}<br><br>
-
-<a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-<br><br>
-
-{{#gantt-chart dayWidth=dayWidth viewStartDate=viewStartDate infinityScroll=false headerTitle="Project/Job" as |chart|}}
-
-  {{#each model.projects as |project|}}
-
-    {{! line for each project }}
-    {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
-    {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
-
-      {{! collapse childs }}
-      {{#line.title}}
-        <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
-      {{/line.title}}
-
-      {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-      {{line.inlineChilds childLines=project.jobs }}
-
-      {{! child line for each job in project }}
-      {{#bs-collapse collapsed=project.collapsed}}
-        {{#unless project.collapsed}}
-          {{#each project.jobs as |job|}}
-
-            {{! child lines}}
-            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                              color=job.color onDateChange=(action "datesChanged" job) as |childLine|}}
-
-              {{! more complex title inner}}
-              {{#childLine.title}}
-                <span>
-                  <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
-                  {{job.title}}
-                </span>
-              {{/childLine.title}}
-
-              {{! add something to the bar content}}
-              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
-
-            {{/line.childLine}}
-          {{/each}}
-        {{/unless}}
-      {{/bs-collapse}}
-
-    {{/chart.line}}
-
-  {{/each}}
-
-{{/gantt-chart}}
+  <p class="lead">
+    Simple and leightweight gantt ember-addon.
+    <br>No external libraries are necessary – pure Ember (3KB unzipped).
+  </p>
 
 
-<h3>... results from following code:</h3>
-{{code-snippet name="1-standard-example.hbs"}}
+  <h2>Demo</h2>
+
+</div>
+
+{{!Day width (px): {{input value=dayWidth} }<br><br>}}
+<div class="container-fluid">
+  {{#gantt-chart stickyOffset=56 dayWidth=dayWidth as |chart|}}
+
+    {{#chart.header}}
+      <b>Project / Job</b><br>
+      <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
+    {{/chart.header}}
+
+    {{#each model.projects as |project|}}
+
+      {{! line for each project }}
+      {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
+      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
+
+        {{! collapse childs }}
+        {{#line.title}}
+          <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
+        {{/line.title}}
+
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
+
+        {{! child line for each job in project }}
+        {{#bs-collapse collapsed=project.collapsed}}
+          {{#unless project.collapsed}}
+            {{#each project.jobs as |job|}}
+
+              {{! child lines}}
+              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                                color=job.color onDateChange=(action "datesChanged" job) as |childLine|}}
+
+                {{! more complex title inner}}
+                {{#childLine.title}}
+                  <span>
+                    <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
+                    {{job.title}}
+                  </span>
+                {{/childLine.title}}
+
+                {{! add something to the bar content}}
+                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+
+              {{/line.childLine}}
+            {{/each}}
+          {{/unless}}
+        {{/bs-collapse}}
+
+      {{/chart.line}}
+
+    {{/each}}
+
+  {{/gantt-chart}}
+</div>
+
+<div class="container">
+  <h3>... results from following code:</h3>
+  {{code-snippet name="1-standard-example.hbs"}}
+</div>

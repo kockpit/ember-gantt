@@ -1,0 +1,23 @@
+{{#gantt-chart dayWidth=dayWidth as |chart|}}
+
+  {{! ... header }}
+
+  {{#each model.projects as |p|}}
+
+    {{! line for each project }}
+    {{#chart.line title=p.title projectdateStart=p.minStartDate dateEnd=p.maxEndDate as |line|}}
+
+      {{! ... inline childs  }}
+
+      {{! ... child lines }}
+
+      {{! milestones }}
+      {{#each p.milestones as |ms|}}
+        {{line.milestone title=ms.title date=ms.date }}
+      {{/each}}
+
+    {{/chart.line}}
+
+  {{/each}}
+
+{{/gantt-chart}}

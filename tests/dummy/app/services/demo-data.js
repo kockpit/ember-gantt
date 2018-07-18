@@ -58,13 +58,25 @@ export default Service.extend({
                   color: types[1].color,
                   dateStart: dateUtil.datePlusDays(today, 14),
                   dateEnd: dateUtil.datePlusDays(today, 20),
-                }])
+                }]),
+
+        milestones: A([{
+          title: 'first round finished',
+          date: dateUtil.datePlusDays(today, 10),
+        },{
+          title: 'second round finished',
+          date: dateUtil.datePlusDays(today, 20),
+        }])
+
     }));
+
+
 
     // P2 - web
     let todayAfter = dateUtil.datePlusDays(today, 15);
     projects.push(Project.create({
         title: `Coca Cola Website`,
+
         jobs: A([{
           title: types[0].title,
           color: types[0].color,
@@ -80,6 +92,11 @@ export default Service.extend({
           color: types[2].color,
           dateStart: dateUtil.datePlusDays(todayAfter, 7),
           dateEnd: dateUtil.datePlusDays(todayAfter, 30)
+        }]),
+
+        milestones: A([{
+          title: 'go-live',
+          date: dateUtil.datePlusDays(todayAfter, 30),
         }])
     }));
 

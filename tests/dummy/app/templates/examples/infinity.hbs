@@ -1,20 +1,10 @@
-<h1>ember-gantt addon</h1>
 
-<p class="lead">
-  Simple and leightweight gantt ember-addon.
-  <br>No external libraries are necessary – pure Ember (3KB unzipped).
-</p>
+<div class="container mb-5 mt-5">
+  <h2>infinity scrolling</h2>
+</div>
 
 
-<h2>Demo</h2>
-
-
-Day width (px): {{input value=dayWidth}}<br><br>
-
-<a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-<br><br>
-
-{{#gantt-chart dayWidth=dayWidth infinityScroll=true headerTitle="Project/Job"
+{{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true
                 onViewDateChange=(action 'viewDateChange') as |chart|}}
 
   {{#each model.projects as |project|}}
@@ -62,6 +52,7 @@ Day width (px): {{input value=dayWidth}}<br><br>
 
 {{/gantt-chart}}
 
-
-<h3>... results from following code:</h3>
-{{code-snippet name="1-standard-example.hbs"}}
+<div class="container">
+  <h3>... results from following code:</h3>
+  {{code-snippet name="1-standard-example.hbs"}}
+</div>
