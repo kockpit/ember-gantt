@@ -1,0 +1,49 @@
+
+<div class="container mb-5 mt-5">
+  <h2>sortable</h2>
+</div>
+
+<div class="container-fluid">
+
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
+    {{#chart.header}}
+      <b>Project / Job</b><br>
+      <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
+    {{/chart.header}}
+
+    {{#each model.projects as |project|}}
+
+      {{! line for each project }}
+      {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
+
+        {{#each project.milestones as |ms|}}
+          {{line.milestone title=ms.title date=ms.date }}
+        {{/each}}
+
+          {{! child lines}}
+          {{#each project.sortedJobs as |job|}}
+            {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                              onDateChange=(action "datesChanged" project) color=job.color as |childLine|}}
+
+              {{! add something to the bar content}}
+              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+
+            {{/line.childLine}}
+          {{/each}}
+
+      {{/chart.line}}
+    {{/each}}
+
+  {{/gantt-chart}}
+
+</div>
+
+<div class="container">
+  <h3>... results from following code:</h3>
+  {{!code-snippet name="1-standard-example.hbs"}}
+</div>
+
+

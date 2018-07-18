@@ -1,7 +1,7 @@
 import {isNone} from '@ember/utils';
 import O from '@ember/object';
 import {A} from '@ember/array';
-import { alias } from '@ember/object/computed';
+import { alias, sort } from '@ember/object/computed';
 import dateUtil from '../utils/date-util';
 import MinMaxChildDatesMixin from '../mixins/min-max-child-dates-mixin';
 import Service from '@ember/service';
@@ -31,7 +31,10 @@ export default Service.extend({
     let Project = O.extend(MinMaxChildDatesMixin, {
         title: 'empty',
         collapsed: false,
-        jobs: alias('childs')
+        jobs: alias('childs'),
+
+        sorting: ['sorting'],
+        sortedJobs: sort('jobs','sorting')
       });
 
     // P1
@@ -41,23 +44,27 @@ export default Service.extend({
                   title: types[0].title,
                   color: types[0].color,
                   dateStart: dateUtil.datePlusDays(today, 3),
-                  dateEnd: dateUtil.datePlusDays(today, 6)
+                  dateEnd: dateUtil.datePlusDays(today, 6),
+                  sorting: 1
                 },
                {
                   title: types[1].title,
                   color: types[1].color,
                   dateStart: dateUtil.datePlusDays(today, 7),
-                  dateEnd: dateUtil.datePlusDays(today, 10)
+                  dateEnd: dateUtil.datePlusDays(today, 10),
+                  sorting: 2
                 },{
                   title: types[0].title+' - second round',
                   color: types[0].color,
                   dateStart: dateUtil.datePlusDays(today, 12),
-                  dateEnd: dateUtil.datePlusDays(today, 17)
+                  dateEnd: dateUtil.datePlusDays(today, 17),
+                  sorting: 3
                 },{
                   title: types[1].title+' - second round',
                   color: types[1].color,
                   dateStart: dateUtil.datePlusDays(today, 14),
-                  dateEnd: dateUtil.datePlusDays(today, 20)
+                  dateEnd: dateUtil.datePlusDays(today, 20),
+                  sorting: 4
                 }]),
 
         milestones: A([{
@@ -82,16 +89,19 @@ export default Service.extend({
           color: types[0].color,
           dateStart: dateUtil.datePlusDays(todayAfter, 0),
           dateEnd: dateUtil.datePlusDays(todayAfter, 20),
+          sorting: 1
         },{
           title: types[1].title,
           color: types[1].color,
           dateStart: dateUtil.datePlusDays(todayAfter, 3),
           dateEnd: dateUtil.datePlusDays(todayAfter, 25),
+          sorting: 2
         },{
           title: types[2].title,
           color: types[2].color,
           dateStart: dateUtil.datePlusDays(todayAfter, 7),
-          dateEnd: dateUtil.datePlusDays(todayAfter, 30)
+          dateEnd: dateUtil.datePlusDays(todayAfter, 30),
+          sorting: 3
         }]),
 
         milestones: A([{

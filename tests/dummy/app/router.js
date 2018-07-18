@@ -12,6 +12,7 @@ Router.map(function() {
   this.route('examples', function() {
     this.route('infinity');
     this.route('milestones');
+    this.route('sortable');
   });
 });
 
