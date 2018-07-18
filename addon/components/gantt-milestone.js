@@ -7,10 +7,9 @@ export default Component.extend({
   layout,
 
   classNames: ['gantt-line-milestone'],
-  attributeBindings: ['style','tooltipTitle:title'],
+  attributeBindings: ['style',],
 
   line: null,
-
   chart: null,
 
   leftOffset: computed('date', 'chart.{viewStartDate,dayWidth}', function(){
@@ -24,9 +23,8 @@ export default Component.extend({
   }),
 
   //
-  tooltipTitle: computed('date','title',function() {
-    let formattedDate = get(this, 'date').toLocaleDateString();
-    return htmlSafe(`${formattedDate}: ${get(this, 'title')}`);
+  formattedDate: computed('date', function() {
+    return htmlSafe(get(this, 'date').toLocaleDateString());
   })
 
 });

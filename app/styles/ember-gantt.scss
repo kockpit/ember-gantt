@@ -29,6 +29,7 @@ $gantt-weekend-background: #efefef;
   overflow-y: hidden;
 
   padding-bottom: 50px;
+
   background: #fff;
   border: 1px solid $gantt-border-color;
 }
@@ -129,7 +130,8 @@ $gantt-weekend-background: #efefef;
 
 .gantt-chart-header {
   box-sizing: border-box;
-  height: 110px;
+  // height: 110px;
+  margin-bottom: 30px;
   z-index: 1;
 
   .gantt-header-title {
@@ -342,32 +344,44 @@ $gantt-weekend-background: #efefef;
     height: 100%;
   }
 }
-.gantt-line-wrap.is-moving .gantt-line-bar ,
-.gantt-line-wrap.is-resizing .gantt-line-bar  {
+// .gantt-line-wrap.is-moving .gantt-line-bar ,
+// .gantt-line-wrap.is-resizing .gantt-line-bar  {
 
-  &:before {
-    position:absolute;
-    top:-10px;
-    bottom:-10px;
-    left:-10px;
-    right: -10px;
-    background: blue;
-    opacity: 0.5;
-  }
-}
-.gantt-line-bar:before {
-    position:absolute;
-    top:-10px;
-    bottom:-10px;
-    left:-10px;
-    right: -10px;
-    background: blue;
-    opacity: 0.5;
-}
+//   &:before {
+//     position:absolute;
+//     top:-10px;
+//     bottom:-10px;
+//     left:-10px;
+//     right: -10px;
+//     background: blue;
+//     opacity: 0.5;
+//   }
+// }
+// .gantt-line-bar:before {
+//     position:absolute;
+//     top:-10px;
+//     bottom:-10px;
+//     left:-10px;
+//     right: -10px;
+//     background: blue;
+//     opacity: 0.5;
+// }
+
+
+
+
+// ****************************
+//
+//        Milesstones
+
 
 .gantt-line-milestone {
   position: absolute;
-  top: 7px;
+  top: 12px;
+}
+
+.gantt-line-milestone-icon {
+  position: relative;
 
   width: 0;
   height: 0;
@@ -382,6 +396,48 @@ $gantt-weekend-background: #efefef;
     height: 0;
     border: 5px solid transparent;
     border-top: 7px solid #777;
+  }
+
+  // hover zoom (?)
+  // transition: transform 0.2s ease-out, top 0.2s ease-out;
+  // &:hover {
+  //   top: -3px;
+  //   transform: scale(2);
+  // }
+}
+
+.gantt-line-milestone-title {
+  display: none;
+  position: absolute;
+
+  top: 0;
+  width: 100px;
+
+  transform: translateX(-50%) translateY(-100%);
+
+  padding: 5px 10px;
+  background: #333;
+  color: #fff;
+
+  span {
+    display: block;
+    &:after { content: ': '; }
+  }
+}
+
+.gantt-line-milestone:hover {
+  .gantt-line-milestone-title {
+    display: block;
+  }
+}
+
+// show milestone tooltips in print
+@media print {
+  .gantt-line-milestone-title {
+    display: block;
+    width: 150px;
+    background: #fff;
+    color: #000;
   }
 }
 
