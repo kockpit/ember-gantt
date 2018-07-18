@@ -36,20 +36,7 @@
     </div>
 
     {{! milestone(s) }}
-    {{yield
-        (hash
-          milestone=(component "gantt-milestone" line=this chart=chart)
-        )
-      }}
-
-    {{! months }}
-    {{!--#each chart.timelineMonths as |month|}}
-      <div class="gantt-timeline-month">
-        {{#each month.days as |day|}}
-          <div class="gantt-timeline-day {{if day.isWeekend 'gantt-timeline-day-weekend'}}"></div>
-        {{/each}}
-      </div>
-    {{/each--}}
+    {{yield (hash milestone=(component "gantt-milestone" line=this chart=chart)) }}
 
   </div>
 </div>

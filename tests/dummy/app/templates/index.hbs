@@ -25,7 +25,7 @@
 
       {{! line for each project }}
       {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
-      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
+      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
 
         {{! collapse childs }}
         {{#line.title}}

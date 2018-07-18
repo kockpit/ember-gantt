@@ -41,23 +41,23 @@ export default Service.extend({
                   title: types[0].title,
                   color: types[0].color,
                   dateStart: dateUtil.datePlusDays(today, 3),
-                  dateEnd: dateUtil.datePlusDays(today, 6),
+                  dateEnd: dateUtil.datePlusDays(today, 6)
                 },
                {
                   title: types[1].title,
                   color: types[1].color,
                   dateStart: dateUtil.datePlusDays(today, 7),
-                  dateEnd: dateUtil.datePlusDays(today, 10),
+                  dateEnd: dateUtil.datePlusDays(today, 10)
                 },{
                   title: types[0].title+' - second round',
                   color: types[0].color,
                   dateStart: dateUtil.datePlusDays(today, 12),
-                  dateEnd: dateUtil.datePlusDays(today, 17),
+                  dateEnd: dateUtil.datePlusDays(today, 17)
                 },{
                   title: types[1].title+' - second round',
                   color: types[1].color,
                   dateStart: dateUtil.datePlusDays(today, 14),
-                  dateEnd: dateUtil.datePlusDays(today, 20),
+                  dateEnd: dateUtil.datePlusDays(today, 20)
                 }]),
 
         milestones: A([{
