@@ -160,7 +160,6 @@ module('Integration | Component | gantt-line', function(hooks) {
     // move-event infos
     let offset = editableBar.getBoundingClientRect();
     let startClone = dateUtil.getNewDate(data.start);
-    let lineDimensions = editableLine.getBoundingClientRect();
 
     // !! not editable
     await triggerEvent(editableBar, 'mousedown'); // activate
