@@ -1,5 +1,5 @@
 
-import { set, get } from '@ember/object';
+import { set } from '@ember/object';
 import Controller from '@ember/controller';
 import ExampleController from '../mixins/example-controller';
 

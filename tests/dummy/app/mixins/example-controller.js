@@ -1,10 +1,5 @@
 import Mixin from '@ember/object/mixin';
-import {addObserver} from '@ember/object/observers';
-import {on} from '@ember/object/evented';
-import {set, get, getProperties} from '@ember/object';
-import {inject as service} from '@ember/service';
-import {isEmpty} from '@ember/utils';
-
+import {set,get} from '@ember/object';
 
 export default Mixin.create({
 
@@ -26,7 +21,6 @@ export default Mixin.create({
   actions: {
     zoom(value) {
       let newDayWidth = Math.max(1, parseInt(get(this, 'dayWidth')) + parseInt(value) );
-      console.log(newDayWidth, 'new');
       set(this, 'dayWidth', newDayWidth);
     },
 
