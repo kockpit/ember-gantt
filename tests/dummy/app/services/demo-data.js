@@ -1,5 +1,6 @@
 import {isNone} from '@ember/utils';
-import EmberObject from '@ember/object';
+import O from '@ember/object';
+import {A} from '@ember/array';
 import { alias } from '@ember/object/computed';
 import dateUtil from '../utils/date-util';
 import MinMaxChildDatesMixin from '../mixins/min-max-child-dates-mixin';
@@ -21,49 +22,50 @@ export default Service.extend({
 
 
   getDataScenario1() {
-    let projects = [];
+    let projects = A();
     let today = new Date();
     let types = jobTypes;
 
 
     // let intelligent project object
-    let ProjectObject = EmberObject.extend(MinMaxChildDatesMixin, {
+    let Project = O.extend(MinMaxChildDatesMixin, {
         title: 'empty',
         collapsed: false,
         jobs: alias('childs')
       });
 
     // P1
-    projects.push(ProjectObject.create({
+    projects.pushObject(Project.create({
         title: `Coca Cola Logo`,
-        childs: [{
-          title: types[0].title,
-          color: types[0].color,
-          dateStart: dateUtil.datePlusDays(today, 3),
-          dateEnd: dateUtil.datePlusDays(today, 6),
-        },{
-          title: types[1].title,
-          color: types[1].color,
-          dateStart: dateUtil.datePlusDays(today, 7),
-          dateEnd: dateUtil.datePlusDays(today, 10),
-        },{
-          title: types[0].title+' - second round',
-          color: types[0].color,
-          dateStart: dateUtil.datePlusDays(today, 12),
-          dateEnd: dateUtil.datePlusDays(today, 17),
-        },{
-          title: types[1].title+' - second round',
-          color: types[1].color,
-          dateStart: dateUtil.datePlusDays(today, 14),
-          dateEnd: dateUtil.datePlusDays(today, 20),
-        }]
+        childs: A([{
+                  title: types[0].title,
+                  color: types[0].color,
+                  dateStart: dateUtil.datePlusDays(today, 3),
+                  dateEnd: dateUtil.datePlusDays(today, 6),
+                },
+               {
+                  title: types[1].title,
+                  color: types[1].color,
+                  dateStart: dateUtil.datePlusDays(today, 7),
+                  dateEnd: dateUtil.datePlusDays(today, 10),
+                },{
+                  title: types[0].title+' - second round',
+                  color: types[0].color,
+                  dateStart: dateUtil.datePlusDays(today, 12),
+                  dateEnd: dateUtil.datePlusDays(today, 17),
+                },{
+                  title: types[1].title+' - second round',
+                  color: types[1].color,
+                  dateStart: dateUtil.datePlusDays(today, 14),
+                  dateEnd: dateUtil.datePlusDays(today, 20),
+                }])
     }));
 
     // P2 - web
     let todayAfter = dateUtil.datePlusDays(today, 15);
-    projects.push(ProjectObject.create({
+    projects.push(Project.create({
         title: `Coca Cola Website`,
-        jobs: [{
+        jobs: A([{
           title: types[0].title,
           color: types[0].color,
           dateStart: dateUtil.datePlusDays(todayAfter, 0),
@@ -78,7 +80,7 @@ export default Service.extend({
           color: types[2].color,
           dateStart: dateUtil.datePlusDays(todayAfter, 7),
           dateEnd: dateUtil.datePlusDays(todayAfter, 30)
-        }]
+        }])
     }));
 
     return { projects };
@@ -92,7 +94,7 @@ export default Service.extend({
     let types = jobTypes;
 
     // let intelligent project object
-    let ProjectObject = EmberObject.extend(MinMaxChildDatesMixin, {
+    let Project = O.extend(MinMaxChildDatesMixin, {
         title: 'empty',
         collapsed: false,
         jobs: alias('childs')
@@ -119,7 +121,7 @@ export default Service.extend({
       }
 
       // intelligent project object creation
-      projects.push(ProjectObject.create({
+      projects.push(Project.create({
           title: `Project ${i}`,
           jobs: jobs
       }));

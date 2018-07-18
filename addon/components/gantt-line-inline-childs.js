@@ -1,5 +1,5 @@
-import {observer,get,set} from '@ember/object';
-import {debounce} from '@ember/runloop';
+import {observer, get, set} from '@ember/object';
+import {throttle} from '@ember/runloop';
 import {htmlSafe} from '@ember/string';
 import {isArray, A} from "@ember/array";
 import {isEmpty} from "@ember/utils";
@@ -43,7 +43,7 @@ export default Component.extend({
    * @default null
    * @public
    */
-  childLines: null,
+  childLines: A(),
 
   /**
    * calculated periods for rendering in template
@@ -55,15 +55,13 @@ export default Component.extend({
    */
   periods: null,
 
-
-
   didInsertElement() {
     this._super(...arguments);
     this.calculatePeriods();
   },
 
-  reloadPeriods: observer('parentLine.{_start,_end,dayWidth}','childLines','childLines.@each.{_start,_end,color}', function() {
-    debounce(this, this.calculatePeriods, get(this, 'debounceTime'));
+  reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines.@each.{dateStart,dateEnd,color}', function() {
+    throttle(this, this.calculatePeriods, 50);
   }),
 
   /**
@@ -84,7 +82,6 @@ export default Component.extend({
 
     // generate period segments
     let periods = dateUtil.mergeTimePeriods(childs, start, end);
-
 
     // calculate width of segments
     if (periods && periods.length > 0) {

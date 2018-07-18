@@ -79,8 +79,8 @@ export default Component.extend({
   dateEnd: null,
 
   _end: computed('dateEnd', 'chart.viewEndDate', function() {
-    let max = Math.max(dateUtil.getNewDate(get(this, 'dateEnd')), get(this, 'chart.viewEndDate'));
-    return dateUtil.getNewDate(max);
+    let min = Math.min(dateUtil.getNewDate(get(this, 'dateEnd')), get(this, 'chart.viewEndDate'));
+    return dateUtil.getNewDate(min);
   }),
 
 

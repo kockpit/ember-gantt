@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render,settled,triggerEvent } from '@ember/test-helpers';
 import { set/*, get*/ } from '@ember/object';
+import { run } from '@ember/runloop';
 import dateUtil from 'dummy/utils/date-util';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -70,8 +71,10 @@ module('Integration | Component | gantt-line', function(hooks) {
 
 
     // - CHANGE DAY WIDTH
-    set(this, 'dayWidth', 30);
-    set(data[2], 'color', 'purple');
+    run(() => {
+      set(this, 'dayWidth', 30);
+      set(data[2], 'color', 'purple');
+    });
     await settled();
 
     assert.equal(lines[2].querySelector('.gantt-line-timeline .gantt-line-bar').getAttribute('style'), 'left:240px;width:150px;background-color:purple', 'position & color after dayWidth changed - THREE (block)');
