@@ -21,7 +21,8 @@
     "lint:js": "eslint .",
     "start": "ember serve",
     "test": "ember test",
-    "test:all": "ember try:each"
+    "test:all": "ember try:each",
+    "up": "npm publish --access public"
   },
   "dependencies": {
     "ember-cli-babel": "^6.14.1",
