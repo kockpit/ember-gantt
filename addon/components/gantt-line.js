@@ -1,6 +1,6 @@
-import { bind } from '@ember/runloop';
+import { bind, next } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
-import { computed, get, set } from '@ember/object';
+import { computed, get, set, observer } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import { alias, or } from '@ember/object/computed';
 
@@ -152,7 +152,7 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
-    if (get(this, 'isEditable') && !this._handleMoveStart) {
+    if (!this._handleMoveStart) {
       this._handleMoveStart = bind(this, this.activateMove);
       this._handleResizeLeft = bind(this, this.activateResizeLeft);
       this._handleResizeRight = bind(this, this.activateResizeRight);
@@ -160,7 +160,6 @@ export default Component.extend({
       this._handleFinish = bind(this, this.deactivateAll);
     }
   },
-
 
   /**
    * Init editable handlers
@@ -179,12 +178,32 @@ export default Component.extend({
     let chart = get(this, 'chart').element;
     set(this, 'chartElement', chart);
 
-    // below, only if editable
-    if (!get(this, 'isEditable')) return;
+    // only if editable
+    if (get(this, 'isEditable')) {
+      this.makeEditable();
+    }
+
+  },
+
+  willDestroyelement() {
+    this._super(...arguments);
+
+    if (get(this, 'isEditable')) {
+      this.removeEditable();
+    }
+  },
+
+  observeEditable: observer('isEditable', function() {
+    let func = get(this, 'isEditable') ? this.makeEditable : this.removeEditable;
+    next( this, func); // wait for rendering resize-handlers
+  }),
+
+  makeEditable() {
 
     // register resize and drag handlers
-    let barResizeL = this.element.querySelector('.bar-resize-l');
-    let barResizeR = this.element.querySelector('.bar-resize-r');
+    let bar = get(this, 'barElement')
+    let barResizeL = bar.querySelector('.bar-resize-l');
+    let barResizeR = bar.querySelector('.bar-resize-r');
 
     // resize
     barResizeL.addEventListener('mousedown', this._handleResizeLeft);
@@ -199,15 +218,10 @@ export default Component.extend({
 
   },
 
-  willDestroyelement() {
-    this._super(...arguments);
-
-    if (!get(this, 'isEditable')) return;
-
+  removeEditable() {
     let bar = get(this, 'barElement');
     let barResizeL = bar.querySelector('.bar-resize-l');
     let barResizeR = bar.querySelector('.bar-resize-r');
-    // let chart = document.querySelector('.gantt-chart-inner');
 
     // unregister resize and drag helpers
     bar.removeEventListener('mousedown', this._handleMoveStart);
@@ -216,6 +230,10 @@ export default Component.extend({
     document.removeEventListener('mousemove', this._handleResizeMove);
     document.removeEventListener('mouseup', this._handleFinish);
   },
+
+
+
+
 
   /**
    * Bar offset from left (in px)

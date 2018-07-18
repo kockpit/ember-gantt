@@ -11,8 +11,6 @@ export default Component.extend({
   layout,
 
   classNames: 'gantt-chart',
-  classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
-
 
   /**
    * focus this date
@@ -320,8 +318,6 @@ export default Component.extend({
       callback(get(this, 'viewStartDate'), get(this, 'viewEndDate'), expanded, previousStart, previousEnd);
     }
   }
-
-
 
 
 });
