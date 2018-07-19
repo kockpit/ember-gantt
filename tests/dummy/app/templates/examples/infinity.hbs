@@ -1,67 +1,62 @@
-<h1>ember-gantt addon</h1>
 
-<p class="lead">
-  Simple and leightweight gantt ember-addon.
-  <br>No external libraries are necessary – pure Ember (3KB unzipped).
-</p>
+<div class="container mb-5 mt-5">
+  <h2>infinity scrolling</h2>
+</div>
 
 
-<h2>Demo</h2>
+<div class="container-fluid">
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true
+                  onViewDateChange=(action 'viewDateChange') as |chart|}}
 
+    {{#each model.projects as |project|}}
 
-Day width (px): {{input value=dayWidth}}<br><br>
+      {{! line for each project }}
+      {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
+      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
 
-<a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-<br><br>
+        {{! collapse childs }}
+        {{#line.title}}
+          <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
+        {{/line.title}}
 
-{{#gantt-chart dayWidth=dayWidth infinityScroll=true headerTitle="Project/Job"
-                onViewDateChange=(action 'viewDateChange') as |chart|}}
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
 
-  {{#each model.projects as |project|}}
+        {{! child line for each job in project }}
+        {{#bs-collapse collapsed=project.collapsed}}
+          {{#unless project.collapsed}}
+            {{#each project.jobs as |job|}}
 
-    {{! line for each project }}
-    {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
-    {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
+              {{! child lines}}
+              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                                color=job.color as |childLine|}}
 
-      {{! collapse childs }}
-      {{#line.title}}
-        <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
-      {{/line.title}}
+                {{! more complex title inner}}
+                {{#childLine.title}}
+                  <span>
+                    <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
+                    {{job.title}}
+                  </span>
+                {{/childLine.title}}
 
-      {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-      {{line.inlineChilds childLines=project.jobs }}
+                {{! add something to the bar content}}
+                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
 
-      {{! child line for each job in project }}
-      {{#bs-collapse collapsed=project.collapsed}}
-        {{#unless project.collapsed}}
-          {{#each project.jobs as |job|}}
+              {{/line.childLine}}
+            {{/each}}
+          {{/unless}}
+        {{/bs-collapse}}
 
-            {{! child lines}}
-            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                              color=job.color as |childLine|}}
+      {{/chart.line}}
 
-              {{! more complex title inner}}
-              {{#childLine.title}}
-                <span>
-                  <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
-                  {{job.title}}
-                </span>
-              {{/childLine.title}}
+    {{/each}}
 
-              {{! add something to the bar content}}
-              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+  {{/gantt-chart}}
+</div>
 
-            {{/line.childLine}}
-          {{/each}}
-        {{/unless}}
-      {{/bs-collapse}}
-
-    {{/chart.line}}
-
-  {{/each}}
-
-{{/gantt-chart}}
-
-
-<h3>... results from following code:</h3>
-{{code-snippet name="1-standard-example.hbs"}}
+{{!--
+<div class="container">
+  <h3>code:</h3>
+  {{code-snippet name="1-standard-example.hbs"}}
+</div>
+--}}

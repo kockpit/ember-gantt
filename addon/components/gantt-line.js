@@ -1,8 +1,8 @@
-import { bind } from '@ember/runloop';
+import { bind, next } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
-import {computed,get,set} from '@ember/object';
-import {isEmpty} from '@ember/utils';
-import {alias, or} from '@ember/object/computed';
+import { computed, get, set, observer } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import { alias, or } from '@ember/object/computed';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -62,6 +62,12 @@ export default Component.extend({
    */
   dateStart: null,
 
+  _start: computed('dateStart', 'chart.viewStartDate', function() {
+    let max = Math.max(dateUtil.getNewDate(get(this, 'dateStart')), get(this, 'chart.viewStartDate'));
+    return dateUtil.getNewDate(max);
+  }),
+
+
   /**
    * End-date of bar
    *
@@ -71,6 +77,12 @@ export default Component.extend({
    * @public
    */
   dateEnd: null,
+
+  _end: computed('dateEnd', 'chart.viewEndDate', function() {
+    let min = Math.min(dateUtil.getNewDate(get(this, 'dateEnd')), get(this, 'chart.viewEndDate'));
+    return dateUtil.getNewDate(min);
+  }),
+
 
   /**
    * Collapse child lines (if available)
@@ -140,7 +152,7 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
-    if (get(this, 'isEditable') && !this._handleMoveStart) {
+    if (!this._handleMoveStart) {
       this._handleMoveStart = bind(this, this.activateMove);
       this._handleResizeLeft = bind(this, this.activateResizeLeft);
       this._handleResizeRight = bind(this, this.activateResizeRight);
@@ -148,7 +160,6 @@ export default Component.extend({
       this._handleFinish = bind(this, this.deactivateAll);
     }
   },
-
 
   /**
    * Init editable handlers
@@ -167,12 +178,32 @@ export default Component.extend({
     let chart = get(this, 'chart').element;
     set(this, 'chartElement', chart);
 
-    // below, only if editable
-    if (!get(this, 'isEditable')) return;
+    // only if editable
+    if (get(this, 'isEditable')) {
+      this.makeEditable();
+    }
+
+  },
+
+  willDestroyelement() {
+    this._super(...arguments);
+
+    if (get(this, 'isEditable')) {
+      this.removeEditable();
+    }
+  },
+
+  observeEditable: observer('isEditable', function() {
+    let func = get(this, 'isEditable') ? this.makeEditable : this.removeEditable;
+    next( this, func); // wait for rendering resize-handlers
+  }),
+
+  makeEditable() {
 
     // register resize and drag handlers
-    let barResizeL = this.element.querySelector('.bar-resize-l');
-    let barResizeR = this.element.querySelector('.bar-resize-r');
+    let bar = get(this, 'barElement')
+    let barResizeL = bar.querySelector('.bar-resize-l');
+    let barResizeR = bar.querySelector('.bar-resize-r');
 
     // resize
     barResizeL.addEventListener('mousedown', this._handleResizeLeft);
@@ -187,15 +218,10 @@ export default Component.extend({
 
   },
 
-  willDestroyelement() {
-    this._super(...arguments);
-
-    if (!get(this, 'isEditable')) return;
-
+  removeEditable() {
     let bar = get(this, 'barElement');
     let barResizeL = bar.querySelector('.bar-resize-l');
     let barResizeR = bar.querySelector('.bar-resize-r');
-    // let chart = document.querySelector('.gantt-chart-inner');
 
     // unregister resize and drag helpers
     bar.removeEventListener('mousedown', this._handleMoveStart);
@@ -205,6 +231,10 @@ export default Component.extend({
     document.removeEventListener('mouseup', this._handleFinish);
   },
 
+
+
+
+
   /**
    * Bar offset from left (in px)
    * Calculated from date-start and dayWidth (in chart component)
@@ -212,15 +242,13 @@ export default Component.extend({
    * @method barOffset
    * @protected
    */
-  barOffset: computed('dateStart', 'dayWidth','chart.viewStartDate', function(){
-    let start = dateUtil.getNewDate(Math.max(get(this, 'dateStart'), get(this, 'chart.viewStartDate')));
-    return get(this, 'chart').dateToOffset( start );
+  barOffset: computed('_start', 'dayWidth', function(){
+    return get(this, 'chart').dateToOffset( get(this, '_start') );
   }),
 
   // width of bar on months
-  barWidth: computed('dateStart', 'dateEnd', 'dayWidth','chart.viewStartDate', function() {
-    let start = dateUtil.getNewDate(Math.max(get(this, 'dateStart'), get(this, 'chart.viewStartDate')));
-    return get(this, 'chart').dateToOffset( get(this, 'dateEnd'), start, true );
+  barWidth: computed('_start', '_end', 'dayWidth', function() {
+    return get(this, 'chart').dateToOffset( get(this, '_end'), get(this, '_start'), true );
   }),
 
   // styling for left/width

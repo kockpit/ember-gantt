@@ -138,25 +138,24 @@ export default {
    *
    * @method mergeTimePeriods
    * @param array childs
-   * @param Date  periodStartDate
-   * @param Date  periodEndDate
+   * @param Date  periodStart
+   * @param Date  periodEnd
    * @return array
    * @public
    */
-  mergeTimePeriods(childs, periodStartDate, periodEndDate) {
+  mergeTimePeriods(childs, periodStart, periodEnd) {
 
     if (!isArray(childs) || !(childs.length > 0)) return null;
-
 
     // go through dates and search periods including active childs
     let periods = A(),
         actChilds = A() ,
         actIndex = 0,
-        actDate = this.getNewDate(periodStartDate).getTime(), // assure 0 hours UTC
-        endDate = this.datePlusDays(periodEndDate, 1).getTime(),
-        dateMap = this.preparePeriodDateMap(childs);
+        actDate = this.getNewDate(periodStart).getTime(), // assure 0 hours UTC
+        endDate = this.datePlusDays(periodEnd, 1).getTime(),
+        dateMap = this.preparePeriodDateMap(childs, periodStart, periodEnd);
 
-    let debugmax = 3;
+    let debugmax = 0;
     while(actDate < endDate) {
 
       // TODO: remove once its stable
@@ -199,25 +198,34 @@ export default {
    *
    * @method preparePeriodDateMap
    * @param array childs
+   * @param Date  periodStart
+   * @param Date  periodEnd
    * @return array format: [{ timestamp:timestamp1, isStart:true, child:childObj }, {timestamp:timestamp2, isStart:false, child:childObj2 }}
    * @private
    */
-  preparePeriodDateMap(childs) {
+  preparePeriodDateMap(childs, periodStart, periodEnd) {
 
     let dateMap = A();
     childs.forEach(child => {
 
+      let start = get(child, 'dateStart');
+      let end = get(child, 'dateEnd');
+
+      // ignore childs out of boundary or adjust Date
+      if ( end < periodStart || start > periodEnd ) return;
+
       // dateStart
       dateMap.pushObject({
-        timestamp: this.getNewDate(get(child, 'dateStart')).getTime(),
-        debugDate: this.getNewDate(get(child, 'dateStart')),
+        timestamp: Math.max(start, periodStart), //this.getNewDate(Math.max()).getTime(),
+        // debugDate: this.getNewDate(Math.max(start, periodStart)),
         isStart: true,
         child: child
       });
 
       // dateEnd
       dateMap.pushObject({
-        timestamp: this.datePlusDays(get(child, 'dateEnd'), +1).getTime(), // add 1 day, so overlapping is ok
+        timestamp: this.datePlusDays(Math.min(end, periodEnd), +1).getTime(), // add 1 day, so overlapping is ok
+        // debugDate: this.datePlusDays(Math.min(end, periodEnd), +1),
         isStart: false,
         child: child
       });
@@ -232,16 +240,18 @@ export default {
    * generates an array with months in period including days (see return)
    *
    * @method monthsInPeriod
-   * @param Date  startDate
-   * @param Date  endDate
-   * @param int  dayWidth
+   * @param Date   startDate
+   * @param Date   endDate
+   * @param int    dayWidth
+   * @param object specialDays  special object with day-classes and titles for grid colors ({ 15315121545 (timestamp): { title: 'Today', class:'today'}})
    * @return array e.g. [ { date: FIRST_DAY_OF_MONTH_DATE, totalDays: 31, width: 500, style: 'width:500px', days: [ ... ] -> day = { nr: 1, date: DATE, isWeekend: true}
    * @public
    */
-  monthsInPeriod(startDate, endDate, dayWidth) {
+  monthsInPeriod(startDate, endDate, dayWidth, specialDays) {
 
     let months = [];
     let actDate = this.getNewDate(startDate.getTime());
+    specialDays = specialDays || {};
 
     // MONTHS AND DAYS
     while(actDate < endDate) {
@@ -279,11 +289,21 @@ export default {
       // iterate all days to generate data-array
       for(let d=startDay; d<=lastDay; d++) {
         let dayDate = this.getNewDate(actDate);
-        month.days.push({
+        let day = {
           nr: d,
           date: dayDate.setDate(d),
-          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0)
-        });
+          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0),
+          title: '',
+          class: ''
+        };
+
+        // special day
+        if (dayDate.getTime() in specialDays) {
+          day.title = specialDays[dayDate.getTime()].title;
+          day.class = specialDays[dayDate.getTime()].class;
+        }
+
+        month.days.push(day);
       }
 
       // add days to month
@@ -388,7 +408,7 @@ export default {
     let lang = window.navigator.userLanguage || window.navigator.language;
     let options = { weekday: 'narrow', year: 'numeric', month: (short ? 'short' : 'long' ), day: 'numeric' };
     let dateString = date.toLocaleDateString(lang, options);
-    let monthName = dateString.match(/[A-Za-zöäü\.]{3,}/) || [''];
+    let monthName = dateString.match(/[A-Za-zöäü.]{3,}/) || [''];
 
     return monthName[0] + (!short ? ' '+date.getFullYear() : '') ;
   }

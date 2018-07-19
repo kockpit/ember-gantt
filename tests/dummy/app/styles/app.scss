@@ -1,5 +1,10 @@
 
+
+$brand-primary: #6d94d3;
+
 @import "ember-bootstrap/bootstrap";
+
+
 
 /**
  *
@@ -7,31 +12,115 @@
  *
  */
 body {
-	background: lightblue;
+	background: #efefef;
 }
 body, p {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
 }
 h1, h2, h3 {
-  font-family: 'Roboto', serif;
+  // font-family: 'Roboto', serif;
+  font-family: 'Roboto Slab', serif;
   margin-top: 30px;
 }
-h1 {
-  font-family: 'Roboto Slab', serif;
+
+.navbar {
+  background-color: $brand-primary;
+
+  .navbar-brand {
+    margin-right: 50px;
+    color: #fff;
+
+    small {
+      font-family: 'Roboto Slab', serif;
+      font-size: 9px;
+    }
+  }
+
+  a.nav-link {
+    color: #fff !important;
+
+    &.active {
+      border-bottom: 1px solid #fff;
+    }
+  }
+
+  .link-github {
+    img {
+      width: 30px;
+      height: auto;
+      margin: 5px 5px 0 0;
+    }
+  }
 }
 
-.navbar-brand small {
-  font-family: 'Roboto Slab', serif;
-  font-size: 9px;
-  color: #666;
+.nav-pills a {
+  margin-right: 20px;
+  background-color: $brand-primary !important;
+  color: #fff;
+
 }
 
-.navbar svg {
-  width: 30px;
-  margin: 5px 5px 0 0;
+// code
+.hljs {
+  background: #fff;
+}
+.code-label {
+  display:inline-block;
+  // float: right;
+  // color: #e83e8c;
+  color: $brand-primary;
+  font-weight: 600;
+  background: #fff;
+  padding: 3px 15px;
+
+  &:before { content: '- '; }
+  &:after { content: ' -'; }
 }
 
+
+// grid
+// ---------------------------
+.gantt-chart-header .gantt-header-title a {
+  font-size: 0.8em;
+}
+.gantt-timeline .day.birthday {
+  background-color: #d8d9e5;
+}
+
+
+// lines
+// ---------------------------
+.gantt-line-title {
+  font-weight: bold;
+}
+.gantt-line-childs .gantt-line-title {
+  font-weight: normal;
+}
+
+// helpers
+.gantt-line-title .move-handle {
+  color: #e83e8c;
+  font-size: 0.8em;
+  display: inline-block !important;
+  cursor: move;
+  padding: 7px 0 0 10px;
+}
+
+
+// sortable example
+.sortable-item {
+  transition: all .125s;
+}
+.sortable-item.is-dragging {
+  transition-duration: 0s;
+  // background: red;
+  z-index: 10;
+}
+.sortable-item.is-dropping {
+  // background: #f66;
+  z-index: 10;
+}
 
 
 @import 'addon/styles/addon.scss';

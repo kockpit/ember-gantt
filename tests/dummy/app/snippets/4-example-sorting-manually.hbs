@@ -1,0 +1,31 @@
+{{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
+
+  {{! ... header }}
+
+  {{#each model.projects as |project|}}
+
+    {{! line for each project }}
+    {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
+      {{! sortable group }}
+      {{#sortable-group tagName="div" model=project onChange="reorderItems" as |group|}}
+        {{#each project.jobs as |job|}}
+
+          {{! sortable items }}
+          {{#sortable-item tagName="div" model=job group=group handle=".move-handle"}}
+            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
+
+              {{#childLine.title}}<span>{{job.title}} <span class="move-handle">move</span></span>{{/childLine.title}}
+              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+
+            {{/line.childLine}}
+          {{/sortable-item}}
+
+        {{/each}}
+
+      {{/sortable-group}}
+
+    {{/chart.line}}
+  {{/each}}
+
+{{/gantt-chart}}

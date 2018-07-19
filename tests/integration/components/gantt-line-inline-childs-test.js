@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
+import { A } from '@ember/array';
 import { render, settled } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import dateUtil from 'dummy/utils/date-util';
@@ -21,7 +22,7 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
       end:  dateUtil.datePlusDays(start, 23),
     };
 
-    const childs = [{
+    let childs = A([{
       dateStart: dateUtil.datePlusDays(start, 3),
       dateEnd: dateUtil.datePlusDays(start, 6),
       color: 'red'
@@ -33,18 +34,19 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
       dateStart: dateUtil.datePlusDays(start, 9),
       dateEnd: dateUtil.datePlusDays(start, 15),
       color: 'green'
-    }];
+    }]);
 
 
     run(() => {
       this.set('start', start);
       this.set('line', line);
       this.set('childs', childs);
+      this.set('dayWidth', 20);
     });
 
     // RENDER
     await render(hbs`
-      {{#gantt-chart viewStartDate=start as |chart|}}
+      {{#gantt-chart viewStartDate=start dayWidth=dayWidth as |chart|}}
         {{#chart.line dateStart=line.start dateEnd=line.end as |line|}}
 
           {{line.inlineChilds childLines=childs }}
@@ -53,7 +55,6 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
       {{/gantt-chart}}
     `);
 
-    // TESTS
 
     let bar = this.element.querySelector('.gantt-lines .gantt-line-bar');
     let segments = bar.querySelectorAll('.gantt-line-inline-childs > div');
@@ -81,4 +82,6 @@ module('Integration | Component | gantt-line-inline-childs', function(hooks) {
     assert.equal(segments[1].getAttribute('style'), 'width:20px;background:yellow;', 'changed to yellow single');
 
   });
+
+
 });

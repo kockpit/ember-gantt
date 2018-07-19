@@ -1,5 +1,5 @@
-import {observer,get,set} from '@ember/object';
-import {debounce} from '@ember/runloop';
+import {observer, get, set} from '@ember/object';
+import {throttle} from '@ember/runloop';
 import {htmlSafe} from '@ember/string';
 import {isArray, A} from "@ember/array";
 import {isEmpty} from "@ember/utils";
@@ -43,7 +43,7 @@ export default Component.extend({
    * @default null
    * @public
    */
-  childLines: null,
+  childLines: A(),
 
   /**
    * calculated periods for rendering in template
@@ -55,15 +55,13 @@ export default Component.extend({
    */
   periods: null,
 
-
-
   didInsertElement() {
     this._super(...arguments);
     this.calculatePeriods();
   },
 
-  reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines','childLines.@each.{dateStart,dateEnd,color}', function() {
-    debounce(this, this.calculatePeriods, get(this, 'debounceTime'));
+  reloadPeriods: observer('parentLine.{dateStart,dateEnd,dayWidth}','childLines.@each.{dateStart,dateEnd,color}', function() {
+    throttle(this, this.calculatePeriods, 50);
   }),
 
   /**
@@ -79,12 +77,11 @@ export default Component.extend({
     // go through all jobs and generate compound child elements
     let chart = get(this, 'chart'),
         childs = get(this, 'childLines'),
-        start = Math.max(get(this, 'parentLine.dateStart'), get(chart,'viewStartDate')),
-        end =  Math.min(get(this, 'parentLine.dateEnd'), get(chart,'viewEndDate'));
+        start = get(this, 'parentLine._start'),
+        end =  get(this, 'parentLine._end')
 
     // generate period segments
     let periods = dateUtil.mergeTimePeriods(childs, start, end);
-
 
     // calculate width of segments
     if (periods && periods.length > 0) {
@@ -114,9 +111,9 @@ export default Component.extend({
     }
 
     let colors = A(A(childs).getEach('color'));
-    colors = colors.filter(color => !isEmpty(color)); // remove empty color strings
     colors = colors.uniq(); // every color only once!
     colors = colors.sort(); // assure color-order always the same
+    colors = colors.filter(color => !isEmpty(color)); // remove empty color strings
 
 
     // single-color

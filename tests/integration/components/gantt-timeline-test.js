@@ -11,7 +11,7 @@ module('Integration | Component | gantt-timeline', function(hooks) {
     assert.expect(6);
 
     let start = dateUtil.getNewDate('2018-05-05');
-    let end = dateUtil.getNewDate('2018-08-05');
+    let end = dateUtil.getNewDate('2018-12-05');
     const data = {
         start: dateUtil.datePlusDays(start, 3),
         end:  dateUtil.datePlusDays(start, 23)
@@ -34,23 +34,23 @@ module('Integration | Component | gantt-timeline', function(hooks) {
     let verticalGrid = this.element.querySelector('.gantt-timeline-grid .gantt-timeline-vertical-grid');
 
     let months = headerScale.querySelectorAll('.gantt-timeline-months .gantt-timeline-month');
-    assert.equal(months.length, 4, 'has 4 months');
+    assert.equal(months.length, 8, 'has 4 months');
 
     let days = headerScale.querySelectorAll('.gantt-timeline-days .day');
-    assert.equal(days.length, 93, 'has days');
+    assert.equal(days.length, 215, 'has days');
 
     let gridDays = verticalGrid.querySelectorAll('.gantt-timeline-days .day');
-    assert.equal(gridDays.length, 93, 'has grid days');
+    assert.equal(gridDays.length, 215, 'has grid days');
 
     let gridWeekendDays = verticalGrid.querySelectorAll('.gantt-timeline-days .day.day-weekend');
-    assert.equal(gridWeekendDays.length, 28, 'has grid weekend days');
+    assert.equal(gridWeekendDays.length, 62, 'has grid weekend days');
 
     // ZOOM OUT
     this.set('dayWidth', 10);
     await settled();
 
     gridDays = verticalGrid.querySelectorAll('.gantt-timeline-days .day');
-    assert.equal(gridDays.length, 93, 'grid days still there');
+    assert.equal(gridDays.length, 215, 'grid days still there');
 
     days = headerScale.querySelectorAll('.gantt-timeline-days .day');
     assert.equal(days.length, 0, 'days are not shown at this zoom level');

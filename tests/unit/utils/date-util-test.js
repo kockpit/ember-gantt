@@ -29,6 +29,14 @@ const timePeriodChilds = [{
   }];
 
 
+
+
+
+const getDate = function(date) {
+  return dateUtil.getNewDate(date);
+}
+
+
 module('Unit | Utility | date-util', function(/*hooks*/) {
 
 
@@ -38,20 +46,20 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     let today = new Date();
     today.setUTCHours(0,0,0,0);
 
-    let date = dateUtil.getNewDate();
+    let date = getDate();
     assert.equal(date.toString(), today.toString(), 'no date passed = today');
 
     let todayPlus10 = dateUtil.datePlusDays(date, 10);
-    let date2 = dateUtil.getNewDate( parseInt(todayPlus10.getTime()) );
+    let date2 = getDate( parseInt(todayPlus10.getTime()) );
     assert.equal(date2.toString(), todayPlus10.toString(), 'from timestamp integer');
 
-    let date3 = dateUtil.getNewDate( ""+(todayPlus10.getTime()) );
+    let date3 = getDate( ""+(todayPlus10.getTime()) );
     assert.equal(date3.toString(), todayPlus10.toString(), 'from timestamp string');
 
-    let date4 = dateUtil.getNewDate( '2018-05-25');
+    let date4 = getDate( '2018-05-25');
     assert.equal(date4.toString(), (new Date('2018-05-25')).toString(), 'from iso string (YYYY-MM-DD)');
 
-    let date5 = dateUtil.getNewDate( todayPlus10 );
+    let date5 = getDate( todayPlus10 );
     assert.equal(date5.toString(), todayPlus10.toString(), 'from date object');
   });
 
@@ -97,8 +105,8 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     days = dateUtil.diffDays(testStartDate, testStartDate, true);
     assert.equal(days, 1, 'same day, including last day = 1');
 
-    let date1 = dateUtil.getNewDate('2018-05-29');
-    let date2 = dateUtil.getNewDate('2018-06-05');
+    let date1 = getDate('2018-05-29');
+    let date2 = getDate('2018-06-05');
     assert.equal(dateUtil.diffDays(date1, date2, false), 7, '29th may to 5th june');
     assert.equal(dateUtil.diffDays(date1, date2, true), 8, '29th may to 5th june, including day');
 
@@ -108,51 +116,83 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     days = dateUtil.diffDays(testStartDate, testEndDate, true);
     assert.equal(days, 51, 'start-end test dates, DO include last day');
 
-    days = dateUtil.diffDays(dateUtil.getNewDate('2015-01-01'), dateUtil.getNewDate('2016-12-31'), true);
+    days = dateUtil.diffDays(getDate('2015-01-01'), getDate('2016-12-31'), true);
     assert.equal(days, 731, '2015-01-01 to 2016-12-31 (2016 as leap year)');
   });
 
   test('getCW', function(assert) {
     assert.expect(7);
 
-    let date = dateUtil.getNewDate('2016-12-31');
+    let date = getDate('2016-12-31');
     assert.equal(dateUtil.getCW(date), 52, 'last day of 2016');
 
-    date = dateUtil.getNewDate('2017-01-01');
+    date = getDate('2017-01-01');
     assert.equal(dateUtil.getCW(date), 52, 'first day of 2017');
 
-    date = dateUtil.getNewDate('2017-01-02');
+    date = getDate('2017-01-02');
     assert.equal(dateUtil.getCW(date), 1, 'starting first cw in 2017');
 
-    date = dateUtil.getNewDate('2017-01-08');
+    date = getDate('2017-01-08');
     assert.equal(dateUtil.getCW(date), 1, 'last day of first cw in 2017');
 
-    date = dateUtil.getNewDate('2017-01-09');
+    date = getDate('2017-01-09');
     assert.equal(dateUtil.getCW(date), 2, '2017-01-09');
 
-    date = dateUtil.getNewDate('2017-12-24');
+    date = getDate('2017-12-24');
     assert.equal(dateUtil.getCW(date), 51, '2017-12-24');
 
-    date = dateUtil.getNewDate('2015-12-31');
+    date = getDate('2015-12-31');
     assert.equal(dateUtil.getCW(date), 53, '2015-12-31'); // having 53 cws
 
   });
 
-
-  test('preparePeriodDateMap', function(assert) {
+//http://localhost:4200/#/projects/timeline?lead=37%2C31
+  test('preparePeriodDateMap: normal', function(assert) {
     assert.expect(5);
 
-    let dateMap = dateUtil.preparePeriodDateMap(timePeriodChilds);
+    let start = getDate("2018-04-10");
+    let end = getDate("2018-08-25");
+    let dateMap = dateUtil.preparePeriodDateMap(timePeriodChilds, start, end);
 
     //
     assert.equal(dateMap.length, (timePeriodChilds.length*2), 'double the size of childs');
 
-    assert.equal(dateMap[0].timestamp, dateUtil.getNewDate(testStartDate).getTime(), 'first timestamp');
+    assert.equal(dateMap[0].timestamp, getDate(testStartDate).getTime(), 'first timestamp');
     assert.equal(dateMap[0].isStart, true, 'first is start');
     assert.equal(dateMap[dateMap.length-1].timestamp, 1531180800000, 'last timestamp');
     assert.equal(dateMap[dateMap.length-1].isStart, false, 'last is end');
 
   });
+
+
+  test('preparePeriodDateMap: having childs before periodStart and after periodEnd', function(assert) {
+    assert.expect(1);
+
+    let start = getDate("2018-05-10");
+    let end = getDate("2018-06-25");
+
+    let childs = [
+      { dateStart: getDate("2018-04-10"), dateEnd: getDate("2018-05-01")}, // before
+      { dateStart: getDate("2018-05-05"), dateEnd: getDate("2018-05-15")}, // overlapping
+      { dateStart: getDate("2018-05-15"), dateEnd: getDate("2018-06-10")}, // fully in period (overlapping with prior)
+      { dateStart: getDate("2018-06-26"), dateEnd: getDate("2018-06-30")}  // after
+    ];
+
+    let dateMap = dateUtil.preparePeriodDateMap(childs, start, end);
+    // console.log(dateMap, 'dm');
+    dateMap = dateMap.map(item =>  getProperties(item, ['timestamp', 'isStart'] )); // remove childs
+
+    // starting with periodStart end ending with periodEnd
+    let expectedResult = [
+      { timestamp: getDate('2018-05-10').getTime(), isStart: true },
+      { timestamp: getDate('2018-05-15').getTime(), isStart: true },
+      { timestamp: getDate('2018-05-16').getTime(), isStart: false },
+      { timestamp: getDate('2018-06-11').getTime(), isStart: false }
+    ];
+
+    assert.deepEqual( dateMap, expectedResult, "deep-equal resulting data");
+  });
+
 
   test('mergeTimePeriods: child starting with range', function(assert) {
     assert.expect(2);
@@ -161,14 +201,14 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
 
     let result = periods.map(period => getProperties(period, ['dateStart','dateEnd','childs.length']) );
     let expectedResult = [
-      { dateStart: dateUtil.getNewDate('2018-05-25'), dateEnd: dateUtil.getNewDate('2018-05-29'), 'childs.length': 1},
-      { dateStart: dateUtil.getNewDate('2018-05-30'), dateEnd: dateUtil.getNewDate('2018-06-09'), 'childs.length': 2},
-      { dateStart: dateUtil.getNewDate('2018-06-10'), dateEnd: dateUtil.getNewDate('2018-06-14'), 'childs.length': 1},
-      { dateStart: dateUtil.getNewDate('2018-06-15'), dateEnd: dateUtil.getNewDate('2018-06-23'), 'childs.length': 0},
-      { dateStart: dateUtil.getNewDate('2018-06-24'), dateEnd: dateUtil.getNewDate('2018-06-28'), 'childs.length': 2},
-      { dateStart: dateUtil.getNewDate('2018-06-29'), dateEnd: dateUtil.getNewDate('2018-07-04'), 'childs.length': 3},
-      { dateStart: dateUtil.getNewDate('2018-07-05'), dateEnd: dateUtil.getNewDate('2018-07-09'), 'childs.length': 1},
-      { dateStart: dateUtil.getNewDate('2018-07-10'), dateEnd: dateUtil.getNewDate('2018-07-14'), 'childs.length': 0}
+      { dateStart: getDate('2018-05-25'), dateEnd: getDate('2018-05-29'), 'childs.length': 1},
+      { dateStart: getDate('2018-05-30'), dateEnd: getDate('2018-06-09'), 'childs.length': 2},
+      { dateStart: getDate('2018-06-10'), dateEnd: getDate('2018-06-14'), 'childs.length': 1},
+      { dateStart: getDate('2018-06-15'), dateEnd: getDate('2018-06-23'), 'childs.length': 0},
+      { dateStart: getDate('2018-06-24'), dateEnd: getDate('2018-06-28'), 'childs.length': 2},
+      { dateStart: getDate('2018-06-29'), dateEnd: getDate('2018-07-04'), 'childs.length': 3},
+      { dateStart: getDate('2018-07-05'), dateEnd: getDate('2018-07-09'), 'childs.length': 1},
+      { dateStart: getDate('2018-07-10'), dateEnd: getDate('2018-07-14'), 'childs.length': 0}
     ];
 
     assert.equal(periods.length, 8, 'should create 8 period segments');
@@ -185,13 +225,13 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
 
     let result = periods.map(period => getProperties(period, ['dateStart','dateEnd','childs.length']) );
     let expectedResult = [
-      { dateStart: dateUtil.getNewDate('2018-05-25'), dateEnd: dateUtil.getNewDate('2018-05-29'), 'childs.length': 0},
-      { dateStart: dateUtil.getNewDate('2018-05-30'), dateEnd: dateUtil.getNewDate('2018-06-09'), 'childs.length': 1},
-      { dateStart: dateUtil.getNewDate('2018-06-10'), dateEnd: dateUtil.getNewDate('2018-06-23'), 'childs.length': 0},
-      { dateStart: dateUtil.getNewDate('2018-06-24'), dateEnd: dateUtil.getNewDate('2018-06-28'), 'childs.length': 2},
-      { dateStart: dateUtil.getNewDate('2018-06-29'), dateEnd: dateUtil.getNewDate('2018-07-04'), 'childs.length': 3},
-      { dateStart: dateUtil.getNewDate('2018-07-05'), dateEnd: dateUtil.getNewDate('2018-07-09'), 'childs.length': 1},
-      { dateStart: dateUtil.getNewDate('2018-07-10'), dateEnd: dateUtil.getNewDate('2018-07-14'), 'childs.length': 0}
+      { dateStart: getDate('2018-05-25'), dateEnd: getDate('2018-05-29'), 'childs.length': 0},
+      { dateStart: getDate('2018-05-30'), dateEnd: getDate('2018-06-09'), 'childs.length': 1},
+      { dateStart: getDate('2018-06-10'), dateEnd: getDate('2018-06-23'), 'childs.length': 0},
+      { dateStart: getDate('2018-06-24'), dateEnd: getDate('2018-06-28'), 'childs.length': 2},
+      { dateStart: getDate('2018-06-29'), dateEnd: getDate('2018-07-04'), 'childs.length': 3},
+      { dateStart: getDate('2018-07-05'), dateEnd: getDate('2018-07-09'), 'childs.length': 1},
+      { dateStart: getDate('2018-07-10'), dateEnd: getDate('2018-07-14'), 'childs.length': 0}
     ];
 
     assert.equal(periods.length, 7, 'should create 7 period segments');
@@ -202,21 +242,21 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
   test('yearsInPeriod', function(assert) {
     assert.expect(2);
 
-    let start = dateUtil.getNewDate('2015-02-15');
-    let end = dateUtil.getNewDate('2017-01-01');
+    let start = getDate('2015-02-15');
+    let end = getDate('2017-01-01');
     let dayWidth = 10;
 
     let result = dateUtil.yearsInPeriod(start, end, dayWidth);
     let exptected = [
       { date: start, nr: 2015, width: htmlSafe('width:3200px')}, // 365 - (31 + 14) = 320
-      { date: dateUtil.getNewDate('2016-01-01'), nr: 2016, width: htmlSafe('width:3660px')}, // 366 days
-      { date: dateUtil.getNewDate('2017-01-01'), nr: 2017, width: htmlSafe('width:10px')}, // 1 day
+      { date: getDate('2016-01-01'), nr: 2016, width: htmlSafe('width:3660px')}, // 366 days
+      { date: getDate('2017-01-01'), nr: 2017, width: htmlSafe('width:10px')}, // 1 day
     ];
 
     assert.deepEqual( result, exptected, "deep-equal resulting years");
 
 
-    end = dateUtil.getNewDate('2015-06-15');
+    end = getDate('2015-06-15');
     result = dateUtil.yearsInPeriod(start, end, dayWidth);
     exptected = [{ date: start, nr: 2015, width: htmlSafe('width:1210px') }];
 

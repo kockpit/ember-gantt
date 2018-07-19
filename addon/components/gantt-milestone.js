@@ -1,5 +1,4 @@
-import {computed,get} from '@ember/object';
-import dateUtil from '../utils/date-util';
+import { computed, get } from '@ember/object';
 import { htmlSafe } from '@ember/string';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-milestone';
@@ -8,17 +7,14 @@ export default Component.extend({
   layout,
 
   classNames: ['gantt-line-milestone'],
-  attributeBindings: ['style','tooltipTitle:title'],
+  attributeBindings: ['style',],
 
   line: null,
-
   chart: null,
 
-
-  leftOffset: computed('date', 'chart.viewStartDate', 'chart.dayWidth', function(){
+  leftOffset: computed('date', 'chart.{viewStartDate,dayWidth}', function(){
     return get(this, 'chart').dateToOffset( get(this, 'date'));
   }),
-
 
   // styling for left/width
   style: computed('leftOffset', function() {
@@ -27,9 +23,8 @@ export default Component.extend({
   }),
 
   //
-  tooltipTitle: computed('date','title',function() {
-    let formattedDate = get(this, 'date').toLocaleDateString();
-    return htmlSafe(`${formattedDate}: ${get(this, 'title')}`);
+  formattedDate: computed('date', function() {
+    return htmlSafe(get(this, 'date').toLocaleDateString());
   })
 
 });

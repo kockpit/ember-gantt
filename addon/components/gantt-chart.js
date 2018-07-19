@@ -1,8 +1,6 @@
-// import moment from 'moment'; // ? needed
-
-import {set,get,observer} from '@ember/object';
-import {isNone} from '@ember/utils';
-import {bind} from '@ember/runloop';
+import { set, get, observer } from '@ember/object';
+import { isNone } from '@ember/utils';
+import { bind } from '@ember/runloop';
 import $ from 'jquery';
 
 import dateUtil from '../utils/date-util';
@@ -13,8 +11,6 @@ export default Component.extend({
   layout,
 
   classNames: 'gantt-chart',
-  classNameBindings: ['ganttChartViewDay','ganttChartViewWeek','ganttChartViewMonth'],
-
 
   /**
    * focus this date
@@ -28,6 +24,17 @@ export default Component.extend({
    */
   viewDate: null,
 
+  /**
+   * scroll animation duration
+   *
+   * default: today
+   *
+   * @property viewScrollDuration
+   * @type number
+   * @default 500 (ms)
+   * @public
+   */
+  viewScrollDuration: 500,
 
   /**
    * Gantt timeline start-date
@@ -72,7 +79,8 @@ export default Component.extend({
   dayWidth: 20, //px
 
   /**
-   * Show today-line
+   * Show today in the timeline-grid.
+   * Therefore, an entry is added in the `dayClasses`
    *
    * @property showToday
    * @type bool
@@ -80,6 +88,16 @@ export default Component.extend({
    * @public
    */
   showToday: true,
+
+  /**
+   * show special
+   *
+   * @property dayClasses
+   * @type array
+   * @default null
+   * @public
+   */
+  dayClasses: null,
 
   /**
    * Get/update gantt-width to so sub-elements can consume via observer/computed
@@ -147,23 +165,32 @@ export default Component.extend({
     this._super(...arguments);
 
     // start date
+    let today = dateUtil.getNewDate();
     if (!get(this, 'viewStartDate')) {
-      let viewStart = dateUtil.getNewDate();
-      set(this, 'viewStartDate', viewStart);
+      set(this, 'viewStartDate', dateUtil.datePlusDays(today, -2));
     }
 
     // end date
     if (!get(this, 'viewEndDate')) {
-      let startDate = get(this, 'viewStartDate');
-      let endDate = dateUtil.getNewDate(startDate);
-      endDate.setMonth(endDate.getMonth()+3);
+      let endDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), 90);
       set(this, 'viewEndDate', endDate);
+    }
+
+    // add today in dayClasses if active
+    if (get(this, 'showToday')) {
+      let dayClasses = get(this, 'dayClasses');
+      if (!dayClasses) {
+        set(this, 'dayClasses', []);
+      }
+      get(this, 'dayClasses').push({ date: today, title: '', class: 'today'});
     }
 
     // bind listener functions
     this._handleScroll = bind(this, this.updateScroll);
     this._handleResize = bind(this, this.updateResize);
+
   },
+
 
   didInsertElement() {
     this._super(...arguments);
@@ -175,9 +202,11 @@ export default Component.extend({
     // resize listener
     this.updateResize();
     window.addEventListener('resize', this._handleResize);
+
     // initially scroll to center viewDate (today)
     let viewDate = get(this, 'viewDate') || dateUtil.getNewDate();
-    this.scrollTo(viewDate);
+    this.scrollTo(viewDate, 0);
+
   },
 
   willDestroyelement() {
@@ -227,7 +256,6 @@ export default Component.extend({
   },
 
 
-
   // * *
   //
   //                SCROLL & ENDLESS/INFINITY
@@ -242,11 +270,12 @@ export default Component.extend({
     }
   }),
 
-  scrollTo(date) {
+  scrollTo(date, duration) {
     let scrollPx = this.dateToOffset(date) - (get(this, 'ganttWidth')*(1/4));
-    // get(this, 'innerElement').scrollLeft = scrollPx;
+    duration = isNone(duration) ? get(this, 'viewScrollDuration') : duration;
 
-    $(get(this, 'innerElement')).animate({ scrollLeft: scrollPx }, 500);
+    $(get(this, 'innerElement')).animate({ scrollLeft: scrollPx }, duration);
+
   },
 
   updateScroll(e) {
@@ -307,8 +336,6 @@ export default Component.extend({
       callback(get(this, 'viewStartDate'), get(this, 'viewEndDate'), expanded, previousStart, previousEnd);
     }
   }
-
-
 
 
 });

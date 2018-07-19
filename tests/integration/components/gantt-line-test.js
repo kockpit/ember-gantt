@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render,settled,triggerEvent } from '@ember/test-helpers';
-import { set/*, get*/ } from '@ember/object';
+import { set, get } from '@ember/object';
+import { run } from '@ember/runloop';
 import dateUtil from 'dummy/utils/date-util';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -70,8 +71,10 @@ module('Integration | Component | gantt-line', function(hooks) {
 
 
     // - CHANGE DAY WIDTH
-    set(this, 'dayWidth', 30);
-    set(data[2], 'color', 'purple');
+    run(() => {
+      set(this, 'dayWidth', 30);
+      set(data[2], 'color', 'purple');
+    });
     await settled();
 
     assert.equal(lines[2].querySelector('.gantt-line-timeline .gantt-line-bar').getAttribute('style'), 'left:240px;width:150px;background-color:purple', 'position & color after dayWidth changed - THREE (block)');
@@ -124,7 +127,7 @@ module('Integration | Component | gantt-line', function(hooks) {
 
 
   test('editable tests', async function(assert) {
-    // assert.expect(5);
+    assert.expect(7);
 
     let start = dateUtil.getNewDate('2018-05-05');
     const data = {
@@ -135,49 +138,55 @@ module('Integration | Component | gantt-line', function(hooks) {
     set(this, 'dayWidth', 30);
     set(this, 'start', start);
     set(this, 'data', data);
+    set(this, 'isEditable', false);
 
-        // RENDER
     await render(hbs`
-      {{#gantt-chart viewStartDate=start dayWidth=dayWidth as |chart|}}
-        {{chart.line dateStart=data.start dateEnd=data.end title="editable" isEditable=true }}
+      {{#gantt-chart viewDate=start viewStartDate=start dayWidth=dayWidth as |chart|}}
+
+        {{chart.line dateStart=data.start dateEnd=data.end title="editable" isEditable=isEditable }}
+
         {{chart.line dateStart=data.start dateEnd=data.end title="not editable" }}
+
       {{/gantt-chart}}`);
 
-    // STRUCTURE
+
+
+    // structure
     let lines = this.element.querySelectorAll('.gantt-lines .gantt-line-wrap');
     let editableLine = lines[0];
     let editableBar = editableLine.querySelector('.gantt-line-bar');
     let notEditableLine = lines[1];
-    // let notEditableBar = notEditableLine.querySelector('.gantt-line-bar');
 
+    // move-event infos
+    let offset = editableBar.getBoundingClientRect();
+    let startClone = dateUtil.getNewDate(data.start);
+
+    // !! not editable
+    await triggerEvent(editableBar, 'mousedown'); // activate
+    assert.notOk(editableLine.classList.contains('is-moving'), 'not yet has moving class');
+
+    run(() => {
+      set(this, 'isEditable', true);
+    });
+    await settled();
+
+    // now editable (first)
     assert.ok(editableLine.querySelector('.gantt-line-bar').classList.contains('gantt-line-bar-editable'), 'has editable class');
     assert.notOk(notEditableLine.querySelector('.gantt-line-bar').classList.contains('gantt-line-bar-editable'), 'has not editable class');
 
-
-    // MOVE IT
-    // let startClone = dateUtil.getNewDate(data.start);
-    // console.log(get(data, 'start'), 'start');
-    let offset = editableBar.getBoundingClientRect();
-    let left = offset.left;
-    assert.notOk(editableLine.classList.contains('is-moving'), 'not yet has moving class');
-
-    // //getComputedStyle
-    // console.log(offset, 'offset');
-    // console.log(editableBar.clientLeft, 'editableBar');
-    await triggerEvent(editableBar, 'mousedown', { pageX: left+20, pageY: offset.top+5, which: 1 }); // click in
-    assert.ok(editableLine.classList.contains('is-moving'), 'has moving class');
-
-    // TODO: drag it and check changed date
-
-    // console.log(get(data, 'start'), 'before moved');
-    // console.log(this, 'total this');
-    // await triggerEvent(document, 'mousemove', { pageX: left+290, pageY: offset.top+5, which: 1 }); // one day to the left
-    // assert.equal(get(data, 'start'), dateUtil.datePlusDays(startClone, -1), 'moved one day to the left');
-    // console.log(get(data, 'start'), 'moved');
+    // <- movable ->
+    await triggerEvent(editableBar, 'mousedown'); // activate
+    assert.ok(editableLine.classList.contains('is-moving'),      'has moving class');
+    assert.equal(String(get(data, 'start')), String(startClone), 'not moved, only clicked');
 
 
+    // <- move left
+    await triggerEvent(document, 'mousemove', { clientX: offset.left+20, clientY: offset.top+5, which: 1 });
+    assert.equal(String(get(data, 'start')), String(dateUtil.datePlusDays(startClone, -1)), 'moved one day to the left');
 
-    // assert.ok(bars[0]., 2, 'has two child lines');
+    // -> move right
+    await triggerEvent(document, 'mousemove', { clientX: offset.left+110, clientY: offset.top+5, which: 1 });
+    assert.equal(String(get(data, 'start')), String(dateUtil.datePlusDays(startClone, +2)), 'moved three days to the right');
 
   });
 

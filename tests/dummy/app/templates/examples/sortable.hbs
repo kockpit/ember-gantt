@@ -1,0 +1,114 @@
+
+<div class="container mb-5 mt-5">
+  <h2>automatic sorting</h2>
+  <p>For example, if you wish that bars arrange to start date, so first bar starts earliest, you can can rearrange lines with the <code>onDateChange</code> callback.</p>
+</div>
+
+<div class="container-fluid">
+
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
+    {{#chart.header}}
+      <b>Project / Job</b><br>
+      <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
+    {{/chart.header}}
+
+    {{#each model.projects as |project|}}
+
+      {{! line for each project }}
+      {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
+
+        {{! child lines}}
+        {{#each project.sortedJobs as |job|}}
+          {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color
+                            onDateChange=(action "sortJobsInProject" project) as |childLine|}}
+
+            {{! add something to the bar content}}
+            {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+
+          {{/line.childLine}}
+        {{/each}}
+
+      {{/chart.line}}
+    {{/each}}
+
+  {{/gantt-chart}}
+
+</div>
+
+<div class="container">
+  <h3>code:</h3>
+
+  <div class="code-label">parent model</div>
+  {{code-snippet name="4-example-sorting-auto-model.js"}}
+
+  <div class="code-label">template</div>
+  {{code-snippet name="4-example-sorting-auto.hbs"}}
+
+  <div class="code-label">controller</div>
+  {{code-snippet name="4-example-sorting-auto.js"}}
+
+</div>
+
+
+
+
+<div class="container mb-5 mt-5">
+  <h2>manual sorting</h2>
+  <p>If you wish to make bars manually sortable, you can use a plugin as <code>ember-sortable</code> and wrap gantt-components accordingly.</p>
+</div>
+
+<div class="container-fluid">
+
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
+    {{#chart.header}}
+      <b>Project / Job</b><br>
+      <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
+    {{/chart.header}}
+
+    {{#each model.projects as |project|}}
+
+      {{! line for each project }}
+      {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
+
+        {{! sortable childs group }}
+        {{#sortable-group tagName="div" model=project onChange="reorderItems" as |group|}}
+
+          {{#each project.jobs as |job|}}
+
+            {{#sortable-item tagName="div" model=job group=group handle=".move-handle"}}
+              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
+
+                {{#childLine.title}}<span>{{job.title}} <span class="move-handle">move</span></span>{{/childLine.title}}
+                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+
+              {{/line.childLine}}
+            {{/sortable-item}}
+
+          {{/each}}
+
+        {{/sortable-group}}
+
+      {{/chart.line}}
+    {{/each}}
+
+  {{/gantt-chart}}
+
+</div>
+
+<div class="container">
+  <h3>code:</h3>
+
+  <div class="code-label">template</div>
+  {{code-snippet name="4-example-sorting-manually.hbs"}}
+
+  <div class="code-label">route</div>
+  {{code-snippet name="4-example-sorting-manually-route.js"}}
+
+</div>
+
