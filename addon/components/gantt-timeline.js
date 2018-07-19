@@ -84,11 +84,13 @@ export default Component.extend({
   // -------------------
   checkSticky(/*e*/) {
     let offset = get(this, 'headerElement').getBoundingClientRect().top || 0;
+    let chartOffset = get(this, 'chart.element').getBoundingClientRect() || {};
+    let chartBottom = (chartOffset.top + chartOffset.height - 100) || 1;
 
-    if (!get(this, 'isSticky') && offset < get(this, 'stickyOffset')) {
+    if (!get(this, 'isSticky') && offset < get(this, 'stickyOffset') && chartBottom >= 100) {
       this.makeSticky();
 
-    } else if(get(this, 'isSticky') && offset > get(this, 'stickyOffset')) {
+    } else if( get(this, 'isSticky') && (offset > get(this, 'stickyOffset') || chartBottom < 100) ) {
       this.resetSticky();
     }
   },
