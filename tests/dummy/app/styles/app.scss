@@ -65,6 +65,53 @@ h1, h2, h3 {
 .hljs {
   background: #fff;
 }
+.code-label {
+  display:inline-block;
+  // float: right;
+  // color: #e83e8c;
+  color: $brand-primary;
+  font-weight: 600;
+  background: #fff;
+  padding: 3px 15px;
+
+  &:before { content: '- '; }
+  &:after { content: ' -'; }
+}
+
+
+// lines
+// ---------------------------
+.gantt-line-title {
+  font-weight: bold;
+}
+.gantt-line-childs .gantt-line-title {
+  font-weight: normal;
+}
+
+// helpers
+.gantt-line-title .move-handle {
+  color: #e83e8c;
+  font-size: 0.8em;
+  display: inline-block !important;
+  cursor: move;
+  padding: 7px 0 0 10px;
+}
+
+
+// sortable example
+.sortable-item {
+  transition: all .125s;
+}
+.sortable-item.is-dragging {
+  transition-duration: 0s;
+  // background: red;
+  z-index: 10;
+}
+.sortable-item.is-dropping {
+  // background: #f66;
+  z-index: 10;
+}
+
 
 @import 'addon/styles/addon.scss';
 

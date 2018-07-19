@@ -151,6 +151,10 @@
     display: table-cell;
     vertical-align: middle;
     padding-left: 10px; }
+  .gantt-line-title a {
+    color: #333; }
+    .gantt-line-title a:hover {
+      color: #333; }
 
 .gantt-line-bar {
   position: absolute;
@@ -198,6 +202,7 @@
 
 .gantt-line-milestone-icon {
   position: relative;
+  margin: 0 auto;
   width: 0;
   height: 0;
   border: 5px solid transparent;
@@ -216,7 +221,7 @@
   display: none;
   position: absolute;
   top: 0;
-  width: 100px;
+  width: 150px;
   transform: translateX(-50%) translateY(-100%);
   padding: 5px 10px;
   background: #333;
@@ -229,15 +234,11 @@
 .gantt-line-milestone:hover .gantt-line-milestone-title {
   display: block; }
 
-@media print {
-  .gantt-line-milestone-title {
-    display: block;
-    width: 150px;
-    background: #fff;
-    color: #000; } }
-
-.gantt-lines > .gantt-line-wrap {
+.gantt-line-wrap {
   margin-bottom: 20px; }
+
+.gantt-line-childs .gantt-line-wrap {
+  margin-bottom: 0; }
 
 .gantt-line-childs .gantt-line,
 .gantt-line-childs .gantt-line-title {

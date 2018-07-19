@@ -285,6 +285,13 @@ $gantt-weekend-background: #efefef;
     vertical-align: middle;
     padding-left: 10px;
   }
+
+  a {
+    color: #333;
+    &:hover {
+      color: #333;
+    }
+  }
 }
 
 .gantt-line-bar {
@@ -382,6 +389,7 @@ $gantt-weekend-background: #efefef;
 
 .gantt-line-milestone-icon {
   position: relative;
+  margin: 0 auto;
 
   width: 0;
   height: 0;
@@ -411,7 +419,7 @@ $gantt-weekend-background: #efefef;
   position: absolute;
 
   top: 0;
-  width: 100px;
+  width: 150px;
 
   transform: translateX(-50%) translateY(-100%);
 
@@ -432,14 +440,14 @@ $gantt-weekend-background: #efefef;
 }
 
 // show milestone tooltips in print
-@media print {
-  .gantt-line-milestone-title {
-    display: block;
-    width: 150px;
-    background: #fff;
-    color: #000;
-  }
-}
+// @media print {
+//   .gantt-line-milestone-title {
+//     display: block;
+//     width: 150px;
+//     background: #fff;
+//     color: #000;
+//   }
+// }
 
 
 // ****************************
@@ -447,8 +455,12 @@ $gantt-weekend-background: #efefef;
 //        1st / 2nd level lines
 
 
-.gantt-lines > .gantt-line-wrap {
+.gantt-line-wrap {
   margin-bottom: 20px;
+}
+
+.gantt-line-childs .gantt-line-wrap {
+  margin-bottom: 0;
 }
 
 

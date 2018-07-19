@@ -17,11 +17,13 @@ const jobTypes = [{
       color: '#e5ce42'
     }];
 
+
 export default Service.extend({
 
 
 
   getDataScenario1() {
+
     let projects = A();
     let today = new Date();
     let types = jobTypes;
@@ -33,8 +35,14 @@ export default Service.extend({
         collapsed: false,
         jobs: alias('childs'),
 
-        sorting: ['sorting'],
-        sortedJobs: sort('jobs','sorting')
+        init() {
+          this._super(...arguments);
+          this.set('sorting', ['sorting']); // setting directly led to eslint problem: `ember/avoid-leaking-state-in-ember-objects`
+        },
+
+        sorting: null,
+        sortedJobs: sort('jobs','sorting'),
+
       });
 
     // P1

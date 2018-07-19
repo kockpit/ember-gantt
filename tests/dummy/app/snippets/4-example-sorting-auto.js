@@ -1,16 +1,16 @@
 import {get,set} from '@ember/object';
-
 import Controller from '@ember/controller';
-import ExampleController from '../../mixins/example-controller';
 
-export default Controller.extend(ExampleController, {
-
+export default Controller.extend({
 
   actions: {
 
     sortJobsInProject(project) {
+
+      // sort jobs by dateStart
       let jobs = get(project, 'jobs').sortBy('dateStart');
 
+      // set array-index as sorting key
       jobs.forEach((job, k) => {
         set(job, 'sorting', k);
       });

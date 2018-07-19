@@ -1,13 +1,15 @@
 {{#gantt-chart dayWidth=dayWidth as |chart|}}
 
+  {{! ... header }}
+
   {{#each model.projects as |project|}}
 
     {{! line for each project }}
     {{#chart.line title=project.title projectdateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
 
-      {{! milestones }}
-      {{#each project.milestones as |milestone|}}
-        {{line.milestone title=milestone.title date=milestone.date }}
+      {{! ... child lines }}
+      {{#each project.sortedJobs as |j|}}
+        {{line.line dateStart=j.dateStart dateEnd=j.dateEnd onDateChange=(action 'sortJobsInProject' project) }}
       {{/each}}
 
     {{/chart.line}}

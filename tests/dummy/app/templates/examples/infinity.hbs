@@ -4,55 +4,59 @@
 </div>
 
 
-{{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true
-                onViewDateChange=(action 'viewDateChange') as |chart|}}
+<div class="container-fluid">
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true
+                  onViewDateChange=(action 'viewDateChange') as |chart|}}
 
-  {{#each model.projects as |project|}}
+    {{#each model.projects as |project|}}
 
-    {{! line for each project }}
-    {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
-    {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
+      {{! line for each project }}
+      {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
+      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate inlineChilds=project.jobs as |line|}}
 
-      {{! collapse childs }}
-      {{#line.title}}
-        <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
-      {{/line.title}}
+        {{! collapse childs }}
+        {{#line.title}}
+          <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
+        {{/line.title}}
 
-      {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-      {{line.inlineChilds childLines=project.jobs }}
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
 
-      {{! child line for each job in project }}
-      {{#bs-collapse collapsed=project.collapsed}}
-        {{#unless project.collapsed}}
-          {{#each project.jobs as |job|}}
+        {{! child line for each job in project }}
+        {{#bs-collapse collapsed=project.collapsed}}
+          {{#unless project.collapsed}}
+            {{#each project.jobs as |job|}}
 
-            {{! child lines}}
-            {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                              color=job.color as |childLine|}}
+              {{! child lines}}
+              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                                color=job.color as |childLine|}}
 
-              {{! more complex title inner}}
-              {{#childLine.title}}
-                <span>
-                  <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
-                  {{job.title}}
-                </span>
-              {{/childLine.title}}
+                {{! more complex title inner}}
+                {{#childLine.title}}
+                  <span>
+                    <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
+                    {{job.title}}
+                  </span>
+                {{/childLine.title}}
 
-              {{! add something to the bar content}}
-              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+                {{! add something to the bar content}}
+                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
 
-            {{/line.childLine}}
-          {{/each}}
-        {{/unless}}
-      {{/bs-collapse}}
+              {{/line.childLine}}
+            {{/each}}
+          {{/unless}}
+        {{/bs-collapse}}
 
-    {{/chart.line}}
+      {{/chart.line}}
 
-  {{/each}}
+    {{/each}}
 
-{{/gantt-chart}}
+  {{/gantt-chart}}
+</div>
 
+{{!--
 <div class="container">
-  <h3>... results from following code:</h3>
+  <h3>code:</h3>
   {{code-snippet name="1-standard-example.hbs"}}
 </div>
+--}}
