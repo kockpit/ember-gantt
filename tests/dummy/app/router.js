@@ -13,6 +13,7 @@ Router.map(function() {
     this.route('infinity');
     this.route('milestones');
     this.route('sortable');
+    this.route('grid-days');
   });
 });
 

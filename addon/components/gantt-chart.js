@@ -79,7 +79,8 @@ export default Component.extend({
   dayWidth: 20, //px
 
   /**
-   * Show today-line
+   * Show today in the timeline-grid.
+   * Therefore, an entry is added in the `dayClasses`
    *
    * @property showToday
    * @type bool
@@ -87,6 +88,16 @@ export default Component.extend({
    * @public
    */
   showToday: true,
+
+  /**
+   * show special
+   *
+   * @property dayClasses
+   * @type array
+   * @default null
+   * @public
+   */
+  dayClasses: null,
 
   /**
    * Get/update gantt-width to so sub-elements can consume via observer/computed
@@ -154,17 +165,24 @@ export default Component.extend({
     this._super(...arguments);
 
     // start date
+    let today = dateUtil.getNewDate();
     if (!get(this, 'viewStartDate')) {
-      let viewStart = dateUtil.getNewDate();
-      set(this, 'viewStartDate', viewStart);
+      set(this, 'viewStartDate', dateUtil.datePlusDays(today, -2));
     }
 
     // end date
     if (!get(this, 'viewEndDate')) {
-      let startDate = get(this, 'viewStartDate');
-      let endDate = dateUtil.datePlusDays(startDate, 90);
-
+      let endDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), 90);
       set(this, 'viewEndDate', endDate);
+    }
+
+    // add today in dayClasses if active
+    if (get(this, 'showToday')) {
+      let dayClasses = get(this, 'dayClasses');
+      if (!dayClasses) {
+        set(this, 'dayClasses', []);
+      }
+      get(this, 'dayClasses').push({ date: today, title: '', class: 'today'});
     }
 
     // bind listener functions
@@ -172,6 +190,7 @@ export default Component.extend({
     this._handleResize = bind(this, this.updateResize);
 
   },
+
 
   didInsertElement() {
     this._super(...arguments);
@@ -235,7 +254,6 @@ export default Component.extend({
     let newDateTime = startDate.getTime() + (days * 86400000);
     return dateUtil.getNewDate(newDateTime);
   },
-
 
 
   // * *

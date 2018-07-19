@@ -240,16 +240,18 @@ export default {
    * generates an array with months in period including days (see return)
    *
    * @method monthsInPeriod
-   * @param Date  startDate
-   * @param Date  endDate
-   * @param int  dayWidth
+   * @param Date   startDate
+   * @param Date   endDate
+   * @param int    dayWidth
+   * @param object specialDays  special object with day-classes and titles for grid colors ({ 15315121545 (timestamp): { title: 'Today', class:'today'}})
    * @return array e.g. [ { date: FIRST_DAY_OF_MONTH_DATE, totalDays: 31, width: 500, style: 'width:500px', days: [ ... ] -> day = { nr: 1, date: DATE, isWeekend: true}
    * @public
    */
-  monthsInPeriod(startDate, endDate, dayWidth) {
+  monthsInPeriod(startDate, endDate, dayWidth, specialDays) {
 
     let months = [];
     let actDate = this.getNewDate(startDate.getTime());
+    specialDays = specialDays || {};
 
     // MONTHS AND DAYS
     while(actDate < endDate) {
@@ -287,11 +289,21 @@ export default {
       // iterate all days to generate data-array
       for(let d=startDay; d<=lastDay; d++) {
         let dayDate = this.getNewDate(actDate);
-        month.days.push({
+        let day = {
           nr: d,
           date: dayDate.setDate(d),
-          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0)
-        });
+          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0),
+          title: '',
+          class: ''
+        };
+
+        // special day
+        if (dayDate.getTime() in specialDays) {
+          day.title = specialDays[dayDate.getTime()].title;
+          day.class = specialDays[dayDate.getTime()].class;
+        }
+
+        month.days.push(day);
       }
 
       // add days to month

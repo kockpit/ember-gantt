@@ -57,6 +57,17 @@
   .gantt-timeline .day-weekend {
     background: #efefef;
     border-color: #fff; }
+  .gantt-timeline .day.today {
+    background: #f4edc9; }
+  .gantt-timeline .day em {
+    position: relative;
+    display: inline-block;
+    top: 101px;
+    width: 100%;
+    transform: rotate(90deg);
+    color: #555;
+    font-style: normal;
+    font-size: 0.9em; }
 
 .gantt-chart-header {
   box-sizing: border-box;
@@ -80,7 +91,6 @@
   .gantt-chart-header .gantt-timeline-scale {
     position: relative;
     box-sizing: border-box;
-    border-left: 1px solid #ccc;
     background: #fff; }
   .gantt-chart-header .gantt-timeline-year {
     display: inline-block;
@@ -89,48 +99,27 @@
     border-bottom: 1px solid #ccc; }
     .gantt-chart-header .gantt-timeline-year span {
       padding: 10px; }
-  .gantt-chart-header .gantt-timeline-months {
-    border-right: 1px solid #ccc; }
   .gantt-chart-header .gantt-timeline-month {
     display: inline-block;
     box-sizing: border-box;
     transition: width 200ms ease-out;
     border-bottom: 1px solid #ccc;
-    border-right: 1px solid #ccc; }
+    border-left: 1px solid #ccc; }
   .gantt-chart-header .gantt-timeline-month-name {
     background: #fff;
     font-size: initial; }
     .gantt-chart-header .gantt-timeline-month-name span {
       padding: 10px;
       display: block; }
-  .gantt-chart-header .gantt-timeline-cws {
-    border-right: 1px solid #ccc; }
-    .gantt-chart-header .gantt-timeline-cws .cw {
-      border-right: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
-      text-align: center;
-      box-sizing: border-box; }
-  .gantt-chart-header .gantt-timeline-days {
-    border-right: 1px solid #ccc; }
-    .gantt-chart-header .gantt-timeline-days .day {
-      padding: 2px 0;
-      font-size: 12px;
-      text-align: center; }
-
-.gantt-timeline-today {
-  position: absolute;
-  top: 61px;
-  height: 99999999px;
-  z-index: 2;
-  border-left: 1px solid #444; }
-  .gantt-timeline-today > div {
-    position: relative;
-    left: -5px;
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 7px solid #444; }
+  .gantt-chart-header .gantt-timeline-cws .cw {
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    box-sizing: border-box; }
+  .gantt-chart-header .gantt-timeline-days .day {
+    padding: 2px 0;
+    font-size: 12px;
+    text-align: center; }
 
 .gantt-line {
   height: 40px;

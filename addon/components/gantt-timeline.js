@@ -18,14 +18,6 @@ export default Component.extend({
   viewStartDate: alias('chart.viewStartDate'),
   viewEndDate: alias('chart.viewEndDate'),
 
-  // today
-  showToday: alias('chart.showToday'),
-  todayStyle: computed('viewStartDate', 'dayWidth', function() {
-    let today = dateUtil.getNewDate();
-    let offsetLeft = get(this, 'chart').dateToOffset(today, null, false);
-
-    return htmlSafe(`left:${offsetLeft}px;`);
-  }),
 
   // in-page styles
   dayWidth: alias('chart.dayWidth'),
@@ -35,6 +27,19 @@ export default Component.extend({
   cwWidthPx: computed('dayWidth', function() {
     let width = get(this, 'dayWidth')*7;
     return htmlSafe(`${width}px`);
+  }),
+
+
+  // dayClasses - special day classes (e.g. today)
+  showToday: alias('chart.showToday'),
+  dayClasses: alias('chart.dayClasses'),
+
+  specialDays: computed('dayClasses', function() { // special timestamp index
+    let days = {};
+    get(this, 'dayClasses').forEach( day => {
+      days[dateUtil.getNewDate(day.date).getTime()] = day;
+    });
+    return days;
   }),
 
 
@@ -175,7 +180,7 @@ export default Component.extend({
     }
 
     if (dayWidth < 15) { // months
-      views.timelineMonth = true;
+      // views.timelineMonth = true;
     }
 
     if (dayWidth < 10) { // months (small)
@@ -185,15 +190,18 @@ export default Component.extend({
 
     if (dayWidth < 5) { // year
       views.timelineYear = true;
-      views.timelineMonth = false;
       views.timelineCW = false;
+    }
+    if (dayWidth < 2) { // year
+      views.timelineYear = true;
+      views.timelineMonth = false;
     }
 
     setProperties(this, views);
   },
 
 
-  timelineScale: computed('viewStartDate', 'viewEndDate','dayWidth','scaleWidth','chart.ganttWidth', function() {
+  timelineScale: computed('viewStartDate', 'viewEndDate', 'dayWidth', 'scaleWidth', 'specialDays', function() { //'chart.ganttWidth',
 
 
     let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
@@ -212,7 +220,7 @@ export default Component.extend({
     }
 
     return {
-      months: dateUtil.monthsInPeriod(start, end, dayWidth),
+      months: dateUtil.monthsInPeriod(start, end, dayWidth, get(this, 'specialDays')),
       calendarWeeks: get(this, 'timelineCW') ? dateUtil.calendarWeeksInPeriod(start, end, dayWidth) : null,
       years: get(this, 'timelineYear') ? dateUtil.yearsInPeriod(start,end, dayWidth) : null
     }
