@@ -263,12 +263,12 @@ export default Component.extend({
 
   // TODO: title -> ?
   barTitle: computed('dateStart', 'dateEnd', function() {
-    let start = get(this, 'dateStart'),
-        end = get(this, 'dateEnd'),
-        days = dateUtil.diffDays(start, end, true);
+    let start = get(this, 'dateStart').toLocaleDateString() || String(get(this, 'dateStart')),
+        end = get(this, 'dateEnd').toLocaleDateString() || String(get(this, 'dateEnd')),
+        days = dateUtil.diffDays( get(this, 'dateStart'), get(this, 'dateEnd'), true);
 
     if (start && end) {
-      return `days: ${days} : `+start.toString()+' to '+end.toString();
+      return htmlSafe(`${start} - ${end} (${days})`);
     }
     return '';
   }),
