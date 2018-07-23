@@ -1,25 +1,17 @@
 import Controller from '@ember/controller';
-import {get,set} from '@ember/object';
+import ExampleController from '../../mixins/example-controller';
+import {set} from '@ember/object';
 
-export default Controller.extend({
+import dateUtil from '@kockpit/ember-gantt/utils/date-util';
 
-  dayWidth: 20,
 
+export default Controller.extend(ExampleController, {
 
   actions: {
 
-    zoom(value) {
-      let newDayWidth = Math.max(1, parseInt(get(this, 'dayWidth')) + parseInt(value) );
-      set(this, 'dayWidth', newDayWidth);
-    },
-
-    collapse(project) {
-      project.toggleProperty('collapsed');
-    },
-
-    viewDateChange(/*startDate, endDate*/) {
-      // console.log(startDate, 'start view date changed');
-      // console.log(endDate, ' end view date changed');
+    viewDateChange(startDate, endDate) {
+      console.log(startDate, 'start view date changed');
+      console.log(endDate, ' end view date changed');
     }
 
   }

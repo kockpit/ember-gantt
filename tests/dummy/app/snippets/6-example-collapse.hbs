@@ -1,0 +1,34 @@
+  {{#gantt-chart dayWidth=dayWidth |chart|}}
+
+    {{#each model.projects as |project|}}
+
+      {{! line for each project }}
+      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
+        {{! collapse childs }}
+        {{#line.title}}
+          <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
+        {{/line.title}}
+
+        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{line.inlineChilds childLines=project.jobs }}
+
+
+        {{! ember-bootstrap collapsible component}}
+        {{#bs-collapse collapsed=project.collapsed}}
+
+          {{! only render childs when collapsed - this saves memory }}
+          {{#unless project.collapsed}}
+            {{#each project.jobs as |job|}}
+
+              {{! ... render childs as in the other examples }}
+
+            {{/each}}
+          {{/unless}}
+        {{/bs-collapse}}
+
+      {{/chart.line}}
+
+    {{/each}}
+
+  {{/gantt-chart}}

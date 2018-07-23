@@ -1,13 +1,12 @@
 
 <div class="container mb-5 mt-5">
-  <h2>infinity scrolling</h2>
-  <p>It's possible to automatically expand the initial view when scrolling to the most left/right. The callback function <code>onViewDateChange</code> can then be used to load new data for this new period (see example code below).</p>
+  <h2>collapsible child lines</h2>
+  <p>Having many lines in a gantt chart may get messy. It's therefore helpful to collapse child-lines and show them only on project-click. The compound child lines are helpful to get a quick overview in this case. To collapse childs, use an addon as <code>ember-bootstrap</code> or similar (see example code below).</p>
 </div>
 
 
 <div class="container-fluid">
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true
-                  onViewDateChange=(action 'viewDateChange') as |chart|}}
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56  as |chart|}}
 
     {{#each model.projects as |project|}}
 
@@ -19,7 +18,7 @@
           <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
         {{/line.title}}
 
-        {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
+        {{! inline childs }}
         {{line.inlineChilds childLines=project.jobs }}
 
         {{! child line for each job in project }}
@@ -28,8 +27,7 @@
             {{#each project.jobs as |job|}}
 
               {{! child lines}}
-              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                                color=job.color as |childLine|}}
+              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
 
                 {{! more complex title inner}}
                 {{#childLine.title}}
@@ -59,8 +57,8 @@
   <h3>code:</h3>
 
   <div class="code-label">template</div>
-  {{code-snippet name="2-example-infinity.hbs"}}
+  {{code-snippet name="6-example-collapse.hbs"}}
 
   <div class="code-label">controller</div>
-  {{code-snippet name="2-example-infinity.js"}}
+  {{code-snippet name="6-example-collapse.js"}}
 </div>

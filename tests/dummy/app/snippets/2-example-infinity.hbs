@@ -1,0 +1,9 @@
+{{#gantt-chart infinityScroll=true viewStartDate=viewStart viewEndDate=viewEnd onViewDateChange=(action 'loadProjects') as |chart|}}
+
+  {{#each projectsData as |project|}}
+
+    {{chart.line title=project.title projectdateStart=project.minStartDate dateEnd=project.maxEndDate }}
+
+  {{/each}}
+
+{{/gantt-chart}}

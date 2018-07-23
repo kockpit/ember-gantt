@@ -2,7 +2,7 @@
 
   <div class="navbar-header">
     {{navbar.toggle}}
-    <a class="navbar-brand" href="#">ember-gantt <small>v0.0.2</small></a>
+    {{#link-to 'index' class="navbar-brand"}}ember-gantt <small>v0.0.2</small>{{/link-to}}
   </div>
 
   {{#navbar.content}}
@@ -15,7 +15,7 @@
 
   <div class="pull-right">
     <a href="http://github.com/kockpit/ember-gantt" class="link-github" target="_blank">
-      <img src="/images/github.svg" />
+      <img src="{{rootURL}}/images/github.svg" />
     </a>
   </div>
 

@@ -14,6 +14,7 @@ Router.map(function() {
     this.route('milestones');
     this.route('sortable');
     this.route('grid-days');
+    this.route('collapse');
   });
 });
 
