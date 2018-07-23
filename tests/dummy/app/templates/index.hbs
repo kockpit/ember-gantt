@@ -2,13 +2,24 @@
 <div class="container">
   <h1><b>ember-gantt</b> addon</h1>
 
-  <p class="lead mb-5">
-    Simple and leightweight gantt ember-addon.
-    <br>No external libraries are necessary – pure Ember (18kb).
-  </p>
+
+  <div class="row mb-5">
+    <div class="col-sm-8">
+      <p class="lead">
+        Simple and leightweight gantt ember-addon.
+        <br>No external libraries are necessary – pure Ember (18kb).
+      </p>
+    </div>
+    <div class="col-sm-4 text-center">
+      <a href="https://kockpit.io" target="_blank" alt="Kockpit Agency Project Management">
+        <img src="{{rootURL}}/images/logo-kockpit.svg" class="img-fluid" style="width:300px;height:auto;"/>
+        <small class="text-muted"><br>Thanks to our sponsor – Kockpit.io Agency Project Management</small>
+      </a>
+    </div>
+  </div>
 
 
-  <h2>Demo</h2>
+  <h2 class="mb-4">Demo</h2>
 
 </div>
 
@@ -68,12 +79,3 @@
   {{/gantt-chart}}
 </div>
 
-<div class="container">
-  <h3>code:</h3>
-
-  <div class="code-label">template</div>
-  {{code-snippet name="1-standard-example.hbs"}}
-
-  <div class="code-label">controller</div>
-  {{code-snippet name="1-standard-example.js"}}
-</div>

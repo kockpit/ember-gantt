@@ -78,6 +78,19 @@ h1, h2, h3 {
   &:after { content: ' -'; }
 }
 
+pre {
+    font-size: 18px;
+    padding: 15px;
+    background-color: #fff;
+    color: #fff;
+    border: none;
+    border-bottom: solid 3px $brand-primary;
+    border-radius: .25rem;
+
+    code {
+      color: #e83e8c;
+    }
+}
 
 // grid
 // ---------------------------
