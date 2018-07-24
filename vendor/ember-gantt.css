@@ -30,7 +30,7 @@
   .gantt-timeline .gantt-timeline-vertical-grid {
     position: absolute;
     top: 0;
-    height: 99999999px; }
+    height: 9999999px; }
     .gantt-timeline .gantt-timeline-vertical-grid .gantt-timeline-years,
     .gantt-timeline .gantt-timeline-vertical-grid .gantt-timeline-year,
     .gantt-timeline .gantt-timeline-vertical-grid .gantt-timeline-months,
@@ -135,7 +135,7 @@
   left: 1px;
   z-index: 3;
   display: table; }
-  .gantt-line-title span {
+  .gantt-line-title > span {
     height: 100%;
     display: table-cell;
     vertical-align: middle;
