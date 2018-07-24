@@ -1,6 +1,6 @@
 {
   "name": "@kockpit/ember-gantt",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ember addon for beautiful gantt charts",
   "keywords": [
     "ember-addon",
