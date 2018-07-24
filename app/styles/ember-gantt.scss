@@ -296,9 +296,7 @@ $gantt-weekend-background: #efefef;
   z-index: 3;
   display: table; // used to vertical-align text in middle
 
-  // background: #fff; // -> use background
-
-  span {
+  > span {
     height: 100%;
     display: table-cell;
     vertical-align: middle;

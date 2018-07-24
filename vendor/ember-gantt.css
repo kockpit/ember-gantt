@@ -135,7 +135,7 @@
   left: 1px;
   z-index: 3;
   display: table; }
-  .gantt-line-title span {
+  .gantt-line-title > span {
     height: 100%;
     display: table-cell;
     vertical-align: middle;
