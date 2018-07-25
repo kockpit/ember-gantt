@@ -202,7 +202,12 @@ export default Component.extend({
     return (dayWidth * parseInt(dateUtil.diffDays(start, end, true)));
   },
 
-  timelineScale: computed('viewStartDate', 'viewEndDate', 'dayWidth', 'specialDays','ganttWidth', function() { //'chart.ganttWidth',
+  // FIXME: workaround for ember/no-side-effects
+  updateScaleWidth(scaleWidth) {
+    set(this, 'scaleWidth', scaleWidth);
+  },
+
+  timelineScale: computed('viewStartDate', 'viewEndDate', 'dayWidth', 'specialDays','chart.ganttWidth', function() {
 
     const chart = get(this, 'chart');
     let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
@@ -221,7 +226,7 @@ export default Component.extend({
       scaleWidth = this.calculateScaleWidth(dayWidth, start, end);
     }
 
-    set(this, 'scaleWidth', scaleWidth);
+    this.updateScaleWidth(scaleWidth);
 
     return {
       months: dateUtil.monthsInPeriod(start, end, dayWidth, get(this, 'specialDays')),
