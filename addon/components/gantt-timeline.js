@@ -128,17 +128,15 @@ export default Component.extend({
   },
 
 
-  scaleWidth: computed('viewStartDate', 'viewEndDate', 'dayWidth', function() {
-    let width = (get(this, 'dayWidth') * parseInt(dateUtil.diffDays(get(this,'viewStartDate'), get(this,'viewEndDate'), true)));
-    return width;
-  }),
+  scaleWidth: 0, // is calculated in scale-grid generation
 
-  // timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling
+  /**
+   * timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling
+   */
   scaleStyle: computed('scaleWidth', 'isSticky','scrollLeft', function() {
 
     // total width
-    let scaleWidth = get(this, 'scaleWidth');
-    let style = `width:${scaleWidth}px;`;
+    let style = `width:${get(this, 'scaleWidth')}px;`;
 
     if (get(this, 'isSticky')) {
       style+= `left:-${get(this,'scrollLeft')}px;`;
@@ -188,11 +186,11 @@ export default Component.extend({
       views.timelineMonthShort = true;
     }
 
-    if (dayWidth < 5) { // year
+    if (dayWidth < 5) { // year/month
       views.timelineYear = true;
       views.timelineCW = false;
     }
-    if (dayWidth < 2) { // year
+    if (dayWidth < 2) { // year only
       views.timelineYear = true;
       views.timelineMonth = false;
     }
@@ -201,23 +199,30 @@ export default Component.extend({
   },
 
 
-  timelineScale: computed('viewStartDate', 'viewEndDate', 'dayWidth', 'scaleWidth', 'specialDays', function() { //'chart.ganttWidth',
+  calculateScaleWidth(dayWidth, start, end) {
+    return (dayWidth * parseInt(dateUtil.diffDays(start, end, true)));
+  },
 
+  timelineScale: computed('viewStartDate', 'viewEndDate', 'dayWidth', 'specialDays','ganttWidth', function() { //'chart.ganttWidth',
 
+    const chart = get(this, 'chart');
     let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
         end = dateUtil.getNewDate(get(this, 'viewEndDate')),
-        dayWidth = get(this, 'dayWidth'),
-        chart =  get(this, 'chart');
+        dayWidth = get(this, 'dayWidth');
 
     if (!start || !end || !(start<end)) {
       return [];
     }
 
-    // evaluate, if timeline-grid is smaller than viewport (and expand if needed while zooming)
-    if (get(this, 'scaleWidth') < get(chart, 'ganttWidth')) {
-      end = chart.offsetToDate(get(chart, 'ganttWidth')*1.5);
-      // set(this, 'viewEndDate', end);
+    // calculate total scale width
+    let scaleWidth = this.calculateScaleWidth(dayWidth, start, end);
+
+    if (scaleWidth < get(chart, 'ganttWidth')) {
+      end = chart.offsetToDate(get(chart, 'ganttWidth') * 1.5);
+      scaleWidth = this.calculateScaleWidth(dayWidth, start, end);
     }
+
+    set(this, 'scaleWidth', scaleWidth);
 
     return {
       months: dateUtil.monthsInPeriod(start, end, dayWidth, get(this, 'specialDays')),
