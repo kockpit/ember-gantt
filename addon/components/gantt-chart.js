@@ -291,7 +291,7 @@ export default Component.extend({
   }),
 
   updateResize(/*e*/) {
-    set(this, 'ganttWidth', this.element.offsetWidth);
+    set(this, 'ganttWidth', this.element.offsetWidth || 0);
 
     // let totalWidth = this.dateToOffset(get(this, 'viewEndDate'), get(this, 'viewStartDate'), true);
     // set(this, 'totalWidth', totalWidth);
