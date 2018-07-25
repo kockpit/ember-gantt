@@ -160,6 +160,67 @@ export default Component.extend({
    */
   infinityScroll: false,
 
+  /**
+   * If autoTimeline set to true, its automatically evaluated which headers (year, month, cw, day) are shown, based on dayWidth.
+   * You can deactivate this and write your own logic. For that, use following `timelineXX` settings.
+   *
+   * @property autoTimeline
+   * @type bool
+   * @default true
+   * @public
+   */
+  autoTimeline: true,
+
+  /**
+   * Show days in timeline header
+   *
+   * @property timelineDay
+   * @type bool
+   * @default true
+   * @public
+   */
+  timelineDay: true,
+
+  /**
+   * Show calendar weeks in timeline header
+   *
+   * @property timelineCW
+   * @type bool
+   * @default true
+   * @public
+   */
+  timelineCW: true,
+
+  /**
+   * Show months in timeline header
+   *
+   * @property timelineMonth
+   * @type bool
+   * @default true
+   * @public
+   */
+  timelineMonth: true,
+
+  /**
+   * Show months in short form
+   *
+   * @property timelineMonthShort
+   * @type bool
+   * @default false
+   * @public
+   */
+  timelineMonthShort: false,
+
+  /**
+   * Show years in short form
+   *
+   * @property timelineYear
+   * @type bool
+   * @default true
+   * @public
+   */
+  timelineYear: true,
+
 
   init() {
     this._super(...arguments);

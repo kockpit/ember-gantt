@@ -146,20 +146,19 @@ export default Component.extend({
 
   /**
    * Activate automatical timeline view adjustments, based on dayWidth
-   * Breakpoints can be set for ????
    *
    * @property autoView
    * @type bool
    * @default true
    * @public
    */
-  autoTimeline: true,
+  autoTimeline: alias('chart.autoTimeline'),
 
-  timelineDay: true,
-  timelineCW: true,
-  timelineMonth: true,
-  timelineMonthShort: false,
-  timelineYear: true,
+  timelineDay: alias('chart.timelineDay'),
+  timelineCW: alias('chart.timelineCW'),
+  timelineMonth: alias('chart.timelineMonth'),
+  timelineMonthShort: alias('chart.timelineMonthShort'),
+  timelineYear: alias('chart.timelineYear'),
 
 
   autoViewObs: observer('dayWidth', 'autoTimeline', function() {
