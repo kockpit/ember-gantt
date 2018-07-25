@@ -107,7 +107,8 @@
     border-left: 1px solid #ccc; }
   .gantt-chart-header .gantt-timeline-month-name {
     background: #fff;
-    font-size: initial; }
+    font-size: initial;
+    overflow: hidden; }
     .gantt-chart-header .gantt-timeline-month-name span {
       padding: 10px;
       display: block; }
