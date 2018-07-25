@@ -8,6 +8,33 @@ import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-line-inline-childs';
 
+/**
+ With the inline-childs component, you can show multiple lines in one line. Use it as sub-component of the line component.
+
+ ### Usage
+ Use as a inline component passing `childLines` array, each having dateStart,dateEnd and color attributes.
+ The component calculates the overlapping or empty periods for coloring.
+ components as children:
+ ```handlebars
+  {{#gantt-chart dayWidth=10 as |chart|}}
+
+    {{#each projects as |p|}}
+
+      {{#chart.line dateStart=p.dateStart dateEnd=p.dateEnd as |line|}}
+
+        {{line.inlineChilds childLines=p.inlineChilds }} {{! <-- this }}
+
+      {{/chart.line}}
+    {{/each}}
+
+  {{/gantt-chart}}
+ ```
+
+ @class GanttLineInlineChilds
+ @namespace Components
+ @extends Ember.Component
+ @public
+ */
 export default Component.extend({
   layout,
   classNames: ['gantt-line-inline-childs'],
@@ -64,14 +91,8 @@ export default Component.extend({
     throttle(this, this.calculatePeriods, 50);
   }),
 
-  /**
-   * Calculate period-segments from child dateStart/End (using dateUtil)
-   * updates 'periods' attribute on component
-   *
-   * @method calculatePeriods
-   * @return void
-   * @protected
-   */
+  // Calculate period-segments from child dateStart/End (using dateUtil)
+  // updates 'periods' attribute on component
   calculatePeriods() {
 
     // go through all jobs and generate compound child elements
@@ -95,15 +116,8 @@ export default Component.extend({
     set(this, 'periods', periods);
   },
 
-  /**
-   * Creates a background style from childs[n].color attributes
-   * -> transparent for no childs, color from 1 child, striped background for n childs
-   *
-   * @method getBackgroundStyle
-   * @param array childs  childs array that have color attribute (only tested with hex colors, e.g. '#000000')
-   * @return string   css-background string e.g. '#000000' or 'repeating-linear-gradient(90deg, ... )'
-   * @protected
-   */
+  //Creates a background style from childs[n].color attributes
+  // -> transparent for no childs, color from 1 child, striped background for n childs
   getBackgroundStyle(childs) {
 
     if (!isArray(childs) || childs.length === 0) {

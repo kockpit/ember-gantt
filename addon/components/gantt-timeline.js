@@ -8,6 +8,14 @@ import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-timeline';
 
+/**
+ This is a subcomponent for the timeline grid and header. all attributes are available over the chart component.
+
+ @class GanttTimeline
+ @namespace Components
+ @extends Ember.Component
+ @private
+ */
 export default Component.extend({
   layout,
 
@@ -130,9 +138,7 @@ export default Component.extend({
 
   scaleWidth: 0, // is calculated in scale-grid generation
 
-  /**
-   * timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling
-   */
+  // timeline scroll needs to be manually adjusted, as position-fixed does not inherit scrolling
   scaleStyle: computed('scaleWidth', 'isSticky','scrollLeft', function() {
 
     // total width
@@ -144,14 +150,7 @@ export default Component.extend({
     return htmlSafe(style);
   }),
 
-  /**
-   * Activate automatical timeline view adjustments, based on dayWidth
-   *
-   * @property autoView
-   * @type bool
-   * @default true
-   * @public
-   */
+  // Activate automatical timeline view adjustments, based on dayWidth
   autoTimeline: alias('chart.autoTimeline'),
 
   timelineDay: alias('chart.timelineDay'),

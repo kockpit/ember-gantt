@@ -7,6 +7,29 @@ import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-chart';
 
+/**
+ This is the main component with general settings for the gantt chart.
+ ### Usage
+ Use as a block level component with any number of yielded line, header etc. - see examples)
+ components as children:
+ ```handlebars
+  {{#gantt-chart dayWidth=10 as |chart|}}
+
+    {{#each projects as |p|}}
+
+      {{#chart.line dateStart=p.dateStart dateEnd=p.dateEnd as |line|}}
+        {{! ... }}
+      {{/chart.line}}
+    {{/each}}
+
+  {{/gantt-chart}}
+ ```
+
+ @class GanttChart
+ @namespace Components
+ @extends Ember.Component
+ @public
+ */
 export default Component.extend({
   layout,
 
@@ -14,8 +37,6 @@ export default Component.extend({
 
   /**
    * focus this date
-   *
-   * default: today
    *
    * @property viewDate
    * @type Date
