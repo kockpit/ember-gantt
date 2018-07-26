@@ -1,8 +1,33 @@
 {{#gantt-chart infinityScroll=true viewStartDate=viewStart viewEndDate=viewEnd onViewDateChange=(action 'loadProjects') as |chart|}}
 
+  {{#chart.header}}
+    <b>Project/Job</b>
+    <br><a href="" {{action 'goToDate'}}>focus today</a>
+  {{/chart.header}}
+
   {{#each projectsData as |project|}}
 
-    {{chart.line title=project.title projectdateStart=project.minStartDate dateEnd=project.maxEndDate }}
+    {{#chart.line title=project.title projectdateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+
+      {{#each project.jobs as |job|}}
+
+        {{! child lines}}
+        {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                          color=job.color as |childLine|}}
+
+          {{#childLine.title}}
+
+            {{! clickable go-to-date}}
+            <span {{action 'goToDate' job.dateStart}} style="cursor:pointer">
+              <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
+              {{job.title}}
+            </span>
+          {{/childLine.title}}
+
+        {{/line.childLine}}
+      {{/each}}
+
+    {{/chart.line}}
 
   {{/each}}
 

@@ -9,6 +9,7 @@ export default Controller.extend({
 
   projectsData: null,
 
+  goDate: null,
   viewStart: null,
   viewEnd: null,
 
@@ -18,6 +19,8 @@ export default Controller.extend({
     let today = dateUtil.getNewDate();
     set(this, 'viewStart', dateUtil.datePlusDays(today, -10));
     set(this, 'viewEnd', dateUtil.datePlusDays(today, 120));
+
+    set(this, 'goDate', today);
 
     this.loadProjectsData(get(this, 'viewStart'), get(this, 'viewEnd'), '');
   },
@@ -50,6 +53,11 @@ export default Controller.extend({
 
 
   actions: {
+
+    goToDate(date) {
+      date = date || dateUtil.getNewDate(); // scroll-to today if date not passed
+      this.set('goDate', date);
+    },
 
     /**
      * @param {Date}   newStartDate    new total view start date

@@ -213,6 +213,7 @@ $gantt-weekend-background: #efefef;
   .gantt-timeline-month-name {
     background: #fff;
     font-size: initial;
+    overflow: hidden;
 
     span {
       padding: 10px;
@@ -435,8 +436,8 @@ $gantt-weekend-background: #efefef;
   display: none;
   position: absolute;
 
-  top: 0;
-  width: 150px;
+  top: 3px;
+  min-width: 150px;
 
   transform: translateX(-50%) translateY(-100%);
 

@@ -6,8 +6,13 @@
 
 
 <div class="container-fluid">
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true
+  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true viewDate=goDate
                   onViewDateChange=(action 'viewDateChange') as |chart|}}
+
+    {{#chart.header}}
+      <b>Project/Job</b>
+      <br><a href="" {{action 'goToDate'}}>focus today</a>
+    {{/chart.header}}
 
     {{#each model.projects as |project|}}
 
@@ -33,7 +38,7 @@
 
                 {{! more complex title inner}}
                 {{#childLine.title}}
-                  <span>
+                  <span {{action 'goToDate' job.dateStart}} style="cursor:pointer">
                     <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
                     {{job.title}}
                   </span>
