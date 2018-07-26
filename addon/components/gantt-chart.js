@@ -13,7 +13,7 @@ import layout from '../templates/components/gantt-chart';
  Use as a block level component with any number of yielded line, header etc. - see examples)
  components as children:
  ```handlebars
-  {{#gantt-chart dayWidth=10 as |chart|}}
+  {{#gantt-chart dayWidth=10 onViewDateChange=(action 'viewChanged') as |chart|}}
 
     {{#chart.header}}
       <h1>My Projects</h1>
@@ -90,7 +90,13 @@ export default Component.extend({
   viewEndDate: null,
 
   /**
-   * Callback, when view start/end date changed, by application or infinity scroll
+   * Callback, when view start/end date changed, by application or infinity scroll.
+   * The callback function receiveds the following attributes (in this order):
+   * - `viewStartDate`    new start date
+   * - `viewEndDate`      new end date
+   * - `expanded`         where view was expanded ('before' or 'after')
+   * - `previousStart`    old start date
+   * - `previousEnd`      old end date
    *
    * @property onViewDateChange
    * @argument onViewDateChange
@@ -101,7 +107,7 @@ export default Component.extend({
   onViewDateChange: null,
 
   /**
-   * Pixel-width of day-columns
+   * Pixel-width of day-columns. This defines also zoom-level and what header columns are shown.
    *
    * @property dayWidth
    * @argument dayWidth
@@ -124,7 +130,8 @@ export default Component.extend({
   showToday: true,
 
   /**
-   * show special
+   * Add special classes to these days in grid and timeline header.
+   * You need to pass { date, title } objects to the array.
    *
    * @property dayClasses
    * @argument dayClasses
@@ -180,7 +187,8 @@ export default Component.extend({
   scrollLeft: 0,
 
   /**
-   * Get scroll-left to adjust header bar and to controll infinity-load
+   * Activate infinity-scroll, so when scrolling new periods are added after/before.
+   * You are responsible to load the data accordingly. Use the `onViewDateChange` callback to know which data to load.
    *
    * @property infinityScroll
    * @argument infinityScroll
