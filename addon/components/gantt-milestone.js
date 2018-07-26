@@ -15,10 +15,14 @@ import layout from '../templates/components/gantt-milestone';
 
       {{#chart.line dateStart=p.dateStart dateEnd=p.dateEnd as |line|}}
 
-        {{! milestones }}
+        {{! milestone as inline }}
+        {{line.milestone date=milestone.date title="Go Live"}}
+
+
         {{#each p.milestones as |milestone|}}
 
-          {{#line.milestone date=milestone.date }} {{! example as block mode (title attribute is ignored)}}
+          {{! milestones as block (title attribute is ignored) }}
+          {{#line.milestone date=milestone.date }}
             <span>{{format-date milestone.date}}:</span>
             {{milestone.title}}
           {{/line.milestone}}

@@ -20,6 +20,8 @@ Router.map(function() {
     this.route('grid-days');
     this.route('collapse');
   });
+
+  this.route('not-found', { path: '/*path' });
 });
 
 export default Router;

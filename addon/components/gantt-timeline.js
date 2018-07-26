@@ -8,14 +8,7 @@ import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-timeline';
 
-/**
- This is a subcomponent for the timeline grid and header. all attributes are available over the chart component.
 
- @class GanttTimeline
- @namespace Components
- @extends Ember.Component
- @private
- */
 export default Component.extend({
   layout,
 

@@ -46,6 +46,7 @@ export default Component.extend({
    * Stripe width for overlapping areas
    *
    * @property stripeWidth
+   * @argument stripeWidth
    * @type int
    * @default 3
    * @public
@@ -53,19 +54,10 @@ export default Component.extend({
   stripeWidth: 3,
 
   /**
-   * debounce period-calculations to reduce computations
+   * Pass a childs array as "childLines" with object having the attributes {dateStart, dateEnd, color}
    *
-   * @property debounceTime
-   * @type int
-   * @default 0
-   * @public
-   */
-  debounceTime: 0,
-
-  /**
-   * pass childs as "childLines" with attributrs {dateStart, dateEnd, color}
-   *
-   * @property debounceTime
+   * @property childLines
+   * @argument childLines
    * @type array
    * @default null
    * @public
@@ -81,6 +73,7 @@ export default Component.extend({
    * @protected
    */
   periods: null,
+
 
   didInsertElement() {
     this._super(...arguments);

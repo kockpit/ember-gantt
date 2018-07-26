@@ -15,11 +15,16 @@ import layout from '../templates/components/gantt-chart';
  ```handlebars
   {{#gantt-chart dayWidth=10 as |chart|}}
 
+    {{#chart.header}}
+      <h1>My Projects</h1>
+    {{/chart.header}}
+
     {{#each projects as |p|}}
 
       {{#chart.line dateStart=p.dateStart dateEnd=p.dateEnd as |line|}}
-        {{! ... }}
+        {{! ... inline or block chart.line for using line.xxx subcomponents }}
       {{/chart.line}}
+
     {{/each}}
 
   {{/gantt-chart}}
@@ -29,6 +34,8 @@ import layout from '../templates/components/gantt-chart';
  @namespace Components
  @extends Ember.Component
  @public
+ @yield {GanttGenericContent} chart.header
+ @yield {GanttLine} chart.line
  */
 export default Component.extend({
   layout,
@@ -36,32 +43,34 @@ export default Component.extend({
   classNames: 'gantt-chart',
 
   /**
-   * focus this date
+   * This can be set to center this date in the timeline.
+   * For example, to scroll to a specific bar that may be not in the shown period.
    *
    * @property viewDate
+   * @argument viewDate
    * @type Date
    * @default null
-   * @public
+   * @api
    */
   viewDate: null,
 
   /**
-   * scroll animation duration
-   *
-   * default: today
+   * Scroll animation duration, when scrolling to specific date via `viewDate`.
    *
    * @property viewScrollDuration
-   * @type number
+   * @argument viewScrollDuration
+   * @type {int}
    * @default 500 (ms)
    * @public
    */
   viewScrollDuration: 500,
 
   /**
-   * Gantt timeline start-date
+   * Timeline startdate
    * default: today
    *
    * @property viewStartDate
+   * @argument viewStartDate
    * @type Date
    * @default null
    * @public
@@ -73,7 +82,8 @@ export default Component.extend({
    * default: viewStartDate + 3months
    *
    * @property viewEndDate
-   * @type Date
+   * @argument viewEndDate
+   * @type {Date}
    * @default null
    * @public
    */
@@ -83,6 +93,7 @@ export default Component.extend({
    * Callback, when view start/end date changed, by application or infinity scroll
    *
    * @property onViewDateChange
+   * @argument onViewDateChange
    * @type function
    * @default null
    * @public
@@ -93,6 +104,7 @@ export default Component.extend({
    * Pixel-width of day-columns
    *
    * @property dayWidth
+   * @argument dayWidth
    * @type int
    * @default 20
    * @public
@@ -104,6 +116,7 @@ export default Component.extend({
    * Therefore, an entry is added in the `dayClasses`
    *
    * @property showToday
+   * @argument showToday
    * @type bool
    * @default true
    * @public
@@ -114,6 +127,7 @@ export default Component.extend({
    * show special
    *
    * @property dayClasses
+   * @argument dayClasses
    * @type array
    * @default null
    * @public
@@ -124,6 +138,7 @@ export default Component.extend({
    * Get/update gantt-width to so sub-elements can consume via observer/computed
    *
    * @property ganttWidth
+   * @argument ganttWidth
    * @type int
    * @default 0
    * @protected
@@ -134,27 +149,19 @@ export default Component.extend({
    * Element .gantt-chart-inner to observe scrolling
    *
    * @property innerElement
+   * @argument innerElement
    * @type object
    * @default null
-   * @private
-   */
-  innerElement: null,
-
-  /**
-   * Get/update total width of timeline canvas (days*dayWidth)
-   *
-   * @property totalWidth
-   * @type int
-   * @default 0
    * @protected
    */
-  // totalWidth: 0, //px
+  innerElement: null,
 
   /**
    * Make header sticky using this top-offset when out of viewport
    * Set null to deactivate sticky-header
    *
    * @property stickyHeader
+   * @argument stickyHeader
    * @type number
    * @default 0
    * @public
@@ -165,6 +172,7 @@ export default Component.extend({
    * Get scroll-left to adjust header bar and to controll infinity-load
    *
    * @property scrollLeft
+   * @argument scrollLeft
    * @type int
    * @default 0
    * @private
@@ -175,6 +183,7 @@ export default Component.extend({
    * Get scroll-left to adjust header bar and to controll infinity-load
    *
    * @property infinityScroll
+   * @argument infinityScroll
    * @type bool
    * @default false
    * @public
@@ -182,10 +191,11 @@ export default Component.extend({
   infinityScroll: false,
 
   /**
-   * If autoTimeline set to true, its automatically evaluated which headers (year, month, cw, day) are shown, based on dayWidth.
-   * You can deactivate this and write your own logic. For that, use following `timelineXX` settings.
+   * If `autoTimeline` set to `true`, ember-gantt automatically evaluates which timeline-headers (year, month, cw, day) are shown, based on the `dayWidth`.
+   * You can deactivate this behavior and write your own logic. For that, use following `timelineXX` settings.
    *
    * @property autoTimeline
+   * @argument autoTimeline
    * @type bool
    * @default true
    * @public
@@ -196,6 +206,7 @@ export default Component.extend({
    * Show days in timeline header
    *
    * @property timelineDay
+   * @argument timelineDay
    * @type bool
    * @default true
    * @public
@@ -206,6 +217,7 @@ export default Component.extend({
    * Show calendar weeks in timeline header
    *
    * @property timelineCW
+   * @argument timelineCW
    * @type bool
    * @default true
    * @public
@@ -216,6 +228,7 @@ export default Component.extend({
    * Show months in timeline header
    *
    * @property timelineMonth
+   * @argument timelineMonth
    * @type bool
    * @default true
    * @public
@@ -226,6 +239,7 @@ export default Component.extend({
    * Show months in short form
    *
    * @property timelineMonthShort
+   * @argument timelineMonthShort
    * @type bool
    * @default false
    * @public
@@ -236,6 +250,7 @@ export default Component.extend({
    * Show years in short form
    *
    * @property timelineYear
+   * @argument timelineYear
    * @type bool
    * @default true
    * @public

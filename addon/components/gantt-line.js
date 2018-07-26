@@ -9,17 +9,28 @@ import Component from '@ember/component';
 import layout from '../templates/components/gantt-line';
 
 /**
- use the line component line in your gantt char. Use it as sub-component of the chart component.
- you may use it in inline or block notation.
+ Use the line component within your gantt chart part. You may use it in inline or block notation.
+
  ### Usage
- Use as a inline or block level component with sub-components barContent, milestone, chlidLine etc.
+ Use as a inline or block level component with sub-components title, inlineChilds, childLine, barContent and milestone
  components as children:
  ```handlebars
   {{#gantt-chart dayWidth=10 as |chart|}}
 
+    {{! loop over your data to add as many lines as you need }}
     {{#each projects as |p|}}
-      {{chart.line dateStart=p.dateStart dateEnd=p.dateEnd}}
+      {{chart.line dateStart=p.dateStart dateEnd=p.dateEnd color=p.color}}
     {{/each}}
+
+    {{#chart.line dateStart=myStartDate dateEnd=myEndDate color="red" as |line|}}
+
+      {{! milestone }}
+      {{line.milestone date=myDate title="GoLive"}}
+
+      {{! add a child line - this can be done recursively }}
+      {{line.childLine dateStart=myStartDate dateEnd=myEndDate color="blue"}}
+
+    {{/chart.ine}}
 
   {{/gantt-chart}}
  ```
@@ -28,6 +39,11 @@ import layout from '../templates/components/gantt-line';
  @namespace Components
  @extends Ember.Component
  @public
+ @yield {GanttLineTitle} line.title
+ @yield {GanttInlineChilds} line.inlineChilds
+ @yield {GanttLine} line.childLine
+ @yield {GanttLineBarcontent} line.barContent
+ @yield {GanttMilestone} line.milestone
  */
 export default Component.extend({
   layout,
@@ -66,7 +82,8 @@ export default Component.extend({
   /**
    * Line-title, shown at the left
    *
-   * @property dateStart
+   * @property title
+   * @argument title
    * @type Date
    * @default null
    * @public
@@ -77,6 +94,7 @@ export default Component.extend({
    * start-date of bar
    *
    * @property dateStart
+   * @argument dateStart
    * @type Date
    * @default null
    * @public
@@ -92,6 +110,7 @@ export default Component.extend({
    * end-date of bar
    *
    * @property dateEnd
+   * @argument dateEnd
    * @type Date
    * @default null
    * @public
@@ -107,6 +126,7 @@ export default Component.extend({
    * bar color
    *
    * @property color
+   * @argument color
    * @type string
    * @default null
    * @public
@@ -118,6 +138,7 @@ export default Component.extend({
    * It's possible to make parents non-editable and use max/min date of childs to align parent gantt-bar
    *
    * @property isEditable
+   * @argument isEditable
    * @type bool
    * @default false
    * @public
@@ -147,7 +168,8 @@ export default Component.extend({
   /**
    * Callback, when start/end date changed due to moving or resizing
    *
-   * @property onDateChange
+   * @event onDateChange
+   * @argument onDateChange
    * @type function
    * @default null
    * @public
