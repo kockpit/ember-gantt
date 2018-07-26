@@ -19,7 +19,8 @@ import layout from '../templates/components/gantt-line';
 
     {{! loop over your data to add as many lines as you need }}
     {{#each projects as |p|}}
-      {{chart.line dateStart=p.dateStart dateEnd=p.dateEnd color=p.color}}
+      {{chart.line dateStart=p.dateStart dateEnd=p.dateEnd color=p.color onDateChange=(action 'myCallback' p)}}
+      {{! -> callback receives new dateStart, dateEnd followed by your own arguments}}
     {{/each}}
 
     {{#chart.line dateStart=myStartDate dateEnd=myEndDate color="red" as |line|}}
@@ -166,7 +167,11 @@ export default Component.extend({
   barElement: null,
 
   /**
-   * Callback, when start/end date changed due to moving or resizing
+   * Callback, when start/end date changed due to moving or resizing.
+   * The date is thereby updated all the time. This callback is executed once, after resize/move finally ends.
+   * The callback function receiveds the following attributes (in this order):
+   * - `startDate`    new start date
+   * - `endDate`      new end date
    *
    * @event onDateChange
    * @argument onDateChange

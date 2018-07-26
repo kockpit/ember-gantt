@@ -4,10 +4,9 @@ import Component from '@ember/component';
 import layout from '../templates/components/gantt-milestone';
 
 /**
- milestones shown in line. Use this as sub-component of the line component
+ Milestones shown in line. Use this as sub-component of the line component.
  ### Usage
- Use as a block level component with any number of yielded line, header etc. - see examples)
- components as children:
+ Use as a block level component to wrap tooltip content or inline and set `title` for tooltip content.
  ```handlebars
   {{#gantt-chart dayWidth=10 as |chart|}}
 
@@ -53,6 +52,7 @@ export default Component.extend({
    * date of milestone
    *
    * @property date
+   * @argument date
    * @type Date
    * @default null
    * @public
@@ -63,6 +63,7 @@ export default Component.extend({
    * title of milestone. You may also use this component as block element to use more sophisticated markup.
    *
    * @property title
+   * @argument title
    * @type string
    * @default null
    * @public
