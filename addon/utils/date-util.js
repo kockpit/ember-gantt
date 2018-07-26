@@ -1,17 +1,22 @@
 import { isArray, A } from "@ember/array";
 import { get } from "@ember/object";
 import { isNone, isEqual } from "@ember/utils";
-import {htmlSafe} from '@ember/string';
+import { htmlSafe } from '@ember/string';
 
+/**
+ The date-util contains some helpful date-functions to work with UTC dates and calculate time-periods.
 
+ @class DateUtil
+ @public
+ */
 export default {
 
   /**
    * Get new date (from given date) in UTC and without time!
    *
    * @method getNewDate
-   * @param Date  fromDate
-   * @return Date cloned date with 0 time in UTC TZ
+   * @param {Date}  fromDate
+   * @return {Date} cloned date with 0 time in UTC TZ
    * @public
    */
   getNewDate(fromDate) {
@@ -39,8 +44,8 @@ export default {
    * Remove time from date (set 0) and set to UTC
    *
    * @method dateNoTime
-   * @param Date  date
-   * @return Date date without time in UTC
+   * @param {Date}  date
+   * @return {Date} date without time in UTC
    * @public
    */
   dateNoTime(date) {
@@ -51,9 +56,9 @@ export default {
    * Generate new date from given date + given number of days
    *
    * @method datePlusDays
-   * @param Date  date
-   * @param int   days
-   * @return Date cloned date n-days later
+   * @param {Date}  date
+   * @param {int}   days
+   * @return {Date} cloned date n-days later
    * @public
    */
   datePlusDays(date, days) {
@@ -66,8 +71,8 @@ export default {
    * Calculate number of days in a month
    *
    * @method daysInMonth
-   * @param Date  date  date of day in that month
-   * @return int number of days in that month (28-31)
+   * @param {Date}  date  date of day in that month
+   * @return {int} number of days in that month (28-31)
    * @public
    */
   daysInMonth(date) {
@@ -81,10 +86,10 @@ export default {
    * Day difference between two dates
    *
    * @method datePlusDays
-   * @param Date  startDate
-   * @param Date  endDate
-   * @param bool  includeLastDay  adds an additional day for the last date
-   * @return int  number of days inbetween
+   * @param {Date}  startDate
+   * @param {Date}  endDate
+   * @param {bool}  includeLastDay  adds an additional day for the last date
+   * @return {int}  number of days inbetween
    * @public
    */
   diffDays(startDate, endDate, includeLastDay) {
@@ -107,8 +112,8 @@ export default {
    * Get Calendar-Week to date
    *
    * @method getCW
-   * @param Date  date
-   * @return int  calendar week
+   * @param {Date}  date
+   * @return {int}  calendar week
    * @public
    */
   getCW(date) {
@@ -137,10 +142,10 @@ export default {
    * Merge time-period objects that implement dateStart and dateEnd attributes within a given date range
    *
    * @method mergeTimePeriods
-   * @param array childs
-   * @param Date  periodStart
-   * @param Date  periodEnd
-   * @return array
+   * @param {array} childs
+   * @param {Date}  periodStart
+   * @param {Date}  periodEnd
+   * @return {array}
    * @public
    */
   mergeTimePeriods(childs, periodStart, periodEnd) {
@@ -197,10 +202,10 @@ export default {
    * Prepare array from period-childs consisting of objects with all start/end dates for iterating
    *
    * @method preparePeriodDateMap
-   * @param array childs
-   * @param Date  periodStart
-   * @param Date  periodEnd
-   * @return array format: [{ timestamp:timestamp1, isStart:true, child:childObj }, {timestamp:timestamp2, isStart:false, child:childObj2 }}
+   * @param {array} childs
+   * @param {Date}  periodStart
+   * @param {Date}  periodEnd
+   * @return {array} format: [{ timestamp:timestamp1, isStart:true, child:childObj }, {timestamp:timestamp2, isStart:false, child:childObj2 }}
    * @private
    */
   preparePeriodDateMap(childs, periodStart, periodEnd) {
@@ -240,11 +245,11 @@ export default {
    * generates an array with months in period including days (see return)
    *
    * @method monthsInPeriod
-   * @param Date   startDate
-   * @param Date   endDate
-   * @param int    dayWidth
-   * @param object specialDays  special object with day-classes and titles for grid colors ({ 15315121545 (timestamp): { title: 'Today', class:'today'}})
-   * @return array e.g. [ { date: FIRST_DAY_OF_MONTH_DATE, totalDays: 31, width: 500, style: 'width:500px', days: [ ... ] -> day = { nr: 1, date: DATE, isWeekend: true}
+   * @param {Date}   startDate
+   * @param {Date}   endDate
+   * @param {int}    dayWidth
+   * @param {object} specialDays  special object with day-classes and titles for grid colors ({ 15315121545 (timestamp): { title: 'Today', class:'today'}})
+   * @return {array} e.g. [ { date: FIRST_DAY_OF_MONTH_DATE, totalDays: 31, width: 500, style: 'width:500px', days: [ ... ] -> day = { nr: 1, date: DATE, isWeekend: true}
    * @public
    */
   monthsInPeriod(startDate, endDate, dayWidth, specialDays) {
@@ -319,10 +324,10 @@ export default {
    * generates an array with calendar weeks in period
    *
    * @method calendarWeeksInPeriod
-   * @param Date  startDate
-   * @param Date  endDate
-   * @param int  dayWidth
-   * @return array e.g. [ { date: FIRST_DATE, nr: 33, width: 'width: 55px' } ]
+   * @param {Date}  startDate
+   * @param {Date}  endDate
+   * @param {int}  dayWidth
+   * @return {array} e.g. [ { date: FIRST_DATE, nr: 33, width: 'width: 55px' } ]
    * @public
    */
   calendarWeeksInPeriod(startDate, endDate, dayWidth) {
@@ -356,10 +361,10 @@ export default {
    * generates an array with years in period
    *
    * @method monthsInPeriod
-   * @param Date  startDate
-   * @param Date  endDate
-   * @param int   dayWidth
-   * @return array e.g. [ { date: FIRST_DAY_OF_YEAR_DATE, nr: 2015, width: 'width: 250px' }, ... ]
+   * @param {Date}  startDate
+   * @param {Date}  endDate
+   * @param {int}   dayWidth
+   * @return {array} e.g. [ { date: FIRST_DAY_OF_YEAR_DATE, nr: 2015, width: 'width: 250px' }, ... ]
    * @public
    */
   yearsInPeriod(startDate, endDate, dayWidth) {
@@ -395,9 +400,9 @@ export default {
    * get month name
    *
    * @method getMonthName
-   * @param Date  date
-   * @param bool  short
-   * @return string
+   * @param {Date}  date
+   * @param {bool}  short
+   * @return {string}
    * @public
    */
   getMonthName(date, short) {

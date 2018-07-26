@@ -8,6 +8,43 @@ import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
 import layout from '../templates/components/gantt-line';
 
+/**
+ Use the line component within your gantt chart part. You may use it in inline or block notation.
+
+ ### Usage
+ Use as a inline or block level component with sub-components title, inlineChilds, childLine, barContent and milestone
+ components as children:
+ ```handlebars
+  {{#gantt-chart dayWidth=10 as |chart|}}
+
+    {{! loop over your data to add as many lines as you need }}
+    {{#each projects as |p|}}
+      {{chart.line dateStart=p.dateStart dateEnd=p.dateEnd color=p.color}}
+    {{/each}}
+
+    {{#chart.line dateStart=myStartDate dateEnd=myEndDate color="red" as |line|}}
+
+      {{! milestone }}
+      {{line.milestone date=myDate title="GoLive"}}
+
+      {{! add a child line - this can be done recursively }}
+      {{line.childLine dateStart=myStartDate dateEnd=myEndDate color="blue"}}
+
+    {{/chart.ine}}
+
+  {{/gantt-chart}}
+ ```
+
+ @class GanttLine
+ @namespace Components
+ @extends Ember.Component
+ @public
+ @yield {GanttLineTitle} line.title
+ @yield {GanttInlineChilds} line.inlineChilds
+ @yield {GanttLine} line.childLine
+ @yield {GanttLineBarcontent} line.barContent
+ @yield {GanttMilestone} line.milestone
+ */
 export default Component.extend({
   layout,
 
@@ -18,7 +55,7 @@ export default Component.extend({
    * @property chart
    * @type object
    * @default null
-   * @protected
+   * @private
    */
   chart: null,
 
@@ -28,7 +65,7 @@ export default Component.extend({
    * @property parentLine
    * @type object
    * @default null
-   * @protected
+   * @private
    */
   parentLine: null,
 
@@ -38,14 +75,15 @@ export default Component.extend({
    * @property dayWidth
    * @type int
    * @default 20
-   * @public
+   * @private
    */
   dayWidth: alias('chart.dayWidth'),
 
   /**
    * Line-title, shown at the left
    *
-   * @property dateStart
+   * @property title
+   * @argument title
    * @type Date
    * @default null
    * @public
@@ -53,9 +91,10 @@ export default Component.extend({
   title: '',
 
   /**
-   * Start-date of bar
+   * start-date of bar
    *
    * @property dateStart
+   * @argument dateStart
    * @type Date
    * @default null
    * @public
@@ -67,11 +106,11 @@ export default Component.extend({
     return dateUtil.getNewDate(max);
   }),
 
-
   /**
-   * End-date of bar
+   * end-date of bar
    *
    * @property dateEnd
+   * @argument dateEnd
    * @type Date
    * @default null
    * @public
@@ -83,21 +122,11 @@ export default Component.extend({
     return dateUtil.getNewDate(min);
   }),
 
-
   /**
-   * Collapse child lines (if available)
-   *
-   * @property collapsed
-   * @type bool
-   * @default false
-   * @public
-   */
-  // collapsed: false, // use ember-bootstrap !
-
-   /**
-   * Bar color
+   * bar color
    *
    * @property color
+   * @argument color
    * @type string
    * @default null
    * @public
@@ -109,6 +138,7 @@ export default Component.extend({
    * It's possible to make parents non-editable and use max/min date of childs to align parent gantt-bar
    *
    * @property isEditable
+   * @argument isEditable
    * @type bool
    * @default false
    * @public
@@ -138,7 +168,8 @@ export default Component.extend({
   /**
    * Callback, when start/end date changed due to moving or resizing
    *
-   * @property onDateChange
+   * @event onDateChange
+   * @argument onDateChange
    * @type function
    * @default null
    * @public
@@ -161,12 +192,6 @@ export default Component.extend({
     }
   },
 
-  /**
-   * Init editable handlers
-   *
-   * @method didInsertElement
-   * @protected
-   */
   didInsertElement() {
     this._super(...arguments);
 
@@ -235,13 +260,8 @@ export default Component.extend({
 
 
 
-  /**
-   * Bar offset from left (in px)
-   * Calculated from date-start and dayWidth (in chart component)
-   *
-   * @method barOffset
-   * @protected
-   */
+   // Bar offset from left (in px)
+   // Calculated from date-start and dayWidth (in chart component)
   barOffset: computed('_start', 'dayWidth', function(){
     return get(this, 'chart').dateToOffset( get(this, '_start') );
   }),
@@ -274,14 +294,9 @@ export default Component.extend({
   }),
 
 
-  /**
-   * Get element offset to parent (including scroll)
-   * TODO: use from util package or ember?
-   *
-   * @method offsetLeft
-   * @param el
-   * @protected
-   */
+
+  // get element offset to parent (including scroll)
+  // TODO: use from util package or ember?
   offsetLeft(el) {
     let rect = el.getBoundingClientRect(),
     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
@@ -384,7 +399,5 @@ export default Component.extend({
       }
     }
   }
-
-
 
 });
