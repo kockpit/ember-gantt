@@ -89,9 +89,17 @@ export default Component.extend({
   // STICKY
   // -------------------
   checkSticky(/*e*/) {
-    let offset = get(this, 'headerElement').getBoundingClientRect().top || 0;
-    let chartOffset = get(this, 'chart.element') ? get(this, 'chart.element').getBoundingClientRect() : {};
-    let chartBottom = (chartOffset.top + chartOffset.height - 100) || 1;
+    let headerElement = get(this, 'headerElement');
+    let chartElement = get(this, 'chart.element');
+
+    let offset = 0;
+    let chartBottom = 1;
+
+    if (headerElement && chartElement) {
+      offset = headerElement.getBoundingClientRect().top;
+      let chartOffset =  chartElement.getBoundingClientRect();
+      chartBottom = (chartOffset.top + chartOffset.height - 100) || 1;
+    }
 
     if (!get(this, 'isSticky') && offset < get(this, 'stickyOffset') && chartBottom >= 100) {
       this.makeSticky();
