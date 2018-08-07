@@ -395,11 +395,12 @@ export default Component.extend({
     this.updateResize();
   }),
 
-  updateResize(/*e*/) {
-    set(this, 'ganttWidth', this.element.offsetWidth || 0);
+  updateResize(/* e */) {
 
-    // let totalWidth = this.dateToOffset(get(this, 'viewEndDate'), get(this, 'viewStartDate'), true);
-    // set(this, 'totalWidth', totalWidth);
+    if (this.element) {
+      set(this, 'ganttWidth', this.element.offsetWidth || 0);
+    }
+
   },
 
   checkInfinityScroll(e) {
