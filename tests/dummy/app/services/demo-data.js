@@ -1,6 +1,6 @@
-import {isNone} from '@ember/utils';
+import { isNone } from '@ember/utils';
 import O from '@ember/object';
-import {A} from '@ember/array';
+import { A } from '@ember/array';
 import { alias, sort } from '@ember/object/computed';
 import dateUtil from '../utils/date-util';
 import MinMaxChildDatesMixin from '../mixins/min-max-child-dates-mixin';

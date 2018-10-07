@@ -1,7 +1,7 @@
 import { getProperties } from "@ember/object";
 import dateUtil from 'dummy/utils/date-util';
 import { module, test } from 'qunit';
-import {htmlSafe} from '@ember/string';
+import { htmlSafe } from '@ember/string';
 
 // prepare test data
 const testStartDate = new Date(1527266746009);                // Fri May 25 2018 18:45:46 GMT+0200 (CEST)

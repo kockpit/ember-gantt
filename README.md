@@ -28,6 +28,11 @@ In your application's directory:
 ```
 ember install @kockpit/ember-gantt
 ```
+=======
+* `npm run lint:hbs`
+* `npm run lint:js`
+* `npm run lint:js -- --fix`
+
 
 
 Features coming

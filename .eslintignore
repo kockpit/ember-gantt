@@ -17,3 +17,5 @@
 
 # dummy
 tests/dummy/app/snippets/
+/bower.json.ember-try
+/package.json.ember-try

@@ -1,8 +1,14 @@
-import {computed,observer,get,set,setProperties} from '@ember/object';
-import {alias} from '@ember/object/computed';
-import {htmlSafe} from '@ember/string';
-import {isNone} from '@ember/utils';
-import {bind} from '@ember/runloop';
+import {
+  computed,
+  observer,
+  get,
+  set,
+  setProperties
+} from '@ember/object';
+import { alias } from '@ember/object/computed';
+import { htmlSafe } from '@ember/string';
+import { isNone } from '@ember/utils';
+import { bind } from '@ember/runloop';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render,settled,triggerEvent } from '@ember/test-helpers';
+import { render, settled, triggerEvent } from '@ember/test-helpers';
 import { set, get } from '@ember/object';
 import { run } from '@ember/runloop';
 import dateUtil from 'dummy/utils/date-util';
@@ -55,15 +55,15 @@ module('Integration | Component | gantt-line', function(hooks) {
     let lines = this.element.querySelectorAll('.gantt-lines .gantt-line');
 
     // structure
-    assert.ok(lines[0].classList.contains('gantt-line'), 'has class');
+    assert.dom(lines[0]).hasClass('gantt-line', 'has class');
     assert.ok(lines[0].querySelector('.gantt-line-timeline .gantt-line-bar'), 'structure of class-elements');
     assert.ok(lines[3].querySelector('.gantt-line-timeline .gantt-line-bar .gantt-line-bar-content em'), 'structure of class-elements – block ');
     assert.equal(lines[3].querySelector('.gantt-line-timeline .gantt-line-bar .gantt-line-bar-content').innerHTML, '<em>look at meeee</em>', 'bar-content');
 
     // titles
-    assert.equal(lines[0].querySelector('.gantt-line-title').textContent.trim(), 'ONE', 'normal title - inline');
+    assert.dom(lines[0].querySelector('.gantt-line-title')).hasText('ONE', 'normal title - inline');
     assert.equal(lines[1].querySelector('.gantt-line-title').innerHTML, '<b>TWO</b>', 'subcomponent title - block');
-    assert.equal(lines[3].querySelector('.gantt-line-title').textContent.trim(), 'FOUR', 'normal title - block');
+    assert.dom(lines[3].querySelector('.gantt-line-title')).hasText('FOUR', 'normal title - block');
 
     // position & color
     assert.equal(lines[2].querySelector('.gantt-line-timeline .gantt-line-bar').getAttribute('style'), 'left:120px;width:75px;background-color:#00FF00', 'position & color - THREE (block)');
@@ -163,7 +163,7 @@ module('Integration | Component | gantt-line', function(hooks) {
 
     // !! not editable
     await triggerEvent(editableBar, 'mousedown'); // activate
-    assert.notOk(editableLine.classList.contains('is-moving'), 'not yet has moving class');
+    assert.dom(editableLine).hasNoClass('is-moving', 'not yet has moving class');
 
     run(() => {
       set(this, 'isEditable', true);
@@ -171,12 +171,12 @@ module('Integration | Component | gantt-line', function(hooks) {
     await settled();
 
     // now editable (first)
-    assert.ok(editableLine.querySelector('.gantt-line-bar').classList.contains('gantt-line-bar-editable'), 'has editable class');
-    assert.notOk(notEditableLine.querySelector('.gantt-line-bar').classList.contains('gantt-line-bar-editable'), 'has not editable class');
+    assert.dom(editableLine.querySelector('.gantt-line-bar')).hasClass('gantt-line-bar-editable', 'has editable class');
+    assert.dom(notEditableLine.querySelector('.gantt-line-bar')).hasNoClass('gantt-line-bar-editable', 'has not editable class');
 
     // <- movable ->
     await triggerEvent(editableBar, 'mousedown'); // activate
-    assert.ok(editableLine.classList.contains('is-moving'),      'has moving class');
+    assert.dom(editableLine).hasClass('is-moving', 'has moving class');
     assert.equal(String(get(data, 'start')), String(startClone), 'not moved, only clicked');
 
 

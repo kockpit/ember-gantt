@@ -1,8 +1,8 @@
-import {observer, get, set} from '@ember/object';
-import {throttle} from '@ember/runloop';
-import {htmlSafe} from '@ember/string';
-import {isArray, A} from "@ember/array";
-import {isEmpty} from "@ember/utils";
+import { observer, get, set } from '@ember/object';
+import { throttle } from '@ember/runloop';
+import { htmlSafe } from '@ember/string';
+import { isArray, A } from "@ember/array";
+import { isEmpty } from "@ember/utils";
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';

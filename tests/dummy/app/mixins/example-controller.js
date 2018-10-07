@@ -1,5 +1,5 @@
 import Mixin from '@ember/object/mixin';
-import {set,get} from '@ember/object';
+import { set, get } from '@ember/object';
 
 export default Mixin.create({
 
