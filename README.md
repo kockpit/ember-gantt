@@ -1,11 +1,24 @@
 
 <!-- BADGES: https://github.com/exogen/badge-matrix -->
 
+<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/kockpit/ember-gantt.svg?branch=master)](https://travis-ci.org/kockpit/ember-gantt)
 [![Ember Observer Score](https://emberobserver.com/badges/-kockpit-ember-gantt.svg)](https://emberobserver.com/addons/@kockpit/ember-gantt)
 [![npm version](https://badge.fury.io/js/%40kockpit%2Fember-gantt.svg)](https://badge.fury.io/js/%40kockpit%2Fember-gantt)
 [![Dependency Status](https://david-dm.org/kockpit/ember-gantt.svg)](https://david-dm.org/kockpit/ember-gantt)
 [![devDependency Status](https://david-dm.org/kockpit/ember-gantt/dev-status.svg)](https://david-dm.org/kockpit/ember-gantt#info=devDependencies)
+=======
+
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+
+
+Installation
+------------------------------------------------------------------------------
+>>>>>>> ffe1429... message
 
 
 <!--[![Greenkeeper badge](https://badges.greenkeeper.io/kockpit/ember-gantt.svg)](https://greenkeeper.io/) -->
@@ -17,6 +30,7 @@ ember-gantt
 An ember-cli addon for showing beautiful gantt-charts from your data.
 No additional library is used – pure ember. So slick and soooo fast.
 
+<<<<<<< HEAD
 See https://kockpit.github.io/ember-gantt/ for demo and full documentation.
 
 
@@ -46,6 +60,9 @@ Features coming
 
 
 Copyright and license
+=======
+License
+>>>>>>> ffe1429... message
 ------------------------------------------------------------------------------
 
 
