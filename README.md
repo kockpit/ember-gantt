@@ -7,6 +7,8 @@
 [![devDependency Status](https://david-dm.org/kockpit/ember-gantt/dev-status.svg)](https://david-dm.org/kockpit/ember-gantt#info=devDependencies)
 =======
 
+<<<<<<< HEAD
+=======
 
 Compatibility
 ------------------------------------------------------------------------------
@@ -15,6 +17,18 @@ Compatibility
 * Ember CLI v2.13 or above
 
 
+Installation
+------------------------------------------------------------------------------
+>>>>>>> 1407e12... message
+
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+
+
+<<<<<<< HEAD
 Installation
 
 * `git clone <repository-url>`
@@ -78,6 +92,8 @@ Features coming
 
 Copyright and license
 =======
+=======
+>>>>>>> 1407e12... message
 License
 >>>>>>> ffe1429... message
 ------------------------------------------------------------------------------
