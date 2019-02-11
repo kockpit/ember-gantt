@@ -49,7 +49,7 @@ export default {
    * @public
    */
   dateNoTime(date) {
-    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
   },
 
   /**
@@ -63,7 +63,7 @@ export default {
    */
   datePlusDays(date, days) {
     let newDate = this.getNewDate(date);
-    newDate.setDate(newDate.getDate() + days);
+    newDate.setUTCDate(newDate.getUTCDate() + days);
     return newDate;
   },
 
@@ -77,9 +77,9 @@ export default {
    */
   daysInMonth(date) {
     let newDate = this.getNewDate(date);
-    newDate.setMonth(newDate.getMonth()+1);
-    newDate.setDate(0);  // set to last day of previous month
-    return newDate.getDate();
+    newDate.setUTCMonth(newDate.getUTCMonth()+1);
+    newDate.setUTCDate(0);  // set to last day of previous month
+    return newDate.getUTCDate();
   },
 
   /**
@@ -255,7 +255,9 @@ export default {
   monthsInPeriod(startDate, endDate, dayWidth, specialDays) {
 
     let months = [];
+    console.log(startDate, 'startDate');
     let actDate = this.getNewDate(startDate.getTime());
+    console.log(actDate, 'act');
     specialDays = specialDays || {};
 
     // MONTHS AND DAYS
@@ -267,16 +269,16 @@ export default {
 
       // first month
       if (isEqual(startDate, actDate)) {
-        startDay = actDate.getDate();
+        startDay = actDate.getUTCDate();
       } else {
-        actDate.setDate(1);
+        actDate.setUTCDate(1);
       }
 
       // last month
-      if (actDate.getMonth() === endDate.getMonth() &&
-          actDate.getFullYear() === endDate.getFullYear()) {
+      if (actDate.getUTCMonth() === endDate.getUTCMonth() &&
+          actDate.getUTCFullYear() === endDate.getUTCFullYear()) {
 
-        lastDay = endDate.getDate();
+        lastDay = endDate.getUTCDate();
       }
 
       // month data
@@ -297,7 +299,7 @@ export default {
         let day = {
           nr: d,
           date: dayDate.setDate(d),
-          isWeekend: ([0,6].indexOf(dayDate.getDay()) >=0),
+          isWeekend: ([0,6].indexOf(dayDate.getUTCDay()) >=0),
           title: '',
           class: ''
         };
@@ -313,7 +315,7 @@ export default {
 
       // add days to month
       months.push(month);
-      actDate.setMonth(actDate.getMonth()+1);
+      actDate.setUTCMonth(actDate.getUTCMonth()+1);
     }
 
     return months;
@@ -334,7 +336,7 @@ export default {
 
     let cws = [];
     let firstCW = this.getCW(startDate);
-    let firstWD = startDate.getDay() || 7; // Sunday -> 7
+    let firstWD = startDate.getUTCDay() || 7; // Sunday -> 7
     let firstCWrest = 8 - firstWD;
     let actDate = this.getNewDate(startDate.getTime());
 
@@ -345,7 +347,7 @@ export default {
     actDate = this.datePlusDays(startDate, firstCWrest);
     while(actDate <= endDate) {
       cws.push({ date: this.getNewDate(actDate), nr: this.getCW(actDate) });
-      actDate.setDate(actDate.getDate() + 7); // add 7 days
+      actDate.setDate(actDate.getUTCDate() + 7); // add 7 days
     }
 
     // adjust last cw
@@ -375,14 +377,14 @@ export default {
     // middle cws
     while(actDate <= endDate) {
 
-      let nextDate = this.getNewDate( (actDate.getFullYear()+1) + '-01-01');
+      let nextDate = this.getNewDate( (actDate.getUTCFullYear()+1) + '-01-01');
       nextDate = (endDate <= nextDate) ? endDate : nextDate; // max until endDate
 
-      let isLast = (actDate.getFullYear() === nextDate.getFullYear());
+      let isLast = (actDate.getUTCFullYear() === nextDate.getUTCFullYear());
 
       years.push({
         date: actDate,
-        nr: actDate.getFullYear(),
+        nr: actDate.getUTCFullYear(),
         width: htmlSafe( 'width:' + (this.diffDays(actDate, nextDate, isLast) * dayWidth) + 'px' ),
       });
 
@@ -405,17 +407,29 @@ export default {
    * @return {string}
    * @public
    */
-  getMonthName(date, short) {
+  getMonthName(date, short, locale) {
 
     short = isNone(short) ? false : short,
     date = this.getNewDate(date);
 
-    let lang = window.navigator.userLanguage || window.navigator.language;
-    let options = { weekday: 'narrow', year: 'numeric', month: (short ? 'short' : 'long' ), day: 'numeric' };
-    let dateString = date.toLocaleDateString(lang, options);
+    locale = locale || window.navigator.userLanguage || window.navigator.language;
+    let options = {
+                    weekday: null,
+                    year: 'numeric',
+                    month: 'long', //(short ? 'short' : 'long' ),
+                    day: 'numeric',
+                    //timeZone
+                  };
+
+    console.log(locale, 'locale');
+    // console.log(date, 'date');
+    // console.log(options, 'options');
+    console.log(date.toLocaleDateString(locale, { month: "long" }), 'month');
+    console.log(date.toLocaleString('EN-US', { month: "long" }), 'month');
+    let dateString = date.toLocaleDateString(locale, options);
     let monthName = dateString.match(/[A-Za-zöäü.]{3,}/) || [''];
 
-    return monthName[0] + (!short ? ' '+date.getFullYear() : '') ;
+    return monthName[0] + (!short ? ' '+date.getUTCFullYear() : '') ;
   }
 
 

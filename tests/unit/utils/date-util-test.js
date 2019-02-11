@@ -29,9 +29,6 @@ const timePeriodChilds = [{
   }];
 
 
-
-
-
 const getDate = function(date) {
   return dateUtil.getNewDate(date);
 }
@@ -41,26 +38,29 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
 
 
   test('getNewDate', function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     let today = new Date();
     today.setUTCHours(0,0,0,0);
 
     let date = getDate();
-    assert.equal(date.toString(), today.toString(), 'no date passed = today');
+    assert.equal(date.toUTCString(), today.toUTCString(), 'no date passed = today');
+    assert.equal(date.getUTCMinutes(), 0, 'no mintues');
+    assert.equal(date.getUTCHours(), 0, 'no hours');
 
     let todayPlus10 = dateUtil.datePlusDays(date, 10);
+
     let date2 = getDate( parseInt(todayPlus10.getTime()) );
-    assert.equal(date2.toString(), todayPlus10.toString(), 'from timestamp integer');
+    assert.equal(date2.toUTCString(), todayPlus10.toUTCString(), 'from timestamp integer');
 
     let date3 = getDate( ""+(todayPlus10.getTime()) );
-    assert.equal(date3.toString(), todayPlus10.toString(), 'from timestamp string');
+    assert.equal(date3.toUTCString(), todayPlus10.toUTCString(), 'from timestamp string');
 
-    let date4 = getDate( '2018-05-25');
-    assert.equal(date4.toString(), (new Date('2018-05-25')).toString(), 'from iso string (YYYY-MM-DD)');
+    let date4 = getDate('2018-05-25');
+    assert.equal(date4.toUTCString(), (new Date('2018-05-25')).toUTCString(), 'from iso string (YYYY-MM-DD)');
 
-    let date5 = getDate( todayPlus10 );
-    assert.equal(date5.toString(), todayPlus10.toString(), 'from date object');
+    let date5 = getDate(todayPlus10);
+    assert.equal(date5.toUTCString(), todayPlus10.toUTCString(), 'from date object');
   });
 
   test('dateNoTime', function(assert) {
@@ -93,6 +93,16 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.equal(dateUtil.daysInMonth(new Date('2016-02-05')), 29, 'february in leap year');
     assert.equal(dateUtil.daysInMonth(new Date('2017-06-05')), 30, 'june');
     assert.equal(dateUtil.daysInMonth(new Date('2017-07-05')), 31, 'july');
+
+  });
+
+  test('getMonthName', function(assert) {
+
+    // FIXME only works for locales that have May as 3 chars (english, german .. ?) -> esp -> mayo?
+    assert.ok(/^M[a-z]+ 2018$/.test(getMonthName('2018-05-03', false,  'EN-US')), 'month May');
+    assert.ok(/^M[a-z]+ 2018$/.test(getMonthName('2018-05-03', false,  'EN-US')), 'month May, short=false');
+    assert.ok(/^M[a-z]{3} 2018$/.test(getMonthName('2018-05-03', true, 'EN-US')), 'month May, short=true');
+    assert.ok(/^J[a-z]+ 2018$/.test(getMonthName('2018-06-30', false,  'EN-US')), 'month June');
 
   });
 
