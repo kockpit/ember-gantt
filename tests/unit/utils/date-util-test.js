@@ -97,13 +97,10 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
   });
 
   test('getMonthName', function(assert) {
-
-    // FIXME only works for locales that have May as 3 chars (english, german .. ?) -> esp -> mayo?
-    assert.ok(/^M[a-z]+ 2018$/.test(getMonthName('2018-05-03', false,  'EN-US')), 'month May');
-    assert.ok(/^M[a-z]+ 2018$/.test(getMonthName('2018-05-03', false,  'EN-US')), 'month May, short=false');
-    assert.ok(/^M[a-z]{3} 2018$/.test(getMonthName('2018-05-03', true, 'EN-US')), 'month May, short=true');
-    assert.ok(/^J[a-z]+ 2018$/.test(getMonthName('2018-06-30', false,  'EN-US')), 'month June');
-
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July', 'month July');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July', 'month July, short=false');
+    assert.equal(dateUtil.getMonthName('2018-07-03', true,   'EN-US'), 'Jul', 'month July, short=true');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'DE-DE'), 'Juli', 'month July, in German');
   });
 
   test('diffDays', function(assert) {

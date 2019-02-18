@@ -1,6 +1,6 @@
 import { isArray, A } from "@ember/array";
 import { get } from "@ember/object";
-import { isNone, isEqual } from "@ember/utils";
+import { isNone, isEqual, isEmpty } from "@ember/utils";
 import { htmlSafe } from '@ember/string';
 
 /**
@@ -255,9 +255,7 @@ export default {
   monthsInPeriod(startDate, endDate, dayWidth, specialDays) {
 
     let months = [];
-    console.log(startDate, 'startDate');
     let actDate = this.getNewDate(startDate.getTime());
-    console.log(actDate, 'act');
     specialDays = specialDays || {};
 
     // MONTHS AND DAYS
@@ -398,6 +396,15 @@ export default {
     return years;
   },
 
+
+  /**
+   * fallback month names if I18N API no available
+   *
+   * @property monthNames
+   * @type array
+   */
+  monthNames: Object.freeze(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'Septemer', 'October', 'November', 'December']),
+
   /**
    * get month name
    *
@@ -412,24 +419,17 @@ export default {
     short = isNone(short) ? false : short,
     date = this.getNewDate(date);
 
-    locale = locale || window.navigator.userLanguage || window.navigator.language;
-    let options = {
-                    weekday: null,
-                    year: 'numeric',
-                    month: 'long', //(short ? 'short' : 'long' ),
-                    day: 'numeric',
-                    //timeZone
-                  };
+    locale = locale || window.navigator.userLanguage || window.navigator.language || 'EN-US';
 
-    console.log(locale, 'locale');
-    // console.log(date, 'date');
-    // console.log(options, 'options');
-    console.log(date.toLocaleDateString(locale, { month: "long" }), 'month');
-    console.log(date.toLocaleString('EN-US', { month: "long" }), 'month');
-    let dateString = date.toLocaleDateString(locale, options);
-    let monthName = dateString.match(/[A-Za-zöäü.]{3,}/) || [''];
+    let options = { month: (short ? 'short' : 'long' ) };
+    let monthName = date.toLocaleDateString(locale, options);
 
-    return monthName[0] + (!short ? ' '+date.getUTCFullYear() : '') ;
+    if (isEmpty(monthName) || /[0-9]/.test(monthName)) {
+      monthName = this.monthNames[ date.getUTCMonth() ];
+      monthName = short ? monthName.substring(0,3) : monthName;
+    }
+
+    return monthName;
   }
 
 
