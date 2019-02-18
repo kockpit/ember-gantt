@@ -345,7 +345,7 @@ export default {
     actDate = this.datePlusDays(startDate, firstCWrest);
     while(actDate <= endDate) {
       cws.push({ date: this.getNewDate(actDate), nr: this.getCW(actDate) });
-      actDate.setDate(actDate.getUTCDate() + 7); // add 7 days
+      actDate.setUTCDate(actDate.getUTCDate() + 7); // add 7 days
     }
 
     // adjust last cw
