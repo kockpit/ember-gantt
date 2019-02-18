@@ -1,7 +1,6 @@
 import { set, get, observer } from '@ember/object';
 import { isNone } from '@ember/utils';
 import { bind } from '@ember/runloop';
-import $ from 'jquery';
 
 import dateUtil from '../utils/date-util';
 import Component from '@ember/component';
@@ -376,11 +375,37 @@ export default Component.extend({
   }),
 
   scrollTo(date, duration) {
-    let scrollPx = this.dateToOffset(date) - (get(this, 'ganttWidth')*(1/4));
+    let scrollPx = Math.max(0, this.dateToOffset(date) - (get(this, 'ganttWidth')*(1/4)));
     duration = isNone(duration) ? get(this, 'viewScrollDuration') : duration;
 
     $(get(this, 'innerElement')).animate({ scrollLeft: scrollPx }, duration);
+    this.scrollAnimatedTo(get(this, 'innerElement'), scrollPx, duration);
 
+  },
+
+  scrollAnimatedTo(element, to, duration) {
+    let start = element.scrollLeft,
+        change = to - start,
+        currentTime = 0,
+        increment = 20;
+
+    const animationEase = function(t, b, c, d) {
+      t /= d/2;
+      if (t < 1) return c/2*t*t + b;
+      t--;
+      return -c/2 * (t*(t-2) - 1) + b;
+    };
+
+    let animateScroll = function(){
+        currentTime += increment;
+        var val = animationEase(currentTime, start, change, duration);
+        element.scrollLeft = val;
+        if(currentTime < duration) {
+            setTimeout(animateScroll, increment);
+        }
+    };
+
+    animateScroll();
   },
 
   updateScroll(e) {
