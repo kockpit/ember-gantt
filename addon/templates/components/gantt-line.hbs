@@ -9,18 +9,19 @@
     </div>
   {{else}}
     {{yield
-      (hash
-        title=(component "gantt-line-title" line=this)
-      )}}
+      (hash title=(component "gantt-line-title" line=this))
+    }}
   {{/if}}
 
   {{! timeline }}
   <div class="gantt-line-timeline">
 
     {{! bar }}
-    <div class="gantt-line-bar {{if isEditable 'gantt-line-bar-editable'}}" style={{barStyle}} title={{barTitle}}>
-
-
+    <div
+      class="gantt-line-bar {{if isEditable "gantt-line-bar-editable"}}"
+      style={{barStyle}}
+      title={{barTitle}}
+    >
       {{yield
         (hash
           inlineChilds=(component "gantt-line-inline-childs" parentLine=this chart=chart)
@@ -46,11 +47,11 @@
 
 {{! child lines }}
 <div class="gantt-line-childs">
-	{{yield
-	  (hash
+  {{yield
+    (hash
 	    childLine=(component "gantt-line" chart=chart  parentLine=this)
-	  )
-	}}
+    )
+  }}
 </div>
 
 

@@ -11,11 +11,15 @@
     {{#each model.projects as |project|}}
 
       {{! line for each project }}
-      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      {{#chart.line
+        dateStart=project.minStartDate
+        dateEnd=project.maxEndDate
+        as |line|
+      }}
 
         {{! collapse childs }}
         {{#line.title}}
-          <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
+          <span><a href="" {{action "collapse" project}}>{{project.title}}</a></span>
         {{/line.title}}
 
         {{! inline childs }}
@@ -27,7 +31,13 @@
             {{#each project.jobs as |job|}}
 
               {{! child lines}}
-              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
+              {{#line.childLine
+                dateStart=job.dateStart
+                dateEnd=job.dateEnd
+                isEditable=true
+                color=job.color
+              as |childLine|
+              }}
 
                 {{! more complex title inner}}
                 {{#childLine.title}}

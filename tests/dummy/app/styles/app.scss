@@ -5,14 +5,13 @@ $brand-primary: #6d94d3;
 @import "ember-bootstrap/bootstrap";
 
 
-
 /**
  *
  *   GENERAL STYLINGS - dont use this
  *
  */
 body {
-	background: #efefef;
+	background-color: #efefef !important;
 }
 body, p {
   font-family: 'Roboto', sans-serif;
@@ -60,7 +59,9 @@ h1, h2, h3 {
   color: #fff;
 
 }
-
+body > .ember-view {
+  background: inherit;
+}
 // code
 .hljs {
   background: #fff;

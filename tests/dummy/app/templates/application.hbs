@@ -1,8 +1,8 @@
-{{#bs-navbar fluid=true backgroundColor='' position="sticky-top"  as |navbar|}}
+{{#bs-navbar fluid=true backgroundColor="" position="sticky-top"  as |navbar|}}
 
   <div class="navbar-header">
     {{navbar.toggle}}
-    {{#link-to 'index' class="navbar-brand"}}ember-gantt <small>v0.0.5</small>{{/link-to}}
+    {{#link-to "index" class="navbar-brand"}}ember-gantt <small>v1.1.0</small>{{/link-to}}
   </div>
 
   {{#navbar.content}}
@@ -15,8 +15,13 @@
   {{/navbar.content}}
 
   <div class="pull-right">
-    <a href="http://github.com/kockpit/ember-gantt" class="link-github" target="_blank">
-      <img src="images/github.svg" />
+    <a
+      href="http://github.com/kockpit/ember-gantt"
+      class="link-github"
+      rel="noopener"
+      target="_blank"
+    >
+      <img src="images/github.svg" alt="">
     </a>
   </div>
 
@@ -24,7 +29,7 @@
 
 
 
-  {{outlet}}
+{{outlet}}
 
 
 

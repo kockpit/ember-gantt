@@ -18,7 +18,7 @@ module('Integration | Component | gantt-line-barcontent', function(hooks) {
 
     let div = this.element.querySelector('.gantt-line-bar-content');
 
-    assert.equal(this.element.textContent.trim(), 'HI');
+    assert.dom(this.element).hasText('HI');
     assert.ok(div, 'has div');
     assert.ok(div.querySelector('span'), 'has inner span');
 

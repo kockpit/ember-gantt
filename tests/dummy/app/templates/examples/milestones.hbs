@@ -23,16 +23,16 @@
           {{line.milestone title=ms.title date=ms.date }}
         {{/each}}
 
-          {{! child lines}}
-          {{#each project.jobs as |job|}}
-            {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                              color=job.color as |childLine|}}
+        {{! child lines}}
+        {{#each project.jobs as |job|}}
+          {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                            color=job.color as |childLine|}}
 
-              {{! add something to the bar content}}
-              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+            {{! add something to the bar content}}
+            {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
 
-            {{/line.childLine}}
-          {{/each}}
+          {{/line.childLine}}
+        {{/each}}
 
       {{/chart.line}}
     {{/each}}

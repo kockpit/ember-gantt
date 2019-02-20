@@ -15,11 +15,16 @@ module.exports = {
     browser: true
   },
   rules: {
+    'no-inline-styles': 0,
+    'attribute-indentation': 0,
+    'block-indentation': 0
   },
   overrides: [
     // node files
     {
       files: [
+        '.eslintrc.js',
+        '.template-lintrc.js',
         'ember-cli-build.js',
         'index.js',
         'testem.js',

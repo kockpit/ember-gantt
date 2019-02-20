@@ -9,7 +9,12 @@
 
 <div class="container-fluid">
 
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 dayClasses=specialDays as |chart|}}
+  {{#gantt-chart
+    dayWidth=dayWidth
+    stickyOffset=56
+    dayClasses=specialDays
+    as |chart|
+  }}
     {{#chart.header}}
       <b>Project / Job</b><br>
       <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
@@ -23,16 +28,16 @@
         {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
         {{line.inlineChilds childLines=project.jobs }}
 
-          {{! child lines}}
-          {{#each project.jobs as |job|}}
-            {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                              color=job.color as |childLine|}}
+        {{! child lines}}
+        {{#each project.jobs as |job|}}
+          {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
+                            color=job.color as |childLine|}}
 
-              {{! add something to the bar content}}
-              {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+            {{! add something to the bar content}}
+            {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
 
-            {{/line.childLine}}
-          {{/each}}
+          {{/line.childLine}}
+        {{/each}}
 
       {{/chart.line}}
     {{/each}}
@@ -54,4 +59,3 @@
   {{code-snippet name="5-example-griddays.css"}}
 
 </div>
-

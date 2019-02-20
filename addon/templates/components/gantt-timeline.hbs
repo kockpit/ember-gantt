@@ -16,7 +16,7 @@
 
     {{#if timelineMonth}}
       <div class="gantt-timeline-days">
-       {{#each timelineScale.months as |month|}}
+        {{#each timelineScale.months as |month|}}
           {{#each month.days as |day|}}
             <div class="day {{if day.isWeekend 'day-weekend'}} {{if day.class day.class}}">{{#if day.title}}<em>{{day.title}}</em>{{/if}} </div>
           {{/each}}
@@ -25,7 +25,7 @@
 
     {{else}}
       <div class="gantt-timeline-years" >
-       {{#each timelineScale.years as |year|}}
+        {{#each timelineScale.years as |year|}}
           <div class="gantt-timeline-year" style={{year.width}}> </div>
         {{/each}}
       </div>
@@ -37,11 +37,15 @@
 
 
 {{! header }}
-<div class="gantt-chart-header {{if isSticky 'gantt-chart-header-sticky'}}" style={{stickyPlaceholderStyle}}>
-  <div class="gantt-chart-header-inner" style={{stickyStyle}}> {{! used for sticky handling }}
+<div
+  class="gantt-chart-header {{if isSticky 'gantt-chart-header-sticky'}}"
+  style={{stickyPlaceholderStyle}}
+>
+  {{! used for sticky handling }}
+  <div class="gantt-chart-header-inner" style={{stickyStyle}}>
 
     <div class="gantt-header-title">
-     {{yield (hash header=(component "gantt-generic-content")) }}
+      {{yield (hash header=(component "gantt-generic-content")) }}
     </div>
 
     {{! header timeline }}
@@ -51,7 +55,7 @@
       {{! years }}
       {{#if timelineYear}}
         <div class="gantt-timeline-years" >
-         {{#each timelineScale.years as |year|}}
+          {{#each timelineScale.years as |year|}}
             <div class="gantt-timeline-year" style={{year.width}}><span>{{year.nr}}</span></div>
           {{/each}}
         </div>
@@ -60,14 +64,14 @@
       {{! months }}
       {{#if timelineMonth}}
         <div class="gantt-timeline-months" >
-         {{#each timelineScale.months as |month|}}
+          {{#each timelineScale.months as |month|}}
             <div class="gantt-timeline-month" style={{month.style}}>
 
               {{! month }}
               <div class="gantt-timeline-month-name">
                 <span>
                   {{#if timelineMonthShort}}
-                      {{month.labelShort}}
+                    {{month.labelShort}}
                   {{else}}
                     {{month.label}}
                   {{/if}}
@@ -82,8 +86,8 @@
       {{! calendar weeks }}
       {{#if timelineCW}}
         <div class="gantt-timeline-cws">
-         {{#each timelineScale.calendarWeeks as |cw|}}
-              <div class="cw" style={{cw.width}}>{{cw.nr}}</div>
+          {{#each timelineScale.calendarWeeks as |cw|}}
+            <div class="cw" style={{cw.width}}>{{cw.nr}}</div>
           {{/each}}
         </div>
       {{/if}}
@@ -91,7 +95,7 @@
       {{! days in month }}
       {{#if timelineDay}}
         <div class="gantt-timeline-days">
-         {{#each timelineScale.months as |month|}}
+          {{#each timelineScale.months as |month|}}
             {{#each month.days as |day|}}
               <div class="day {{if day.isWeekend 'day-weekend'}} {{if day.class day.class}}">{{day.nr}}</div>
             {{/each}}

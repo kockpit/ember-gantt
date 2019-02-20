@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
 import ExampleController from '../../mixins/example-controller';
-import {set} from '@ember/object';
+import { set } from '@ember/object';
 
 import dateUtil from '@kockpit/ember-gantt/utils/date-util';
 

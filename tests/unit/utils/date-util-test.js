@@ -1,7 +1,7 @@
 import { getProperties } from "@ember/object";
 import dateUtil from 'dummy/utils/date-util';
 import { module, test } from 'qunit';
-import {htmlSafe} from '@ember/string';
+import { htmlSafe } from '@ember/string';
 
 // prepare test data
 const testStartDate = new Date(1527266746009);                // Fri May 25 2018 18:45:46 GMT+0200 (CEST)
@@ -29,9 +29,6 @@ const timePeriodChilds = [{
   }];
 
 
-
-
-
 const getDate = function(date) {
   return dateUtil.getNewDate(date);
 }
@@ -41,26 +38,29 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
 
 
   test('getNewDate', function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     let today = new Date();
     today.setUTCHours(0,0,0,0);
 
     let date = getDate();
-    assert.equal(date.toString(), today.toString(), 'no date passed = today');
+    assert.equal(date.toUTCString(), today.toUTCString(), 'no date passed = today');
+    assert.equal(date.getUTCMinutes(), 0, 'no mintues');
+    assert.equal(date.getUTCHours(), 0, 'no hours');
 
     let todayPlus10 = dateUtil.datePlusDays(date, 10);
+
     let date2 = getDate( parseInt(todayPlus10.getTime()) );
-    assert.equal(date2.toString(), todayPlus10.toString(), 'from timestamp integer');
+    assert.equal(date2.toUTCString(), todayPlus10.toUTCString(), 'from timestamp integer');
 
     let date3 = getDate( ""+(todayPlus10.getTime()) );
-    assert.equal(date3.toString(), todayPlus10.toString(), 'from timestamp string');
+    assert.equal(date3.toUTCString(), todayPlus10.toUTCString(), 'from timestamp string');
 
-    let date4 = getDate( '2018-05-25');
-    assert.equal(date4.toString(), (new Date('2018-05-25')).toString(), 'from iso string (YYYY-MM-DD)');
+    let date4 = getDate('2018-05-25');
+    assert.equal(date4.toUTCString(), (new Date('2018-05-25')).toUTCString(), 'from iso string (YYYY-MM-DD)');
 
-    let date5 = getDate( todayPlus10 );
-    assert.equal(date5.toString(), todayPlus10.toString(), 'from date object');
+    let date5 = getDate(todayPlus10);
+    assert.equal(date5.toUTCString(), todayPlus10.toUTCString(), 'from date object');
   });
 
   test('dateNoTime', function(assert) {
@@ -94,6 +94,13 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.equal(dateUtil.daysInMonth(new Date('2017-06-05')), 30, 'june');
     assert.equal(dateUtil.daysInMonth(new Date('2017-07-05')), 31, 'july');
 
+  });
+
+  test('getMonthName', function(assert) {
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July 2018', 'month July');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July 2018', 'month July, short=false');
+    assert.equal(dateUtil.getMonthName('2018-07-03', true,   'EN-US'), 'Jul', 'month July, short=true');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'DE-DE'), 'Juli 2018', 'month July, in German');
   });
 
   test('diffDays', function(assert) {
