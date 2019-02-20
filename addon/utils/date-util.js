@@ -3,11 +3,13 @@ import { get } from "@ember/object";
 import { isNone, isEqual, isEmpty } from "@ember/utils";
 import { htmlSafe } from '@ember/string';
 
-/**
- The date-util contains some helpful date-functions to work with UTC dates and calculate time-periods.
 
- @class DateUtil
- @public
+/**
+ * The date-util contains some helpful date-functions to work with UTC dates and calculate time-periods.
+ *
+ * @class DateUtil
+ * @namespace Utils
+ * @public
  */
 export default {
 
@@ -427,6 +429,10 @@ export default {
     if (isEmpty(monthName) || /[0-9]/.test(monthName)) {
       monthName = this.monthNames[ date.getUTCMonth() ];
       monthName = short ? monthName.substring(0,3) : monthName;
+    }
+
+    if (!short) {
+      monthName+= ' ' + date.getUTCFullYear();
     }
 
     return monthName;

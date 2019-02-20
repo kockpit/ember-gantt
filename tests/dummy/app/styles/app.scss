@@ -59,7 +59,9 @@ h1, h2, h3 {
   color: #fff;
 
 }
-
+body > .ember-view {
+  background: inherit;
+}
 // code
 .hljs {
   background: #fff;

@@ -97,10 +97,10 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
   });
 
   test('getMonthName', function(assert) {
-    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July', 'month July');
-    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July', 'month July, short=false');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July 2018', 'month July');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July 2018', 'month July, short=false');
     assert.equal(dateUtil.getMonthName('2018-07-03', true,   'EN-US'), 'Jul', 'month July, short=true');
-    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'DE-DE'), 'Juli', 'month July, in German');
+    assert.equal(dateUtil.getMonthName('2018-07-03', false,  'DE-DE'), 'Juli 2018', 'month July, in German');
   });
 
   test('diffDays', function(assert) {

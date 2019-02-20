@@ -378,7 +378,6 @@ export default Component.extend({
     let scrollPx = Math.max(0, this.dateToOffset(date) - (get(this, 'ganttWidth')*(1/4)));
     duration = isNone(duration) ? get(this, 'viewScrollDuration') : duration;
 
-    $(get(this, 'innerElement')).animate({ scrollLeft: scrollPx }, duration);
     this.scrollAnimatedTo(get(this, 'innerElement'), scrollPx, duration);
 
   },

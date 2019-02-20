@@ -131,9 +131,9 @@ module('Integration | Component | gantt-line', function(hooks) {
 
     let start = dateUtil.getNewDate('2018-05-05');
     const data = {
-        start: dateUtil.datePlusDays(start, 3),
-        end:  dateUtil.datePlusDays(start, 23)
-      };
+      start: dateUtil.datePlusDays(start, 3),
+      end:  dateUtil.datePlusDays(start, 23)
+    };
 
     set(this, 'dayWidth', 30);
     set(this, 'start', start);
@@ -179,12 +179,11 @@ module('Integration | Component | gantt-line', function(hooks) {
     assert.dom(editableLine).hasClass('is-moving', 'has moving class');
     assert.equal(String(get(data, 'start')), String(startClone), 'not moved, only clicked');
 
-
     // <- move left
     await triggerEvent(document, 'mousemove', { clientX: offset.left+20, clientY: offset.top+5, which: 1 });
     assert.equal(String(get(data, 'start')), String(dateUtil.datePlusDays(startClone, -1)), 'moved one day to the left');
 
-    // -> move right
+    // move right ->
     await triggerEvent(document, 'mousemove', { clientX: offset.left+110, clientY: offset.top+5, which: 1 });
     assert.equal(String(get(data, 'start')), String(dateUtil.datePlusDays(startClone, +2)), 'moved three days to the right');
 
