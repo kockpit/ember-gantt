@@ -11,7 +11,14 @@ module.exports = function(defaults) {
       'bootstrapVersion': 4,
       'importBootstrapFont': false,
       'importBootstrapCSS': false
-    }
+    },
+    'ember-cli-uglify': {
+			uglify: {
+				compress: {
+					collapse_vars: false
+				}
+			}
+		},
   });
 
   return app.toTree();
