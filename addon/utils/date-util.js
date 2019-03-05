@@ -298,7 +298,7 @@ export default {
         let dayDate = this.getNewDate(actDate);
         let day = {
           nr: d,
-          date: dayDate.setDate(d),
+          date: dayDate.setUTCDate(d),
           isWeekend: ([0,6].indexOf(dayDate.getUTCDay()) >=0),
           title: '',
           class: ''
@@ -417,13 +417,12 @@ export default {
    * @public
    */
   getMonthName(date, short, locale) {
-
     short = isNone(short) ? false : short,
     date = this.getNewDate(date);
 
     locale = locale || window.navigator.userLanguage || window.navigator.language || 'EN-US';
 
-    let options = { month: (short ? 'short' : 'long' ) };
+    let options = { month: (short ? 'short' : 'long' ), timeZone: 'UTC' };
     let monthName = date.toLocaleDateString(locale, options);
 
     if (isEmpty(monthName) || /[0-9]/.test(monthName)) {

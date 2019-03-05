@@ -28,8 +28,6 @@ module('Integration | Component | gantt-timeline', function(hooks) {
         {{chart.line dateStart=data.start dateEnd=data.end title="not editable" }}
       {{/gantt-chart}}`);
 
-    // await settled();
-
     let headerScale = this.element.querySelector('.gantt-chart-header .gantt-timeline-scale');
     let verticalGrid = this.element.querySelector('.gantt-timeline-grid .gantt-timeline-vertical-grid');
 
@@ -43,7 +41,7 @@ module('Integration | Component | gantt-timeline', function(hooks) {
     assert.equal(gridDays.length, 215, 'has grid days');
 
     let gridWeekendDays = verticalGrid.querySelectorAll('.gantt-timeline-days .day.day-weekend');
-    assert.equal(gridWeekendDays.length, 59, 'has grid weekend days'); // 62?
+    assert.equal(gridWeekendDays.length, 62, 'has grid weekend days');
 
     // ZOOM OUT
     this.set('dayWidth', 10);
