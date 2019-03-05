@@ -101,6 +101,9 @@ module('Unit | Utility | date-util', function(/*hooks*/) {
     assert.equal(dateUtil.getMonthName('2018-07-03', false,  'EN-US'), 'July 2018', 'month July, short=false');
     assert.equal(dateUtil.getMonthName('2018-07-03', true,   'EN-US'), 'Jul', 'month July, short=true');
     assert.equal(dateUtil.getMonthName('2018-07-03', false,  'DE-DE'), 'Juli 2018', 'month July, in German');
+
+    assert.equal(dateUtil.getMonthName('2018-07-01', false,  'EN-US'), 'July 2018', 'timezone: first july');
+    //assert.equal(dateUtil.getMonthName('2018-06-31', false,  'EN-US'), 'June 2018', 'timezone: last june');
   });
 
   test('diffDays', function(assert) {
