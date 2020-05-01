@@ -9,6 +9,9 @@
 
 ember-gantt
 ==============================================================================
+* Ember.js v3.12 or above
+* Ember CLI v2.13 or above
+* Node.js v10 or above
 
 An ember-cli addon for showing beautiful gantt-charts from your data.
 No additional library is used – pure ember. So slick and soooo fast.

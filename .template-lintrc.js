@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = {
-  extends: 'recommended',
+  extends: 'octane', // was 'recommended'
   rules: {
     'quotes': false,
     'no-inline-styles': false,
