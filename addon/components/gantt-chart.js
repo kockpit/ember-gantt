@@ -270,23 +270,23 @@ export default Component.extend({
 
     // start date
     let today = dateUtil.getNewDate();
-    if (!get(this, 'viewStartDate')) {
+    if (!this.viewStartDate) {
       set(this, 'viewStartDate', dateUtil.datePlusDays(today, -2));
     }
 
     // end date
-    if (!get(this, 'viewEndDate')) {
-      let endDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), 90);
+    if (!this.viewEndDate) {
+      let endDate = dateUtil.datePlusDays(this.viewStartDate, 90);
       set(this, 'viewEndDate', endDate);
     }
 
     // add today in dayClasses if active
-    if (get(this, 'showToday')) {
-      let dayClasses = get(this, 'dayClasses');
+    if (this.showToday) {
+      let dayClasses = this.dayClasses;
       if (!dayClasses) {
         set(this, 'dayClasses', []);
       }
-      get(this, 'dayClasses').push({ date: today, title: '', class: 'today'});
+      this.dayClasses.push({ date: today, title: '', class: 'today'});
     }
 
     // bind listener functions
@@ -301,14 +301,14 @@ export default Component.extend({
 
     // inner-scroll listener
     set(this, 'innerElement', this.element.querySelector('.gantt-chart-inner'));
-    get(this, 'innerElement').addEventListener('scroll', this._handleScroll);
+    this.innerElement.addEventListener('scroll', this._handleScroll);
 
     // resize listener
     this.updateResize();
     window.addEventListener('resize', this._handleResize);
 
     // initially scroll to center viewDate (today)
-    let viewDate = get(this, 'viewDate') || dateUtil.getNewDate();
+    let viewDate = this.viewDate || dateUtil.getNewDate();
     this.scrollTo(viewDate, 0);
 
   },
@@ -316,7 +316,7 @@ export default Component.extend({
   willDestroyelement() {
     this._super(...arguments);
 
-    get(this, 'innerElement').removeEventListener('scroll', this._handleScroll);
+    this.innerElement.removeEventListener('scroll', this._handleScroll);
 
     window.removeEventListener('resize', this._handleResize);
   },
@@ -333,9 +333,9 @@ export default Component.extend({
 
   // calculate pixel-difference between two dates (for bar-offset or bar-width)
   dateToOffset(date, startDate, includeDay) {
-    let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
+    let dayWidth = parseInt(this.dayWidth) || 0;
 
-    startDate = startDate || get(this, 'viewStartDate');
+    startDate = startDate || this.viewStartDate;
     startDate = dateUtil.getNewDate(startDate); // assure UTC
     includeDay = isNone(includeDay) ? false : includeDay;
 
@@ -350,8 +350,8 @@ export default Component.extend({
   },
 
   offsetToDate(pixelOffset) {
-    let startDate = dateUtil.getNewDate(get(this, 'viewStartDate'));
-    let dayWidth = parseInt(get(this, 'dayWidth')) || 0;
+    let startDate = dateUtil.getNewDate(this.viewStartDate);
+    let dayWidth = parseInt(this.dayWidth) || 0;
 
     let days = pixelOffset / dayWidth;
 
@@ -368,16 +368,16 @@ export default Component.extend({
   //
 
   scrollToObserve: observer('viewDate', function() {
-    let date = get(this, 'viewDate');
+    let date = this.viewDate;
     if (date) {
       this.scrollTo(date);
     }
   }),
 
   scrollTo(date, duration) {
-    const scrollPx = Math.max(0, this.dateToOffset(date) - (get(this, 'ganttWidth')*(1/4)));
-    const element = get(this, 'innerElement');
-    duration = isNone(duration) ? get(this, 'viewScrollDuration') : duration;
+    const scrollPx = Math.max(0, this.dateToOffset(date) - (this.ganttWidth*(1/4)));
+    const element = this.innerElement;
+    duration = isNone(duration) ? this.viewScrollDuration : duration;
 
     if (duration > 0) {
       this.scrollAnimatedTo(element, scrollPx, duration);
@@ -415,7 +415,7 @@ export default Component.extend({
   updateScroll(e) {
     set(this, 'scrollLeft', e.target.scrollLeft);
 
-    if(get(this, 'infinityScroll')) {
+    if(this.infinityScroll) {
       this.checkInfinityScroll(e);
     }
   },
@@ -445,30 +445,30 @@ export default Component.extend({
   },
 
   expandView(directions) {
-    let numDays = Math.ceil(get(this, 'ganttWidth') / get(this, 'dayWidth'));
-    let previousStart = get(this, 'viewStartDate');
-    let previousEnd = get(this, 'viewEndDate');
+    let numDays = Math.ceil(this.ganttWidth / this.dayWidth);
+    let previousStart = this.viewStartDate;
+    let previousEnd = this.viewEndDate;
     let expanded = 'before';
 
     // expand after
     if (directions.after) {
-      let newEndDate = dateUtil.datePlusDays(get(this, 'viewEndDate'), numDays);
+      let newEndDate = dateUtil.datePlusDays(this.viewEndDate, numDays);
       expanded = 'after';
       set(this, 'viewEndDate', newEndDate);
 
     // expand before
     } else if (directions.before) {
-      let newStartDate = dateUtil.datePlusDays(get(this, 'viewStartDate'), numDays*(-1));
+      let newStartDate = dateUtil.datePlusDays(this.viewStartDate, numDays*(-1));
       set(this, 'viewStartDate', newStartDate);
 
       // set new scrollOffset
-      get(this, 'innerElement').scrollLeft = (get(this, 'innerElement').scrollLeft + get(this, 'ganttWidth'));
+      this.innerElement.scrollLeft = (this.innerElement.scrollLeft + this.ganttWidth);
     }
 
     // fire callback
-    let callback = get(this, 'onViewDateChange');
+    let callback = this.onViewDateChange;
     if (typeof callback === 'function') {
-      callback(get(this, 'viewStartDate'), get(this, 'viewEndDate'), expanded, previousStart, previousEnd);
+      callback(this.viewStartDate, this.viewEndDate, expanded, previousStart, previousEnd);
     }
   }
 

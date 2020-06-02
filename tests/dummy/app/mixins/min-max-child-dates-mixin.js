@@ -12,7 +12,7 @@ export default Mixin.create({
   maxEnd: max('childsEnd'),
 
   minStartDate: computed('minStart', function() {
-    let start = get(this, 'minStart');
+    let start = this.minStart;
     if (typeof start === 'number') {
       let newdate = new Date(start);
       newdate.setUTCHours(0,0,0,0);
@@ -21,7 +21,7 @@ export default Mixin.create({
     return start;
   }),
   maxEndDate: computed('maxEnd', function() {
-    let end = get(this, 'maxEnd');
+    let end = this.maxEnd;
     if (typeof end === 'number') {
       let newdate = new Date(end);
       newdate.setUTCHours(0,0,0,0);

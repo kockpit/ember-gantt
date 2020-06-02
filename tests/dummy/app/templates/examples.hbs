@@ -5,15 +5,15 @@
 
     <h1>examples</h1>
 
-    {{#bs-nav type="pills" as |nav|}}
+    <BsNav @type="pills" as |nav|>
 
-      {{#nav.item}}{{#nav.link-to "examples.infinity"}}infinity scrolling{{/nav.link-to}}{{/nav.item}}
-      {{#nav.item}}{{#nav.link-to "examples.milestones"}}milestones{{/nav.link-to}}{{/nav.item}}
-      {{#nav.item}}{{#nav.link-to "examples.grid-days"}}grid days{{/nav.link-to}}{{/nav.item}}
-      {{#nav.item}}{{#nav.link-to "examples.sortable"}}sortable*{{/nav.link-to}}{{/nav.item}}
-      {{#nav.item}}{{#nav.link-to "examples.collapse"}}collapsible*{{/nav.link-to}}{{/nav.item}}
+      <nav.item>{{#nav.link-to "examples.infinity"}}infinity scrolling{{/nav.link-to}}</nav.item>
+      <nav.item>{{#nav.link-to "examples.milestones"}}milestones{{/nav.link-to}}</nav.item>
+      <nav.item>{{#nav.link-to "examples.grid-days"}}grid days{{/nav.link-to}}</nav.item>
+      <nav.item>{{#nav.link-to "examples.sortable"}}sortable*{{/nav.link-to}}</nav.item>
+      <nav.item>{{#nav.link-to "examples.collapse"}}collapsible*{{/nav.link-to}}</nav.item>
 
-    {{/bs-nav}}
+    </BsNav>
 
     <small>* using external plugins</small>
   </div>

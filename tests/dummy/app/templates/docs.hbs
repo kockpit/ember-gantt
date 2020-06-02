@@ -1,4 +1,4 @@
-{{#docs-viewer as |viewer|}}
+<DocsViewer as |viewer|>
 
   {{viewer.nav}}
 
@@ -8,12 +8,12 @@
   {{/viewer.nav}}
   --}}
 
-  {{#viewer.main}}
+  <viewer.main>
     <div class="docs-container">
       <div class="docs-section">
         {{outlet}}
       </div>
     </div>
-  {{/viewer.main}}
+  </viewer.main>
 
-{{/docs-viewer}}
+</DocsViewer>

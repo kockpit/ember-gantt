@@ -1,3 +1,4 @@
+// BEGIN-SNIPPET 1-standard-example
 import Controller from '@ember/controller';
 
 export default Controller.create({
@@ -16,3 +17,4 @@ export default Controller.create({
   }
 
 });
+// END-SNIPPET

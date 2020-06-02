@@ -22,7 +22,7 @@ export default Controller.extend({
 
     set(this, 'goDate', today);
 
-    this.loadProjectsData(get(this, 'viewStart'), get(this, 'viewEnd'), '');
+    this.loadProjectsData(this.viewStart, this.viewEnd, '');
   },
 
 
@@ -32,17 +32,17 @@ export default Controller.extend({
     let options = {
       start,
       end,
-      ignoreIds: get(this, 'projectsData').mapBy('id') // to really assure no deja-vues
+      ignoreIds: this.projectsData.mapBy('id') // to really assure no deja-vues
     };
 
-    get(this, 'ajax').request('/projects', options ).then( data => {
+    this.ajax.request('/projects', options ).then( data => {
 
       // push new data at the correct position of the existing data
       if (expanded == 'before') {
-        get(this, 'projectsData').unshift(data);
+        this.projectsData.unshift(data);
 
       } else if (expanded === 'after') {
-        get(this, 'projectsData').push(data);
+        this.projectsData.push(data);
 
       } else {
         set(this, 'projectsData', data);

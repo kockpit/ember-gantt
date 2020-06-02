@@ -8,13 +8,13 @@ export default Mixin.create({
   scenario: 'demo', // { random | demo }
 
   model() {
-    switch(get(this, 'scenario')) {
+    switch(this.scenario) {
       case 'random':
-        return get(this, 'demoData').getRandomDemoData();
+        return this.demoData.getRandomDemoData();
     }
 
 
-    return get(this, 'demoData').getDataScenario1();
+    return this.demoData.getDataScenario1();
     //
   }
 

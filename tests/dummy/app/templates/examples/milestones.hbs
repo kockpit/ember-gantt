@@ -5,39 +5,38 @@
 
 <div class="container-fluid">
 
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
-    {{#chart.header}}
+  <GanttChart @dayWidth={{dayWidth}} @stickyOffset={{56}} as |chart|>
+    <chart.header>
       <b>Project / Job</b><br>
       <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-    {{/chart.header}}
+    </chart.header>
 
     {{#each model.projects as |project|}}
 
       {{! line for each project }}
-      {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      <chart.line @title={{project.title}} @dateStart={{project.minStartDate}} @dateEnd={{project.maxEndDate}} as |line|>
 
         {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-        {{line.inlineChilds childLines=project.jobs }}
+        <line.inlineChilds @childLines={{project.jobs}} />
 
         {{#each project.milestones as |ms|}}
-          {{line.milestone title=ms.title date=ms.date }}
+          <line.milestone @title={{ms.title}} @date={{ms.date}} />
         {{/each}}
 
         {{! child lines}}
         {{#each project.jobs as |job|}}
-          {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                            color=job.color as |childLine|}}
+          <line.childLine @title={{job.title}} @dateStart={{job.dateStart}} @dateEnd={{job.dateEnd}} @isEditable={{true}} @color={{job.color}} as |childLine|>
 
             {{! add something to the bar content}}
-            {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+            <childLine.barContent>{{job.title}}</childLine.barContent>
 
-          {{/line.childLine}}
+          </line.childLine>
         {{/each}}
 
-      {{/chart.line}}
+      </chart.line>
     {{/each}}
 
-  {{/gantt-chart}}
+  </GanttChart>
 
 </div>
 
@@ -45,5 +44,5 @@
   <h3>code:</h3>
 
   <div class="code-label">template</div>
-  {{code-snippet name="1-standard-example.hbs"}}
+  <CodeSnippet @name="1-standard-example-template.hbs" />
 </div>

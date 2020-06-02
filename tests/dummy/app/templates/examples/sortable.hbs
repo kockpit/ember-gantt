@@ -6,35 +6,34 @@
 
 <div class="container-fluid">
 
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
-    {{#chart.header}}
+  <GanttChart @dayWidth={{dayWidth}} @stickyOffset={{56}} as |chart|>
+    <chart.header>
       <b>Project / Job</b><br>
       <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-    {{/chart.header}}
+    </chart.header>
 
     {{#each model.projects as |project|}}
 
       {{! line for each project }}
-      {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      <chart.line @title={{project.title}} @dateStart={{project.minStartDate}} @dateEnd={{project.maxEndDate}} as |line|>
 
         {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-        {{line.inlineChilds childLines=project.jobs }}
+        <line.inlineChilds @childLines={{project.jobs}} />
 
         {{! child lines}}
         {{#each project.sortedJobs as |job|}}
-          {{#line.childLine title=job.title dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color
-                            onDateChange=(action "sortJobsInProject" project) as |childLine|}}
+          <line.childLine @title={{job.title}} @dateStart={{job.dateStart}} @dateEnd={{job.dateEnd}} @isEditable={{true}} @color={{job.color}} @onDateChange={{action "sortJobsInProject" project}} as |childLine|>
 
             {{! add something to the bar content}}
-            {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+            <childLine.barContent>{{job.title}}</childLine.barContent>
 
-          {{/line.childLine}}
+          </line.childLine>
         {{/each}}
 
-      {{/chart.line}}
+      </chart.line>
     {{/each}}
 
-  {{/gantt-chart}}
+  </GanttChart>
 
 </div>
 
@@ -42,13 +41,13 @@
   <h3>code:</h3>
 
   <div class="code-label">parent model</div>
-  {{code-snippet name="4-example-sorting-auto-model.js"}}
+  <CodeSnippet @name="4-example-sorting-auto-model.js" />
 
   <div class="code-label">template</div>
-  {{code-snippet name="4-example-sorting-auto.hbs"}}
+  <CodeSnippet @name="4-example-sorting-auto.hbs" />
 
   <div class="code-label">controller</div>
-  {{code-snippet name="4-example-sorting-auto.js"}}
+  <CodeSnippet @name="4-example-sorting-auto.js" />
 
 </div>
 
@@ -62,42 +61,42 @@
 
 <div class="container-fluid">
 
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 as |chart|}}
-    {{#chart.header}}
+  <GanttChart @dayWidth={{dayWidth}} @stickyOffset={{56}} as |chart|>
+    <chart.header>
       <b>Project / Job</b><br>
       <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-    {{/chart.header}}
+    </chart.header>
 
     {{#each model.projects as |project|}}
 
       {{! line for each project }}
-      {{#chart.line title=project.title dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      <chart.line @title={{project.title}} @dateStart={{project.minStartDate}} @dateEnd={{project.maxEndDate}} as |line|>
 
         {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-        {{line.inlineChilds childLines=project.jobs }}
+        <line.inlineChilds @childLines={{project.jobs}} />
 
         {{! sortable childs group }}
-        {{#sortable-group tagName="div" model=project onChange="reorderItems" as |group|}}
+        <SortableGroup @tagName="div" @model={{project}} @onChange="reorderItems" as |group|>
 
           {{#each project.jobs as |job|}}
 
-            {{#sortable-item tagName="div" model=job group=group handle=".move-handle"}}
-              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true color=job.color as |childLine|}}
+            <SortableItem @tagName="div" @model={{job}} @group={{group}} @handle=".move-handle">
+              <line.childLine @dateStart={{job.dateStart}} @dateEnd={{job.dateEnd}} @isEditable={{true}} @color={{job.color}} as |childLine|>
 
-                {{#childLine.title}}<span>{{job.title}} <span class="move-handle">move</span></span>{{/childLine.title}}
-                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+                <childLine.title><span>{{job.title}} <span class="move-handle">move</span></span></childLine.title>
+                <childLine.barContent>{{job.title}}</childLine.barContent>
 
-              {{/line.childLine}}
-            {{/sortable-item}}
+              </line.childLine>
+            </SortableItem>
 
           {{/each}}
 
-        {{/sortable-group}}
+        </SortableGroup>
 
-      {{/chart.line}}
+      </chart.line>
     {{/each}}
 
-  {{/gantt-chart}}
+  </GanttChart>
 
 </div>
 
@@ -105,10 +104,10 @@
   <h3>code:</h3>
 
   <div class="code-label">template</div>
-  {{code-snippet name="4-example-sorting-manually.hbs"}}
+  <CodeSnippet @name="4-example-sorting-manually-template.hbs" />
 
   <div class="code-label">route</div>
-  {{code-snippet name="4-example-sorting-manually-route.js"}}
+  <CodeSnippet @name="4-example-sorting-manually-route.js" />
 
 </div>
 

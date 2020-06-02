@@ -103,7 +103,7 @@ export default Component.extend({
   dateStart: null,
 
   _start: computed('dateStart', 'chart.viewStartDate', function() {
-    let max = Math.max(dateUtil.getNewDate(get(this, 'dateStart')), get(this, 'chart.viewStartDate'));
+    let max = Math.max(dateUtil.getNewDate(this.dateStart), get(this, 'chart.viewStartDate'));
     return dateUtil.getNewDate(max);
   }),
 
@@ -119,7 +119,7 @@ export default Component.extend({
   dateEnd: null,
 
   _end: computed('dateEnd', 'chart.viewEndDate', function() {
-    let min = Math.min(dateUtil.getNewDate(get(this, 'dateEnd')), get(this, 'chart.viewEndDate'));
+    let min = Math.min(dateUtil.getNewDate(this.dateEnd), get(this, 'chart.viewEndDate'));
     return dateUtil.getNewDate(min);
   }),
 
@@ -205,11 +205,11 @@ export default Component.extend({
     set(this, 'barElement', bar);
 
     // chart reference
-    let chart = get(this, 'chart').element;
+    let chart = this.chart.element;
     set(this, 'chartElement', chart);
 
     // only if editable
-    if (get(this, 'isEditable')) {
+    if (this.isEditable) {
       this.makeEditable();
     }
 
@@ -218,20 +218,20 @@ export default Component.extend({
   willDestroyelement() {
     this._super(...arguments);
 
-    if (get(this, 'isEditable')) {
+    if (this.isEditable) {
       this.removeEditable();
     }
   },
 
   observeEditable: observer('isEditable', function() {
-    let func = get(this, 'isEditable') ? this.makeEditable : this.removeEditable;
+    let func = this.isEditable ? this.makeEditable : this.removeEditable;
     next( this, func); // wait for rendering resize-handlers
   }),
 
   makeEditable() {
 
     // register resize and drag handlers
-    let bar = get(this, 'barElement')
+    let bar = this.barElement
     let barResizeL = bar.querySelector('.bar-resize-l');
     let barResizeR = bar.querySelector('.bar-resize-r');
 
@@ -249,7 +249,7 @@ export default Component.extend({
   },
 
   removeEditable() {
-    let bar = get(this, 'barElement');
+    let bar = this.barElement;
     let barResizeL = bar.querySelector('.bar-resize-l');
     let barResizeR = bar.querySelector('.bar-resize-r');
 
@@ -268,29 +268,29 @@ export default Component.extend({
    // Bar offset from left (in px)
    // Calculated from date-start and dayWidth (in chart component)
   barOffset: computed('_start', 'dayWidth', function(){
-    return get(this, 'chart').dateToOffset( get(this, '_start') );
+    return this.chart.dateToOffset( this._start );
   }),
 
   // width of bar on months
   barWidth: computed('_start', '_end', 'dayWidth', function() {
-    return get(this, 'chart').dateToOffset( get(this, '_end'), get(this, '_start'), true );
+    return this.chart.dateToOffset( this._end, this._start, true );
   }),
 
   // styling for left/width
   barStyle: computed('barOffset','barWidth', function() {
 
-    let style = `left:${get(this, 'barOffset')}px;width:${get(this, 'barWidth')}px;`;
-    if (get(this, 'color')) {
-      style+= `background-color:${get(this, 'color')}`;
+    let style = `left:${this.barOffset}px;width:${this.barWidth}px;`;
+    if (this.color) {
+      style+= `background-color:${this.color}`;
     }
     return htmlSafe(style);
   }),
 
   // TODO: title -> ?
   barTitle: computed('dateStart', 'dateEnd', function() {
-    let start = get(this, 'dateStart').toLocaleDateString() || String(get(this, 'dateStart')),
-        end = get(this, 'dateEnd').toLocaleDateString() || String(get(this, 'dateEnd')),
-        days = dateUtil.diffDays( get(this, 'dateStart'), get(this, 'dateEnd'), true);
+    let start = this.dateStart.toLocaleDateString() || String(this.dateStart),
+        end = this.dateEnd.toLocaleDateString() || String(this.dateEnd),
+        days = dateUtil.diffDays( this.dateStart, this.dateEnd, true);
 
     if (start && end) {
       return htmlSafe(`${start} - ${end} (${days})`);
@@ -327,7 +327,7 @@ export default Component.extend({
   },
 
   initTimlineOffset() {
-    let timelineElement = get(this, 'chartElement').querySelector('.gantt-line-timeline');
+    let timelineElement = this.chartElement.querySelector('.gantt-line-timeline');
     set(this, 'timelineOffset', this.offsetLeft(timelineElement));
     set(this, 'movingMouseOffset', 0);
   },
@@ -342,7 +342,7 @@ export default Component.extend({
     this.initTimlineOffset();
 
     // remember days-duration of line
-    let moveDays = Math.floor(Math.abs(get(this, 'dateStart').getTime() - get(this, 'dateEnd').getTime()) / 86400000);
+    let moveDays = Math.floor(Math.abs(this.dateStart.getTime() - this.dateEnd.getTime()) / 86400000);
 
     // remember click-offset for adjusting mouse-to-bar
     let mouseOffset = e.clientX - this.offsetLeft(e.target);
@@ -355,26 +355,26 @@ export default Component.extend({
 
   resizeBar(e) {
     if (this.isDestroyed) return;
-    if (!get(this, 'isEditing')) return;
+    if (!this.isEditing) return;
     e.preventDefault();
 
     // offset -> start/end-date
-    let offsetLeft = (e.clientX - get(this, 'timelineOffset') - get(this, 'movingMouseOffset'));
-    let dateOffset = get(this, 'chart').offsetToDate(offsetLeft);
+    let offsetLeft = (e.clientX - this.timelineOffset - this.movingMouseOffset);
+    let dateOffset = this.chart.offsetToDate(offsetLeft);
 
     // resize left
-    if (get(this, 'isResizingLeft')) {
-      dateOffset = (dateOffset > get(this, 'dateEnd')) ? get(this, 'dateEnd') : dateOffset; // dont allow lower than start
+    if (this.isResizingLeft) {
+      dateOffset = (dateOffset > this.dateEnd) ? this.dateEnd : dateOffset; // dont allow lower than start
       set(this, 'dateStart', dateOffset);
 
     // resize right
-    } else if (get(this, 'isResizingRight')) {
-      dateOffset = (dateOffset < get(this, 'dateStart')) ? get(this, 'dateStart') : dateOffset; // dont allow lower than start
+    } else if (this.isResizingRight) {
+      dateOffset = (dateOffset < this.dateStart) ? this.dateStart : dateOffset; // dont allow lower than start
       set(this, 'dateEnd', dateOffset);
 
     // move
-    } else if (get(this, 'isMoving')) {
-      let dateOffsetEnd = new Date(dateOffset.getTime() + (get(this, 'movingDays')*86400000));
+    } else if (this.isMoving) {
+      let dateOffsetEnd = new Date(dateOffset.getTime() + (this.movingDays*86400000));
       set(this, 'dateStart', dateOffset);
       set(this, 'dateEnd', dateOffsetEnd);
     }
@@ -386,10 +386,10 @@ export default Component.extend({
 
     // check if something happened on this line
     let action = '';
-    if (get(this, 'isResizing')) {
+    if (this.isResizing) {
       action = 'resize';
 
-    } else if (get(this, 'isMoving')) {
+    } else if (this.isMoving) {
       action = 'move';
     }
 
@@ -398,9 +398,9 @@ export default Component.extend({
     set(this, 'isMoving', false);
 
     if (!isEmpty(action)) {
-      let callback = get(this, 'onDateChange');
+      let callback = this.onDateChange;
       if (typeof callback === 'function') {
-        callback(get(this, 'dateStart'), get(this, 'dateEnd'), action);
+        callback(this.dateStart, this.dateEnd, action);
       }
     }
   }

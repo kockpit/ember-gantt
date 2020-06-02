@@ -9,7 +9,7 @@ export default Route.extend({
 
   model() {
     // return get(this, 'demoData').getRandomDemoData();
-    return get(this, 'demoData').getDataScenario1();
+    return this.demoData.getDataScenario1();
   }
 
 });

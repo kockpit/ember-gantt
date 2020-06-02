@@ -6,57 +6,55 @@
 
 
 <div class="container-fluid">
-  {{#gantt-chart dayWidth=dayWidth stickyOffset=56 infinityScroll=true viewDate=goDate
-                  onViewDateChange=(action 'viewDateChange') as |chart|}}
+  <GanttChart @dayWidth={{dayWidth}} @stickyOffset={{56}} @infinityScroll={{true}} @viewDate={{goDate}} @onViewDateChange={{action "viewDateChange"}} as |chart|>
 
-    {{#chart.header}}
+    <chart.header>
       <b>Project/Job</b>
       <br><a href="" {{action 'goToDate'}}>focus today</a>
-    {{/chart.header}}
+    </chart.header>
 
     {{#each model.projects as |project|}}
 
       {{! line for each project }}
-      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      <chart.line @dateStart={{project.minStartDate}} @dateEnd={{project.maxEndDate}} as |line|>
 
         {{! collapse childs }}
-        {{#line.title}}
+        <line.title>
           <span><a href="#" {{action 'collapse' project}}>{{project.title}}</a></span>
-        {{/line.title}}
+        </line.title>
 
         {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-        {{line.inlineChilds childLines=project.jobs }}
+        <line.inlineChilds @childLines={{project.jobs}} />
 
         {{! child line for each job in project }}
-        {{#bs-collapse collapsed=project.collapsed}}
+        <BsCollapse @collapsed={{project.collapsed}}>
           {{#unless project.collapsed}}
             {{#each project.jobs as |job|}}
 
               {{! child lines}}
-              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                                color=job.color as |childLine|}}
+              <line.childLine @dateStart={{job.dateStart}} @dateEnd={{job.dateEnd}} @isEditable={{true}} @color={{job.color}} as |childLine|>
 
                 {{! more complex title inner}}
-                {{#childLine.title}}
+                <childLine.title>
                   <span {{action 'goToDate' job.dateStart}} style="cursor:pointer">
                     <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
                     {{job.title}}
                   </span>
-                {{/childLine.title}}
+                </childLine.title>
 
                 {{! add something to the bar content}}
-                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+                <childLine.barContent>{{job.title}}</childLine.barContent>
 
-              {{/line.childLine}}
+              </line.childLine>
             {{/each}}
           {{/unless}}
-        {{/bs-collapse}}
+        </BsCollapse>
 
-      {{/chart.line}}
+      </chart.line>
 
     {{/each}}
 
-  {{/gantt-chart}}
+  </GanttChart>
 </div>
 
 
@@ -64,8 +62,8 @@
   <h3>code:</h3>
 
   <div class="code-label">template</div>
-  {{code-snippet name="2-example-infinity.hbs"}}
+  <CodeSnippet @name="2-example-infinity-template.hbs" />
 
   <div class="code-label">controller</div>
-  {{code-snippet name="2-example-infinity.js"}}
+  <CodeSnippet @name="2-example-infinity.js" />
 </div>

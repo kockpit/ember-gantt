@@ -71,18 +71,18 @@ export default Component.extend({
   title: '',
 
   leftOffset: computed('date', 'chart.{viewStartDate,dayWidth}', function(){
-    return get(this, 'chart').dateToOffset( get(this, 'date'));
+    return this.chart.dateToOffset( this.date);
   }),
 
   // styling for left/width
   style: computed('leftOffset', function() {
-    let style = `left:${get(this, 'leftOffset')}px;`;
+    let style = `left:${this.leftOffset}px;`;
     return htmlSafe(style);
   }),
 
   //
   formattedDate: computed('date', function() {
-    return htmlSafe(get(this, 'date').toLocaleDateString());
+    return htmlSafe(this.date.toLocaleDateString());
   })
 
 });

@@ -29,10 +29,10 @@ export default Component.extend({
   // in-page styles
   dayWidth: alias('chart.dayWidth'),
   dayWidthPx: computed('dayWidth', function() {
-    return htmlSafe(`${get(this, 'dayWidth')}px`);
+    return htmlSafe(`${this.dayWidth}px`);
   }),
   cwWidthPx: computed('dayWidth', function() {
-    let width = get(this, 'dayWidth')*7;
+    let width = this.dayWidth*7;
     return htmlSafe(`${width}px`);
   }),
 
@@ -43,7 +43,7 @@ export default Component.extend({
 
   specialDays: computed('dayClasses', function() { // special timestamp index
     let days = {};
-    get(this, 'dayClasses').forEach( day => {
+    this.dayClasses.forEach( day => {
       days[dateUtil.getNewDate(day.date).getTime()] = day;
     });
     return days;
@@ -73,12 +73,12 @@ export default Component.extend({
     set(this, 'headerElement', this.element.querySelector('.gantt-chart-header'));
 
     // init sticky
-    if (!isNone(get(this, 'stickyOffset'))) {
+    if (!isNone(this.stickyOffset)) {
       document.addEventListener('scroll', this._handleDocScroll);
     }
 
     // init timeline scale
-    if (get(this, 'autoTimeline')) {
+    if (this.autoTimeline) {
       this.evaluateTimlineElements();
     }
   },
@@ -86,7 +86,7 @@ export default Component.extend({
   willDestroyelement() {
     this._super(...arguments);
 
-    if (!isNone(get(this, 'stickyOffset'))) {
+    if (!isNone(this.stickyOffset)) {
       document.removeEventListener('scroll', this._handleDocScroll);
     }
   },
@@ -95,7 +95,7 @@ export default Component.extend({
   // STICKY
   // -------------------
   checkSticky(/*e*/) {
-    let headerElement = get(this, 'headerElement');
+    let headerElement = this.headerElement;
     let chartElement = get(this, 'chart.element');
 
     let offset = 0;
@@ -107,10 +107,10 @@ export default Component.extend({
       chartBottom = (chartOffset.top + chartOffset.height - 100) || 1;
     }
 
-    if (!get(this, 'isSticky') && offset < get(this, 'stickyOffset') && chartBottom >= 100) {
+    if (!this.isSticky && offset < this.stickyOffset && chartBottom >= 100) {
       this.makeSticky();
 
-    } else if( get(this, 'isSticky') && (offset > get(this, 'stickyOffset') || chartBottom < 100) ) {
+    } else if( this.isSticky && (offset > this.stickyOffset || chartBottom < 100) ) {
       this.resetSticky();
     }
   },
@@ -125,8 +125,8 @@ export default Component.extend({
   },
 
   updateSticky() {
-    if (get(this, 'isSticky')) {
-      let stickyOffset = get(this, 'stickyOffset');
+    if (this.isSticky) {
+      let stickyOffset = this.stickyOffset;
       let ganttWidth = get(this, 'chart.ganttWidth');
       let ganttLeft = get(this, 'chart.element').getBoundingClientRect().left;
       let headerHeight = get(this, 'headerElement.offsetHeight');
@@ -149,10 +149,10 @@ export default Component.extend({
   scaleStyle: computed('scaleWidth', 'isSticky','scrollLeft', function() {
 
     // total width
-    let style = `width:${get(this, 'scaleWidth')}px;`;
+    let style = `width:${this.scaleWidth}px;`;
 
-    if (get(this, 'isSticky')) {
-      style+= `left:-${get(this,'scrollLeft')}px;`;
+    if (this.isSticky) {
+      style+= `left:-${this.scrollLeft}px;`;
     }
     return htmlSafe(style);
   }),
@@ -168,13 +168,13 @@ export default Component.extend({
 
 
   autoViewObs: observer('dayWidth', 'autoTimeline', function() {
-    if (get(this, 'autoTimeline')) {
+    if (this.autoTimeline) {
       this.evaluateTimlineElements();
     }
   }),
 
   evaluateTimlineElements() {
-    let dayWidth = get(this, 'dayWidth');
+    let dayWidth = this.dayWidth;
     let views = { timelineDay: true, timelineCW: true, timelineMonth: true, timelineMonthShort: false, timelineYear: false }
 
     if (dayWidth < 20) { // cw's instead of days
@@ -215,10 +215,10 @@ export default Component.extend({
 
   timelineScale: computed('viewStartDate', 'viewEndDate', 'dayWidth', 'specialDays','chart.ganttWidth', function() {
 
-    const chart = get(this, 'chart');
-    let start = dateUtil.getNewDate(get(this, 'viewStartDate')),
-        end = dateUtil.getNewDate(get(this, 'viewEndDate')),
-        dayWidth = get(this, 'dayWidth');
+    const chart = this.chart;
+    let start = dateUtil.getNewDate(this.viewStartDate),
+        end = dateUtil.getNewDate(this.viewEndDate),
+        dayWidth = this.dayWidth;
 
     if (!start || !end || !(start<end)) {
       return [];
@@ -235,10 +235,10 @@ export default Component.extend({
     this.updateScaleWidth(scaleWidth);
 
     return {
-      months: dateUtil.monthsInPeriod(start, end, dayWidth, get(this, 'specialDays')),
-      calendarWeeks: get(this, 'timelineCW') ? dateUtil.calendarWeeksInPeriod(start, end, dayWidth) : null,
-      years: get(this, 'timelineYear') ? dateUtil.yearsInPeriod(start,end, dayWidth) : null
-    }
+      months: dateUtil.monthsInPeriod(start, end, dayWidth, this.specialDays),
+      calendarWeeks: this.timelineCW ? dateUtil.calendarWeeksInPeriod(start, end, dayWidth) : null,
+      years: this.timelineYear ? dateUtil.yearsInPeriod(start,end, dayWidth) : null
+    };
 
   })
 

@@ -20,7 +20,7 @@ export default Mixin.create({
 
   actions: {
     zoom(value) {
-      let newDayWidth = Math.max(1, parseInt(get(this, 'dayWidth')) + parseInt(value) );
+      let newDayWidth = Math.max(1, parseInt(this.dayWidth) + parseInt(value) );
       set(this, 'dayWidth', newDayWidth);
     },
 

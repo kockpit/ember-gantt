@@ -89,8 +89,8 @@ export default Component.extend({
   calculatePeriods() {
 
     // go through all jobs and generate compound child elements
-    let chart = get(this, 'chart'),
-        childs = get(this, 'childLines'),
+    let chart = this.chart,
+        childs = this.childLines,
         start = get(this, 'parentLine._start'),
         end =  get(this, 'parentLine._end')
 
@@ -131,7 +131,7 @@ export default Component.extend({
     // multi-color
     let background = 'repeating-linear-gradient(90deg,'; // or 180? ;)
     let pxOffset = 0;
-    let stripeWidth = get(this, 'stripeWidth');
+    let stripeWidth = this.stripeWidth;
 
     colors.forEach(color => {
       let nextOffset = pxOffset+stripeWidth;

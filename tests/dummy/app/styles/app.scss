@@ -1,9 +1,10 @@
-
-
 $brand-primary: #6d94d3;
 
 @import "ember-bootstrap/bootstrap";
 
+:root {
+  --brand-primary: #6d94d3;
+}
 
 /**
  *
@@ -11,15 +12,19 @@ $brand-primary: #6d94d3;
  *
  */
 body {
-	background-color: #efefef !important;
+  background-color: #efefef !important;
 }
-body, p {
-  font-family: 'Roboto', sans-serif;
+
+body,
+p {
+  font-family: "Roboto", sans-serif;
   font-size: 14px;
 }
-h1, h2, h3 {
-  // font-family: 'Roboto', serif;
-  font-family: 'Roboto Slab', serif;
+
+h1,
+h2,
+h3 {
+  font-family: "Roboto Slab", serif;
   margin-top: 30px;
 }
 
@@ -31,7 +36,7 @@ h1, h2, h3 {
     color: #fff;
 
     small {
-      font-family: 'Roboto Slab', serif;
+      font-family: "Roboto Slab", serif;
       font-size: 9px;
     }
   }
@@ -57,7 +62,6 @@ h1, h2, h3 {
   margin-right: 20px;
   background-color: $brand-primary !important;
   color: #fff;
-
 }
 body > .ember-view {
   background: inherit;
@@ -67,7 +71,7 @@ body > .ember-view {
   background: #fff;
 }
 .code-label {
-  display:inline-block;
+  display: inline-block;
   // float: right;
   // color: #e83e8c;
   color: $brand-primary;
@@ -75,22 +79,26 @@ body > .ember-view {
   background: #fff;
   padding: 3px 15px;
 
-  &:before { content: '- '; }
-  &:after { content: ' -'; }
+  &:before {
+    content: "- ";
+  }
+  &:after {
+    content: " -";
+  }
 }
 
 pre.code {
-    font-size: 18px;
-    padding: 15px;
-    background-color: #fff;
-    color: #fff;
-    border: none;
-    border-bottom: solid 3px $brand-primary;
-    border-radius: .25rem;
+  font-size: 18px;
+  padding: 15px;
+  background-color: #fff;
+  color: #fff;
+  border: none;
+  border-bottom: solid 3px $brand-primary;
+  border-radius: 0.25rem;
 
-    code {
-      color: #e83e8c;
-    }
+  code {
+    color: #e83e8c;
+  }
 }
 
 // grid
@@ -101,7 +109,6 @@ pre.code {
 .gantt-timeline .day.birthday {
   background-color: #d8d9e5;
 }
-
 
 // lines
 // ---------------------------
@@ -120,11 +127,15 @@ pre.code {
   cursor: move;
   padding: 7px 0 0 10px;
 }
-
+.gantt-line-title svg {
+  position: relative;
+  display: inline-block;
+  top: -2px;
+}
 
 // sortable example
 .sortable-item {
-  transition: all .125s;
+  transition: all 0.125s;
 }
 .sortable-item.is-dragging {
   transition-duration: 0s;
@@ -136,8 +147,4 @@ pre.code {
   z-index: 10;
 }
 
-
-@import 'addon/styles/addon.scss';
-
-
-
+@import "addon/styles/addon.scss";

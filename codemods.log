@@ -1,0 +1,9 @@
+2020-05-01T07:46:11.339Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/application.hbs
+2020-05-01T07:46:11.345Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/application.hbs
+2020-05-01T07:46:11.345Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/application.hbs
+2020-05-01T07:46:11.347Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/application.hbs
+2020-05-01T07:46:11.480Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/examples.hbs
+2020-05-01T07:46:11.483Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/examples.hbs
+2020-05-01T07:46:11.484Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/examples.hbs
+2020-05-01T07:46:11.485Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/examples.hbs
+2020-05-01T07:46:11.485Z [warn] WARNING: {{nav.link-to}} was not converted as it has positional parameters which can't be automatically converted. Source: tests/dummy/app/templates/examples.hbs

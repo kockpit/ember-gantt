@@ -26,56 +26,55 @@
 
 {{!-- Day width (px): {{input value=dayWidth}}<br><br> --}}
 <div class="container-fluid">
-  {{#gantt-chart stickyOffset=56 dayWidth=dayWidth as |chart|}}
+  <GanttChart @stickyOffset={{56}} @dayWidth={{dayWidth}} as |chart|>
 
-    {{#chart.header}}
+    <chart.header>
       <b>Project / Job</b><br>
       <a href="" {{action 'zoom' 5}}>Zoom in</a> | <a href="" {{action 'zoom' -5}}>Zoom out</a>
-    {{/chart.header}}
+    </chart.header>
 
     {{#each model.projects as |project|}}
 
       {{! line for each project }}
       {{! ATTENTION: inlineChilds need to have values {dateStart, dateEnd, color} }}
-      {{#chart.line dateStart=project.minStartDate dateEnd=project.maxEndDate as |line|}}
+      <chart.line @dateStart={{project.minStartDate}} @dateEnd={{project.maxEndDate}} as |line|>
 
         {{! collapse childs }}
-        {{#line.title}}
+        <line.title>
           <span><a href="" {{action 'collapse' project}}>{{project.title}}</a></span>
-        {{/line.title}}
+        </line.title>
 
         {{! inline childs - show child-segments inline in the bar (childs need {dateStart, dateEnd, color})}}
-        {{line.inlineChilds childLines=project.jobs }}
+        <line.inlineChilds @childLines={{project.jobs}} />
 
         {{! child line for each job in project }}
-        {{#bs-collapse collapsed=project.collapsed}}
+        <BsCollapse @collapsed={{project.collapsed}}>
           {{#unless project.collapsed}}
             {{#each project.jobs as |job|}}
 
               {{! child lines}}
-              {{#line.childLine dateStart=job.dateStart dateEnd=job.dateEnd isEditable=true
-                                color=job.color onDateChange=(action "datesChanged" job) as |childLine|}}
+              <line.childLine @dateStart={{job.dateStart}} @dateEnd={{job.dateEnd}} @isEditable={{true}} @color={{job.color}} @onDateChange={{action "datesChanged" job}} as |childLine|>
 
                 {{! more complex title inner}}
-                {{#childLine.title}}
+                <childLine.title>
                   <span>
                     <svg width="12px" height="12px"><circle fill={{job.color}} cx="5" cy="6" r="5" width="9" height="9"></circle></svg>
                     {{job.title}}
                   </span>
-                {{/childLine.title}}
+                </childLine.title>
 
                 {{! add something to the bar content}}
-                {{#childLine.barContent}}{{job.title}}{{/childLine.barContent}}
+                <childLine.barContent>{{job.title}}</childLine.barContent>
 
-              {{/line.childLine}}
+              </line.childLine>
             {{/each}}
           {{/unless}}
-        {{/bs-collapse}}
+        </BsCollapse>
 
-      {{/chart.line}}
+      </chart.line>
 
     {{/each}}
 
-  {{/gantt-chart}}
+  </GanttChart>
 </div>
 
